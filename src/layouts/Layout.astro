@@ -2,6 +2,7 @@
 import { ViewTransitions } from "astro:transitions";
 import "../assets/styles/tailwind.css";
 import CustomStyles from "../components/CustomStyles.astro";
+import BasicScripts from '../components/BasicScripts.astro';
 ---
 
 <!doctype html>
@@ -14,6 +15,7 @@ import CustomStyles from "../components/CustomStyles.astro";
 
   <body class="antialiased text-default bg-page">
     <slot />
+     <BasicScripts />
     <style is:global>
       /* Improve Page speed */
       /* https://css-tricks.com/almanac/properties/c/content-visibility/ */

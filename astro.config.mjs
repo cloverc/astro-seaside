@@ -9,8 +9,8 @@ const env = loadEnv("", process.cwd(), "STORYBLOK");
 
 // https://astro.build/config
 export default defineConfig({
-  output: "server",
-  adapter: netlify(),
+  // output: "server",
+  // adapter: netlify(),
   integrations: [
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
@@ -43,17 +43,6 @@ export default defineConfig({
     icon({
       include: {
         tabler: ["*"],
-        "flat-color-icons": [
-          "template",
-          "gallery",
-          "approval",
-          "document",
-          "advertising",
-          "currency-exchange",
-          "voice-presentation",
-          "business-contact",
-          "database",
-        ],
       },
     }),
   ],

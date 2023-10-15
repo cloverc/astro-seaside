@@ -46,7 +46,7 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
   <div class="absolute inset-0"></div>
   <div
     class:list={[
-      "relative text-default py-3 px-3 md:px-6 mx-auto w-full md:flex md:justify-between",
+      "relative text-default py-3 px-3 lg:px-6 mx-auto w-full lg:flex lg:justify-between",
       {
         "max-w-7xl": !isFullWidth,
       },
@@ -61,35 +61,35 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
       <a class="flex items-center" href="/">
         <Logo />
       </a>
-      <div class="flex items-center md:hidden">
+      <div class="flex items-center lg:hidden">
         <ToggleMenu />
       </div>
     </div>
     <nav
-      class="items-center w-full md:w-auto hidden md:flex text-default overflow-y-auto overflow-x-hidden md:overflow-y-visible md:overflow-x-auto md:mx-5 mt-2"
+      class="items-center w-full lg:w-auto hidden lg:flex text-default overflow-y-auto overflow-x-hidden lg:overflow-y-visible lg:overflow-x-auto lg:mx-5 mt-2"
       aria-label="Main navigation"
     >
       <ul
-        class="flex flex-col md:flex-row md:self-center w-full md:w-auto text-xl md:text-[1.05rem] tracking-[0.01rem] font-heading font-medium"
+        class="flex flex-col lg:flex-row lg:self-center w-full lg:w-auto text-xl lg:text-[1.05rem] tracking-[0.01rem] font-heading font-medium"
       >
         {
           links.map(({ text, href, links }) => (
             <li class={links?.length ? "dropdown" : ""}>
               {links?.length ? (
                 <>
-                  <button class="hover:text-link px-4 py-3 flex items-center">
+                  <button class="hover:text-link px-4 py-3 pointer-events-none flex items-center">
                     {text}{" "}
                     <Icon
                       name="tabler:chevron-down"
-                      class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden md:inline"
+                      class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden lg:inline"
                     />
                   </button>
-                  <ul class="dropdown-menu md:backdrop-blur-md bg-color border rounded md:absolute pl-4 md:pl-0 md:hidden font-medium md:min-w-[200px] drop-shadow-xl">
+                  <ul class="dropdown-menu bg-page border rounded lg:absolute pl-4 lg:pl-0 lg:hidden font-medium lg:min-w-[200px]">
                     {links.map(({ text: text2, href: href2 }) => (
                       <li>
                         <a
                           class:list={[
-                            "first:rounded-t last:rounded-b md:hover:bg-gray-100 hover:text-link  hover:text-black hover:bg-gray-700 py-2 px-5 block whitespace-no-wrap",
+                            "first:rounded-t pl-4 last:rounded-b hover:underline py-2 block whitespace-no-wrap",
                             { "aw-link-active": href2 === currentPath },
                           ]}
                           href={href2}
@@ -119,13 +119,13 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
     <div
       class:list={[
         { "ml-auto rtl:ml-0 rtl:mr-auto": position === "left" },
-        "hidden md:self-center flex md:flex items-center md:mb-0 fixed w-full md:w-auto md:static justify-end left-0 rtl:left-auto rtl:right-0 bottom-0 p-3 md:p-0",
+        "hidden lg:self-center flex lg:flex items-center lg:mb-0 fixed w-full lg:w-auto lg:static justify-end left-0 rtl:left-auto rtl:right-0 bottom-0 p-3 lg:p-0",
       ]}
     >
-      <div class="md:flex md:items-center md:justify-between py-6 md:py-8">
+      <div class="lg:flex lg:items-center lg:justify-between py-6 lg:py-8">
         {
           socialLinks?.length ? (
-            <ul class="flex mb-4 md:order-1 -ml-2 md:ml-4 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4 mt-2">
+            <ul class="flex mb-4 lg:order-1 -ml-2 lg:ml-4 lg:mb-0 rtl:ml-0 rtl:-mr-2 rtl:lg:ml-0 rtl:lg:mr-4 mt-2">
               {socialLinks.map(({ ariaLabel, href, text, icon }) => (
                 <li>
                   <a

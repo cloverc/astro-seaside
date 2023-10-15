@@ -38,29 +38,23 @@
 }
 
 #header.scroll > div:first-child {
-  @apply bg-page border-b border-gray-500/20;
-  box-shadow: none;
+  @apply bg-page;
 }
 
 #header.expanded nav {
   position: fixed;
-  top: 70px;
+  top: 128px;
   left: 0;
   right: 0;
-  bottom: 70px !important;
+  bottom: 128px !important;
   padding: 0 5px;
+  .dropdown-menu {
+    border: 0;
+  }
 }
 
 .dropdown:hover .dropdown-menu {
   display: block;
-}
-
-[astro-icon].icon-light > * {
-  stroke-width: 1.2;
-}
-
-[astro-icon].icon-bold > * {
-  stroke-width: 2.4;
 }
 
 [data-aw-toggle-menu] path {
