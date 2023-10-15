@@ -1,0 +1,53 @@
+---
+import { storyblokEditable } from "@storyblok/astro";
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+
+import { Image } from "astro:assets";
+
+const { blok } = Astro.props;
+---
+
+<section {...storyblokEditable(blok)} class="relative md:-mt-[128px]">
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+  <div class="relative max-w-7xl mx-auto p-8 sm:px-6">
+    <div class="pt-0 md:pt-[128px] pointer-events-none"></div>
+    <div class="relative md:py-0 lg:py-6 lg:flex lg:h-fit">
+      <div
+        class="invisible lg:visible rounded lg:absolute bg-secondary w-4/5 h-4/5 top-[7rem]"
+      >
+      </div>
+      <div
+        class="basis-2/5 lg:bg-card rounded lg:-mr-20 md:ml-20 h-fit text-center
+         my-12 md:m-12 lg:text-left lg:p-14 z-20"
+      >
+        {
+          blok.headline && (
+            <h1 class="text-5xl lg:text-4xl mb-8 font-heading">
+              {blok.headline}
+            </h1>
+          )
+        }
+        <div
+          class="max-w-xs sm:max-w-md m-auto flex flex-nowrap flex-col sm:flex-row sm:justify-center gap-4 lg:justify-start lg:m-0 lg:max-w-7xl"
+        >
+          <div class="w-full sm:w-auto sm:mb-0">
+            <StoryblokComponent blok={blok.buttons[0]} />
+          </div>
+        </div>
+      </div>
+
+      <div class="basis-3/5">
+        <div class="relative m-auto max-w-5xl">
+          <Image
+            class="mx-auto rounded-md w-full"
+            sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
+            width={750}
+            height={600}
+            src={blok.image.filename}
+            alt={blok.image.alt}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

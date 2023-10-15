@@ -1,0 +1,26 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+
+import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
+import PageLayout from "../layouts/PageLayout.astro";
+import BucketSpade from "../components/BucketSpade.astro";
+import Newsletter from "../components/Newsletter.astro";
+
+const sbApi = useStoryblokApi();
+const { data } = await sbApi.get("cdn/stories/home", {
+  version: "draft",
+});
+
+const metadata = {
+  title: "Seaside Heritage Network",
+  ignoreTitleTemplate: true,
+};
+
+const story = data.story;
+---
+
+<PageLayout metadata={metadata}>
+  <StoryblokComponent blok={story.content} />
+  <BucketSpade />
+  <Newsletter />
+</PageLayout>

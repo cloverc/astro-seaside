@@ -1,0 +1,25 @@
+---
+import { ViewTransitions } from "astro:transitions";
+import "../assets/styles/tailwind.css";
+import CustomStyles from "../components/CustomStyles.astro";
+---
+
+<!doctype html>
+<html lang="en" class="2xl:text-[20px]">
+  <head>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <CustomStyles />
+    <ViewTransitions />
+  </head>
+
+  <body class="antialiased text-default bg-page">
+    <slot />
+    <style is:global>
+      /* Improve Page speed */
+      /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
+      img {
+        content-visibility: auto;
+      }
+    </style>
+  </body>
+</html>

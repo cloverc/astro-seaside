@@ -1,0 +1,31 @@
+---
+import { Image } from "astro:assets";
+import Link from "../components/Link.astro";
+import DonkeyImage from "../assets/images/Donkey.jpg";
+---
+
+<section class="mx-auto bg-card">
+  <div class="flex place-items-top max-w-100">
+    <div class="w-2/5">
+      <Image
+        class="object-cover w-full h-full mb-2 rounded shadow-lg bg-gray-400"
+        sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
+        width={600}
+        height=""
+        src={DonkeyImage}
+        alt="Donkey rides on the beach"
+      />
+    </div>
+    <div class="w-3/5 p-24">
+      <h3 class="text-2xl font-heading font-semibold lg:text-4xl">
+        Bucket & Spade Top 10
+      </h3>
+      <p class="leading-relaxed line-clamp-4 my-6">
+        The Seaside Heritage Network is delighted to announce its inaugural
+        Bucket and Spade List, the Top Ten favourite seaside places and
+        experiences as voted for by members of the public.
+      </p>
+      <Link href="/bucket-and-spade/">See the Winners</Link>
+    </div>
+  </div>
+</section>

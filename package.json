@@ -1,0 +1,35 @@
+{
+  "name": "astro-seaside",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrolib/seo": "^1.0.0-beta.4",
+    "@fontsource/inter": "^5.0.8",
+    "@fontsource/kameron": "^5.0.8",
+    "@fontsource/leckerli-one": "^5.0.12",
+    "astro-icon": "^1.0.0-next.2",
+    "limax": "4.1.0",
+    "unpic": "^3.10.0"
+  },
+  "devDependencies": {
+    "@storyblok/astro": "^3.0.1",
+    "astro": "^3.1.2",
+    "@astrojs/tailwind": "^5.0.0",
+    "@iconify-json/flat-color-icons": "^1.1.7",
+    "@iconify-json/tabler": "^1.1.89",
+    "@tailwindcss/typography": "^0.5.10",
+    "@vitejs/plugin-basic-ssl": "^1.0.1",
+    "prettier": "^3.0.3",
+    "prettier-plugin-astro": "^0.12.0",
+    "tailwind-merge": "^1.14.0",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.2.2"
+  }
+}

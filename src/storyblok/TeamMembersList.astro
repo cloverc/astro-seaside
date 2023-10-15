@@ -1,0 +1,36 @@
+---
+import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
+import HeroText from "../components/HeroText.astro";
+import TeamMember from "../components/TeamMember.astro";
+
+const { blok } = Astro.props;
+const storyblokApi = useStoryblokApi();
+
+const { data } = await storyblokApi.get("cdn/stories", {
+  version: import.meta.env.DEV ? "draft" : "published",
+  starts_with: "team/",
+  is_startpage: false,
+});
+
+const team = data.stories;
+// console.log(team);
+---
+
+<section
+  class="mx-auto lg:py-20 py-12 sm:py-16"
+  {...storyblokEditable(blok)}
+>
+  <HeroText tagline="About" title="Meet the Team" />
+   <div class="grid mx-auto px-6 place-items-top gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3 max-w-6xl">
+  {
+    team?.length &&
+      team.map((team_member: any) => {
+        team_member.content.slug = team_member.slug;
+        return (   
+            <TeamMember member={team_member.content} slug={team_member.slug} />
+          </div>
+        );
+      })
+  }
+  </div>
+</section>

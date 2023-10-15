@@ -1,0 +1,24 @@
+---
+import { storyblokEditable, renderRichText } from "@storyblok/astro";
+import { Image } from "astro:assets";
+const { blok } = Astro.props;
+const content = renderRichText(blok.content);
+---
+
+<article {...storyblokEditable(blok)}>
+  <h1 class="text-xl font-bold">{blok.title}</h1>
+  <div
+    class="relative h-0 pb-[56.25%] md:pb-[75%] md:h-72 lg:pb-[56.25%] overflow-hidden bg-gray-400 rounded shadow-lg"
+  >
+    <Image
+      class="mx-auto rounded-md w-full"
+      sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
+      width={750}
+      height={600}
+      src={blok.image.filename}
+      alt={blok.image.alt}
+    />
+  </div>
+  <div>{blok.description}</div>
+  <Fragment set:html={content} />
+</article>
