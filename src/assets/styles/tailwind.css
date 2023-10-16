@@ -48,9 +48,10 @@
   right: 0;
   bottom: 128px !important;
   padding: 0 5px;
-  .dropdown-menu {
-    border: 0;
-  }
+}
+
+#header.expanded nav .dropdown-menu {
+  border: 0;
 }
 
 .dropdown:hover .dropdown-menu {

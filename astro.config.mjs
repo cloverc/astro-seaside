@@ -14,9 +14,6 @@ export default defineConfig({
   integrations: [
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
-      // apiOptions: {
-      //   cache: { clear: "auto", type: "memory" },
-      // },
       components: {
         // Content types
         page: "storyblok/Page",
@@ -32,9 +29,6 @@ export default defineConfig({
 
         //components
         button: "storyblok/Button",
-      },
-      apiOptions: {
-        region: "",
       },
     }),
     tailwind({
