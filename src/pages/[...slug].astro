@@ -4,6 +4,8 @@ import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
 import PageLayout from "../layouts/PageLayout.astro";
 import Newsletter from "../components/Newsletter.astro";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const storyblokApi = useStoryblokApi();
 
@@ -23,7 +25,6 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-console.log(slug);
 
 const storyblokApi = useStoryblokApi();
 
