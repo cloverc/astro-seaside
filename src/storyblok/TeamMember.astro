@@ -1,9 +1,8 @@
 ---
-import { storyblokEditable, renderRichText } from "@storyblok/astro";
+import { storyblokEditable } from "@storyblok/astro";
 import { Image } from "astro:assets";
 
 const { blok } = Astro.props;
-const renderedRichText = renderRichText(blok.profile);
 ---
 
 <article

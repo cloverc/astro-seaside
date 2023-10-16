@@ -10,14 +10,15 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/check": "^0.2.1",
     "@astrolib/seo": "^1.0.0-beta.4",
     "@fontsource/inter": "^5.0.8",
     "@fontsource/kameron": "^5.0.8",
     "@fontsource/leckerli-one": "^5.0.12",
-    "astro-icon": "^1.0.0-next.2"
+    "astro-icon": "^1.0.0-next.2",
+    "@astrojs/netlify": "^3.0.2"
   },
   "devDependencies": {
-    "@astrojs/netlify": "^3.0.2",
     "@astrojs/tailwind": "^5.0.0",
     "@iconify-json/tabler": "^1.1.89",
     "@storyblok/astro": "^3.0.1",
