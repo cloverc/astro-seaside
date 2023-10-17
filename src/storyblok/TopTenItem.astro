@@ -1,0 +1,37 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import { storyblokEditable } from "@storyblok/astro";
+import { renderRichText } from "@storyblok/astro";
+
+const { winner, index, cardHeadlineTag = "h2" } = Astro.props;
+const renderedRichText = renderRichText(winner.content);
+
+const HeadlineTag = cardHeadlineTag;
+---
+
+<article
+  {...storyblokEditable(winner)}
+  class="bg-stone-100 p-6 mx-auto gap-6 grid md:gap-8 md:max-w-none md:grid-cols-2"
+>
+  <Image
+    class="object-cover object-centre w-full rounded float-left"
+    sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
+    width={460}
+    height={460}
+    src={winner.image.filename}
+    alt={winner.image.alt}
+  />
+  <div class="py-4">
+    <HeadlineTag
+      class="text-2xl md:text-2xl font-heading text-accent font-extrabold mb-3"
+    >
+      <Icon
+        name={`tabler:circle-number-${index}`}
+        class="w-8 h-8 inline-block -mt-1 mr-2"
+      />
+      {winner.title}
+    </HeadlineTag>
+    {renderedRichText && <div set:html={renderedRichText} class="mb-1" />}
+  </div>
+</article>

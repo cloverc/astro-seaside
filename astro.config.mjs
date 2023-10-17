@@ -23,6 +23,8 @@ export default defineConfig({
         teamMembersList: "storyblok/TeamMembersList",
         teamMember: "storyblok/TeamMember",
         featuredEvents: "storyblok/FeaturedEvents",
+        topTenList: "storyblok/TopTenList",
+        topTen: "storyblok/TopTenItem",
 
         // Heroes
         hero: "storyblok/Heroes/Hero",

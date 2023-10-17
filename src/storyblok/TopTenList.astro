@@ -1,0 +1,45 @@
+---
+import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
+import TopTenItem from "./TopTenItem.astro";
+import HeroText from "../components/HeroText.astro";
+
+const { blok } = Astro.props;
+const storyblokApi = useStoryblokApi();
+
+const { data } = await storyblokApi.get("cdn/stories", {
+  version: import.meta.env.DEV ? "draft" : "published",
+  starts_with: "bucket-spade-list/",
+  is_startpage: false,
+  sort_by: "created_at:asc",
+});
+
+const winners = data.stories;
+---
+
+<section
+  class="mx-auto sm:px-6 lg:py-20-b max-w-7xl px-6 py-12-b sm:py-16"
+  {...storyblokEditable(blok)}
+>
+  <HeroText
+    tagline="Bucket & Spade List"
+    title="Top Ten Winners 2023"
+    subtitle="The Seaside Heritage Network is delighted to announce its inaugural Bucket and Spade List, the Top Ten favourite seaside places and experiences as voted for by members of the public."
+  />
+  <ul>
+    {
+      winners?.length &&
+        winners.map((winner: any, index: any) => {
+          winner.content.slug = winner.slug;
+          return (
+            <li class="rounded mb-12 md:mb-20 p-6 bg-card">
+              <TopTenItem
+                winner={winner.content}
+                slug={winner.slug}
+                index={index + 1}
+              />
+            </li>
+          );
+        })
+    }
+  </ul>
+</section>

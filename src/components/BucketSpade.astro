@@ -5,10 +5,10 @@ import DonkeyImage from "../assets/images/Donkey.jpg";
 ---
 
 <section class="mx-auto bg-card">
-  <div class="flex place-items-top max-w-100">
-    <div class="w-2/5">
+  <div class="md:flex place-items-top max-w-full">
+    <div class="h-60 md:h-full w-full md:w-3/5">
       <Image
-        class="object-cover w-full h-full mb-2 rounded shadow-lg bg-gray-400"
+        class="object-cover w-full h-full shadow-lg bg-gray-400"
         sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
         width={600}
         height={500}
@@ -16,7 +16,7 @@ import DonkeyImage from "../assets/images/Donkey.jpg";
         alt="Donkey rides on the beach"
       />
     </div>
-    <div class="w-3/5 p-24">
+    <div class="w-full md:w-3/5 p-6 lg:p-20">
       <h3 class="text-2xl font-heading font-semibold lg:text-4xl">
         Bucket & Spade Top 10
       </h3>
@@ -25,7 +25,10 @@ import DonkeyImage from "../assets/images/Donkey.jpg";
         Bucket and Spade List, the Top Ten favourite seaside places and
         experiences as voted for by members of the public.
       </p>
-      <Link href="/bucket-spade-list/">See the Winners</Link>
+      <div class="py-2 flex flex-row gap-6 justify-start">
+        <Link href="/bucket-spade-list/" class="my-6">See the Winners</Link>
+        <Link href="/bucket-spade-list/">Nominate for 2024</Link>
+      </div>
     </div>
   </div>
 </section>

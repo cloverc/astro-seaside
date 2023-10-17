@@ -5,7 +5,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "var(--aw-color-accent)",
+        primary: "var(--shn-color-accent)",
         secondary: "var(--shn-color-secondary)",
         accent: "var(--shn-color-accent)",
         default: "var(--shn-color-text-default)",

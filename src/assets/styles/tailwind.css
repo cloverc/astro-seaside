@@ -50,8 +50,8 @@
   padding: 0 5px;
 }
 
-#header nav .dropdown-menu {
-  border: 0;
+blockquote {
+  @apply bg-stone-200 border-l-4 border-primary text-dark p-4 my-8;
 }
 
 .dropdown:hover .dropdown-menu {
