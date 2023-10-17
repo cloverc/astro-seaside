@@ -1,54 +1,50 @@
 <script is:inline>
-  function attachEvent(selector, event, fn) {
-    const matches =
-      typeof selector === "string"
-        ? document.querySelectorAll(selector)
-        : selector;
-    if (matches && matches.length) {
-      matches.forEach((elem) => {
-        elem.addEventListener(event, (e) => fn(e, elem), false);
-      });
-    }
-  }
+  // Function to set up your event listeners and perform initial checks
+  function initialize() {
+    menuCheck();
 
-  window.onload = function () {
-
-    attachEvent("#header nav", "click", function () {
-      document
-        .querySelector("[data-aw-toggle-menu]")
-        ?.classList.remove("expanded");
-      document.body.classList.remove("overflow-hidden");
-      document.getElementById("header")?.classList.remove("h-screen");
-      document.getElementById("header")?.classList.remove("expanded");
-      document.getElementById("header")?.classList.remove("bg-page");
-      document.querySelector("#header nav")?.classList.add("hidden");
-      document
-        .querySelector("#header > div > div:last-child")
-        ?.classList.add("hidden");
-    });
-
-    attachEvent("[data-aw-toggle-menu]", "click", function (_, elem) {
+    // Attach event listeners
+    attachEvent("[data-shn-toggle-menu]", "click", function (elem) {
       elem.classList.toggle("expanded");
       document.body.classList.toggle("overflow-hidden");
       document.getElementById("header")?.classList.toggle("h-screen");
-      document.getElementById("header")?.classList.toggle("expanded");
-      document.getElementById("header")?.classList.toggle("bg-page");
       document.querySelector("#header nav")?.classList.toggle("hidden");
       document
         .querySelector("#header > div > div:last-child")
         ?.classList.toggle("hidden");
     });
-  };
+  }
 
-  window.onpageshow = function () {
-    document.documentElement.classList.add("motion-safe:scroll-smooth");
-    const elem = document.querySelector("[data-aw-toggle-menu]");
+  // Definig the function to attach event to the element
+  function attachEvent(selector, event, fn) {
+    const matches = document.querySelectorAll(selector);
+    if (matches && matches.length) {
+      matches.forEach((elem) => {
+        elem.addEventListener(event, () => fn(elem), false);
+      });
+    }
+  }
+
+  // function to check if the menu is open
+  const menuCheck = () => {
+    const elem = document.querySelector("[data-shn-toggle-menu]");
     if (elem) {
       elem.classList.remove("expanded");
     }
     document.body.classList.remove("overflow-hidden");
     document.getElementById("header")?.classList.remove("h-screen");
-    document.getElementById("header")?.classList.remove("expanded");
     document.querySelector("#header nav")?.classList.add("hidden");
+    document
+      .querySelector("#header > div > div:last-child")
+      ?.classList.add("hidden");
+    return;
   };
+
+  // Check menu on window load
+  window.addEventListener("DOMContentLoaded", () => initialize());
+
+  // Check menu on after swap
+  document.addEventListener("astro:after-swap", () => {
+    initialize();
+  });
 </script>

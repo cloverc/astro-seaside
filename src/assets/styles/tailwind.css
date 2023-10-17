@@ -50,7 +50,7 @@
   padding: 0 5px;
 }
 
-#header.expanded nav .dropdown-menu {
+#header nav .dropdown-menu {
   border: 0;
 }
 
@@ -58,13 +58,13 @@
   display: block;
 }
 
-[data-aw-toggle-menu] path {
+[data-shn-toggle-menu] path {
   @apply transition;
 }
-[data-aw-toggle-menu].expanded g > path:first-child {
+[data-shn-toggle-menu].expanded g > path:first-child {
   @apply -rotate-45 translate-y-[15px] translate-x-[-3px];
 }
 
-[data-aw-toggle-menu].expanded g > path:last-child {
+[data-shn-toggle-menu].expanded g > path:last-child {
   @apply rotate-45 translate-y-[-8px] translate-x-[14px];
 }

@@ -8,15 +8,16 @@ import BasicScripts from '../components/BasicScripts.astro';
 <!doctype html>
 <html lang="en" class="2xl:text-[20px]">
   <head>
-    <meta name="viewport" content="width=device-width">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <CustomStyles />
     <ViewTransitions />
   </head>
 
   <body class="antialiased text-default bg-page">
+    <BasicScripts /> 
     <slot />
-     <BasicScripts />
     <style is:global>
       /* Improve Page speed */
       /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
