@@ -28,9 +28,6 @@ export default defineConfig({
 
         // Heroes
         hero: "storyblok/Heroes/Hero",
-
-        //components
-        button: "storyblok/Button",
       },
     }),
     tailwind({

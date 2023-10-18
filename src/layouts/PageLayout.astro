@@ -26,10 +26,17 @@ const sharedSocialLinks = [
 /** Main menu items */
 const headerData = {
   links: [
-    { text: "Events", href: "/events/" },
+    {
+      text: "Events",
+      href: "#",
+      links: [
+        { text: "Upcoming Events", href: "/events/upcoming-events/" },
+        { text: "Past Events", href: "/events/past-events/" },
+      ],
+    },
     {
       text: "About",
-      href: "/about/",
+      href: "#",
       links: [
         { text: "Mission & Values", href: "/mission/" },
         { text: "Meet the Team", href: "/team/" },
@@ -45,8 +52,8 @@ const footerData = {
   links: [
     {
       links: [
-        { text: "Events", href: "/events/" },
-        { text: "About", href: "/about/" },
+        { text: "Upcoming Events", href: "/events/upcoming-events/" },
+        { text: "About", href: "/mission/" },
         { text: "Contact", href: "/contact/" },
       ],
     },

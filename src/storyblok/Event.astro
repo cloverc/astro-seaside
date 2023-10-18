@@ -1,24 +1,54 @@
 ---
 import { storyblokEditable, renderRichText } from "@storyblok/astro";
 import { Image } from "astro:assets";
+import Link from "../components/Link.astro";
+import { Icon } from "astro-icon/components";
+import { getFormattedDate } from "../utils/utils.ts";
 const { blok } = Astro.props;
+
 const content = renderRichText(blok.content);
 ---
 
-<article {...storyblokEditable(blok)}>
-  <h1 class="text-xl font-bold">{blok.title}</h1>
-  <div
-    class="relative h-0 pb-[56.25%] md:pb-[75%] md:h-72 lg:pb-[56.25%] overflow-hidden bg-gray-400 rounded shadow-lg"
-  >
-    <Image
-      class="mx-auto rounded-md w-full"
-      sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
-      width={750}
-      height={600}
-      src={blok.image.filename}
-      alt={blok.image.alt}
-    />
-  </div>
-  <div>{blok.description}</div>
-  <Fragment set:html={content} />
-</article>
+<section
+  class="mx-auto sm:px-6 max-w-7xl px-6 py-12-b lg:py-20 py-12 sm:py-16"
+  {...storyblokEditable(blok)}
+>
+  <article>
+    <header>
+      <div
+        class="flex justify-between flex-col sm:flex-row max-w-3xl mx-auto mt-0 mb-2 px-4 sm:px-6 sm:items-center"
+      >
+        <p>
+          <Icon name="tabler:clock" class="w-5 h-5 inline-block -mt-0.5" />
+          <time class="px-1.5" datetime={blok.date} class="inline-block"
+            >{getFormattedDate(new Date(blok.date))}</time
+          >
+        </p>
+      </div>
+      <h1
+        class="px-4 sm:px-6 max-w-3xl mx-auto text-4xl md:text-5xl font-bold leading-tighter tracking-tighter font-heading"
+      >
+        {blok.title}
+      </h1>
+      <Image
+        class="max-w-full lg:max-w-[900px] mx-auto mb-6 sm:rounded-md bg-gray-400 border"
+        sizes="(max-width: 700px) 400px, 700px"
+        width={700}
+        height={500}
+        loading="eager"
+        src={blok.image.filename}
+        alt={blok.image.alt}
+      />
+    </header>
+    <div
+      class="mx-auto px-6 sm:px-6 max-w-3xl text-default lg:prose-xl prose-md prose-headings:font-heading prose-headings:leading-tighter prose-headings:tracking-tighter prose-headings:font-bold prose-a:text-primary dark:prose-a:text-blue-400 prose-img:rounded-md prose-img:shadow-lg mt-8 prose-headings:scroll-mt-[80px]"
+    >
+      <Fragment set:html={content} />
+      <Link href={blok.book.url} class="no-prose">Book Your Place</Link>
+    </div>
+    <div
+      class="mx-auto px-6 sm:px-6 max-w-3xl mt-8 flex justify-between flex-col sm:flex-row"
+    >
+    </div>
+  </article>
+</section>
