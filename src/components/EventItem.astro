@@ -41,7 +41,6 @@ const HeadlineTag = cardHeadlineTag;
           <span class="text-m font-semibold">
             <Icon name="tabler:map-pin" class="w-5 h-5 inline-block -mt-0.5" />
             <span class="px-1.5" class="inline-block">
-              {" "}
               {event.location}
             </span>
           </span>
@@ -51,6 +50,6 @@ const HeadlineTag = cardHeadlineTag;
     <div class="line-clamp-4 leading-relaxed mb-4">
       {event.description}
     </div>
-    <Link href={slug}>More Info</Link>
+    <Link href={"/" + slug}>More Info</Link>
   </div>
 </article>

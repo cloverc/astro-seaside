@@ -44,7 +44,9 @@ const content = renderRichText(blok.content);
       class="mx-auto px-6 sm:px-6 max-w-3xl text-default lg:prose-xl prose-md prose-headings:font-heading prose-headings:leading-tighter prose-headings:tracking-tighter prose-headings:font-bold prose-a:text-primary dark:prose-a:text-blue-400 prose-img:rounded-md prose-img:shadow-lg mt-8 prose-headings:scroll-mt-[80px]"
     >
       <Fragment set:html={content} />
-      <Link href={blok.book.url} class="no-prose">Book Your Place</Link>
+      <Link href={blok.book.url} target="_blank" class="no-prose">
+        Book Your Place
+      </Link>
     </div>
     <div
       class="mx-auto px-6 sm:px-6 max-w-3xl mt-8 flex justify-between flex-col sm:flex-row"

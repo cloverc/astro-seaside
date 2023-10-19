@@ -6,28 +6,33 @@ import HeroText from "../components/HeroText.astro";
 const { blok } = Astro.props;
 const storyblokApi = useStoryblokApi();
 
-const { data } = await storyblokApi.get("cdn/stories", {
+const currentPath = Astro.url.pathname;
+
+const eventGroup = currentPath.includes("upcoming-events");
+
+const { data } = await storyblokApi.get("cdn/stories/", {
   version: import.meta.env.DEV ? "draft" : "published",
-  starts_with: "events/",
+  starts_with: eventGroup ? "events/upcoming-events" : "events/past-events",
   is_startpage: false,
 });
 
 const events = data.stories;
+
+const pageTitle = eventGroup ? "Upcoming Events" : "Past Events";
 ---
 
 <section
   class="mx-auto sm:px-6 lg:py-20-b max-w-6xl px-6 py-12-b sm:py-16"
   {...storyblokEditable(blok)}
 >
-  <HeroText tagline="What's On" title="Upcoming Events" />
+  <HeroText tagline="What's On" title={pageTitle} />
   <ul>
     {
       events?.length &&
         events.map((event: any) => {
-          event.content.slug = event.slug;
           return (
             <li class="rounded mb-12 md:mb-20 p-6 bg-card">
-              <EventItem event={event.content} slug={event.slug} />
+              <EventItem event={event.content} slug={event.full_slug} />
             </li>
           );
         })
