@@ -6,6 +6,11 @@ import { Icon } from "astro-icon/components";
 import { getFormattedDate } from "../utils/utils.ts";
 const { blok } = Astro.props;
 
+const currentPath = Astro.url.pathname;
+const eventLinkText = currentPath.includes("upcoming-events")
+  ? "Book Your Place"
+  : "Watch Here";
+
 const content = renderRichText(blok.content);
 ---
 
@@ -26,7 +31,7 @@ const content = renderRichText(blok.content);
         </p>
       </div>
       <h1
-        class="px-4 sm:px-6 max-w-3xl mx-auto text-4xl md:text-5xl font-bold leading-tighter tracking-tighter font-heading"
+        class="px-4 sm:px-6 max-w-3xl mx-auto text-4xl md:text-5xl font-bold leading-tighter tracking-tighter mb-4 font-heading"
       >
         {blok.title}
       </h1>
@@ -41,11 +46,11 @@ const content = renderRichText(blok.content);
       />
     </header>
     <div
-      class="mx-auto px-6 sm:px-6 max-w-3xl text-default lg:prose-xl prose-md prose-headings:font-heading prose-headings:leading-tighter prose-headings:tracking-tighter prose-headings:font-bold prose-a:text-primary dark:prose-a:text-blue-400 prose-img:rounded-md prose-img:shadow-lg mt-8 prose-headings:scroll-mt-[80px]"
+      class="mx-auto px-6 sm:px-6 max-w-3xl lg:prose-xl prose-md prose-headings:font-heading prose-headings:leading-tighter prose-headings:tracking-tighter prose-headings:font-bold prose-img:rounded-md prose-img:shadow-lg mt-8 prose-headings:scroll-mt-[80px]"
     >
       <Fragment set:html={content} />
       <Link href={blok.book.url} target="_blank" class="no-prose">
-        Book Your Place
+        {eventLinkText}
       </Link>
     </div>
     <div
