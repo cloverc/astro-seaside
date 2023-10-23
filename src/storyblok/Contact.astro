@@ -12,21 +12,25 @@ const socialLinks = [
   {
     ariaLabel: "Instagram",
     icon: "tabler:brand-instagram",
+    text: "Instagram",
     href: "https://www.instagram.com/seaside_network/",
   },
   {
     ariaLabel: "X",
     icon: "tabler:brand-x",
+    text: "Twitter",
     href: "https://twitter.com/seaside_network",
   },
   {
     ariaLabel: "LinkedIn",
     icon: "tabler:brand-linkedin",
+    text: "LinkedIn",
     href: "https://www.linkedin.com/company/seaside-heritage",
   },
   {
     ariaLabel: "YouTube",
     icon: "tabler:brand-youtube",
+    text: "YouTube",
     href: "https://www.youtube.com/@SeasideHeritageNetwork",
   },
 ];
@@ -63,7 +67,7 @@ const socialLinks = [
             <span class="text-2xl w-16 h-16 text-primary font-bold">
               <Icon name={`tabler:mail`} class="inline-block" />
               <a
-                class="hover:text-link hover:underline text-lg pl-4"
+                class="hover:text-link hover:underlinetext-base md:text-lg pl-1 text-base"
                 href="mailto:hello@seasideheritagenetwork.org.uk"
                 >hello@seasideheritagenetwork.org.uk</a
               >
@@ -76,10 +80,8 @@ const socialLinks = [
               class="mb-4 text-2xl font-semibold font-heading"
               set:html="Connect with us:"
             />
-          </div>
-          <div class="pr-4 sm:pl-4 rtl:pr-0 rtl:pl-4 rtl:sm:pl-0 rtl:sm:pr-4">
             <ul
-              class="flex mb-4 md:order-1 -ml-2 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4"
+              class="mb-4 md:order-1 -ml-2 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4"
             >
               {
                 socialLinks.map(({ ariaLabel, href, text, icon }) => (
@@ -89,7 +91,7 @@ const socialLinks = [
                       aria-label={ariaLabel}
                       href={href}
                     >
-                      {icon && <Icon name={icon} class="w-6 h-6" />}
+                      {icon && <Icon name={icon} class="w-6 h-6 pr-1" />}
                       <Fragment set:html={text} />
                     </a>
                   </li>
