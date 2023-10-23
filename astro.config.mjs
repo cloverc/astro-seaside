@@ -17,7 +17,7 @@ export default defineConfig({
       components: {
         // Content types
         page: "storyblok/Page",
-        feature: "storyblok/Feature",
+        contact: "storyblok/Contact",
         eventList: "storyblok/EventList",
         event: "storyblok/Event",
         teamMembersList: "storyblok/TeamMembersList",

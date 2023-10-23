@@ -1,0 +1,104 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import HeroText from "../components/HeroText.astro";
+import { storyblokEditable } from "@storyblok/astro";
+
+const { blok, index, cardHeadlineTag = "h2" } = Astro.props;
+
+const HeadlineTag = cardHeadlineTag;
+
+const socialLinks = [
+  {
+    ariaLabel: "Instagram",
+    icon: "tabler:brand-instagram",
+    href: "https://www.instagram.com/seaside_network/",
+  },
+  {
+    ariaLabel: "X",
+    icon: "tabler:brand-x",
+    href: "https://twitter.com/seaside_network",
+  },
+  {
+    ariaLabel: "LinkedIn",
+    icon: "tabler:brand-linkedin",
+    href: "https://www.linkedin.com/company/seaside-heritage",
+  },
+  {
+    ariaLabel: "YouTube",
+    icon: "tabler:brand-youtube",
+    href: "https://www.youtube.com/@SeasideHeritageNetwork",
+  },
+];
+---
+
+<section
+  class="mx-auto sm:px-6 lg:py-20-b max-w-7xl px-6 py-12-b sm:py-16"
+  {...storyblokEditable(blok)}
+>
+  <HeroText
+    tagline="Contact"
+    title="Get in Touch"
+    subtitle="We'd love to hear from you, so if you have something you want to share with us, please do get in touch."
+  />
+  <div
+    class="bg-page p-6 mx-auto gap-6 grid md:gap-8 md:max-w-none md:grid-cols-2"
+  >
+    <Image
+      class="object-cover object-centre w-full rounded float-left"
+      sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
+      width={460}
+      height={600}
+      src={blok.image.filename}
+      alt={blok.image.alt}
+    />
+    <div class="w-full px-0">
+      <ul class="space-y-10">
+        <li class="flex md:-mx-4">
+          <div class="pl-4 rtl:pl-0 rtl:pr-4">
+            <h2
+              class="mb-4 text-2xl font-semibold font-heading"
+              set:html="Email us:"
+            />
+            <span class="text-2xl w-16 h-16 text-primary font-bold">
+              <Icon name={`tabler:mail`} class="inline-block" />
+              <a
+                class="hover:text-link hover:underline text-lg pl-4"
+                href="mailto:hello@seasideheritagenetwork.org.uk"
+                >hello@seasideheritagenetwork.org.uk</a
+              >
+            </span>
+          </div>
+        </li>
+        <li class="md:-mx-4">
+          <div class="pl-4 rtl:pl-0 rtl:pr-4">
+            <h2
+              class="mb-4 text-2xl font-semibold font-heading"
+              set:html="Connect with us:"
+            />
+          </div>
+          <div class="pr-4 sm:pl-4 rtl:pr-0 rtl:pl-4 rtl:sm:pl-0 rtl:sm:pr-4">
+            <ul
+              class="flex mb-4 md:order-1 -ml-2 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4"
+            >
+              {
+                socialLinks.map(({ ariaLabel, href, text, icon }) => (
+                  <li>
+                    <a
+                      class="hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm p-2.5 inline-flex items-center"
+                      aria-label={ariaLabel}
+                      href={href}
+                    >
+                      {icon && <Icon name={icon} class="w-6 h-6" />}
+                      <Fragment set:html={text} />
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
