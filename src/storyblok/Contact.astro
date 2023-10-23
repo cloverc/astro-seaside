@@ -64,10 +64,10 @@ const socialLinks = [
               class="mb-4 text-2xl font-semibold font-heading"
               set:html="Email us:"
             />
-            <span class="text-2xl w-16 h-16 text-primary font-bold">
+            <span class="flex text-primary items-center mt-2 space-x-2">
               <Icon name={`tabler:mail`} class="inline-block" />
               <a
-                class="hover:text-link hover:underlinetext-base md:text-lg pl-1 text-base"
+                class="hover:text-link hover:underline md:text-lg pl-1 text-base"
                 href="mailto:hello@seasideheritagenetwork.org.uk"
                 >hello@seasideheritagenetwork.org.uk</a
               >
@@ -87,7 +87,7 @@ const socialLinks = [
                 socialLinks.map(({ ariaLabel, href, text, icon }) => (
                   <li>
                     <a
-                      class="hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-sm p-2.5 inline-flex items-center"
+                      class="hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-gray-200 rounded-lg text-base p-2.5 inline-flex items-center"
                       aria-label={ariaLabel}
                       href={href}
                     >
