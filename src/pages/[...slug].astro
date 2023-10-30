@@ -34,9 +34,14 @@ const { data } = await storyblokApi.get(
 );
 
 const story = data.story;
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: story.name === undefined ? "Home" : story.name,
+};
 ---
 
-<PageLayout>
+<PageLayout metadata={metadata}>
   <StoryblokComponent blok={story.content} />
   <Newsletter />
 </PageLayout>

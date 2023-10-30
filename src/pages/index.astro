@@ -8,12 +8,12 @@ import Newsletter from "../components/Newsletter.astro";
 
 const sbApi = useStoryblokApi();
 const { data } = await sbApi.get("cdn/stories/home", {
-    version: import.meta.env.DEV ? "draft" : "published",
+  version: import.meta.env.DEV ? "draft" : "published",
 });
 
 const metadata = {
-  title: "Seaside Heritage Network",
-  ignoreTitleTemplate: true,
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: "Home",
 };
 
 const story = data.story;

@@ -2,7 +2,14 @@
 import { ViewTransitions } from "astro:transitions";
 import "../assets/styles/tailwind.css";
 import CustomStyles from "../components/CustomStyles.astro";
-import BasicScripts from '../components/BasicScripts.astro';
+import BasicScripts from "../components/BasicScripts.astro";
+
+const { metadata } = Astro.props;
+
+const siteTitle: string = metadata.siteTitle;
+const pageTitle: string = metadata.pageTitle;
+
+const titleText = `${pageTitle} - ${siteTitle}`;
 ---
 
 <!doctype html>
@@ -11,12 +18,14 @@ import BasicScripts from '../components/BasicScripts.astro';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{titleText}</title>
     <CustomStyles />
     <ViewTransitions />
   </head>
 
   <body class="antialiased text-default bg-page">
-    <BasicScripts /> 
+    <BasicScripts />
     <slot />
     <style is:global>
       /* Improve Page speed */
