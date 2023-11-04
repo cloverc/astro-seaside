@@ -4,9 +4,7 @@ import { Icon } from "astro-icon/components";
 import HeroText from "../components/HeroText.astro";
 import { storyblokEditable } from "@storyblok/astro";
 
-const { blok, index, cardHeadlineTag = "h2" } = Astro.props;
-
-const HeadlineTag = cardHeadlineTag;
+const { blok } = Astro.props;
 
 const socialLinks = [
   {
@@ -68,8 +66,8 @@ const socialLinks = [
               <Icon name={`tabler:mail`} class="inline-block" />
               <a
                 class="hover:text-link hover:underline md:text-lg pl-1 text-base"
-                href="mailto:hello@seasideheritagenetwork.org.uk"
-                >hello@seasideheritagenetwork.org.uk</a
+                href="mailto:info@seasideheritage.org.uk"
+                >info@seasideheritage.org.uk</a
               >
             </span>
           </div>

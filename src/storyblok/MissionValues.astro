@@ -1,0 +1,112 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import HeroText from "../components/HeroText.astro";
+import { storyblokEditable } from "@storyblok/astro";
+
+const { blok } = Astro.props;
+---
+
+<section class="mx-auto lg:py-20 py-12 sm:py-16" {...storyblokEditable(blok)}>
+  <HeroText tagline="About" title="Mission and Values" />
+  <div
+    class="bg-page p-6 mx-auto gap-6 grid md:gap-8 md:max-w-none md:grid-cols-2"
+  >
+    <Image
+      class="object-cover object-centre w-full rounded float-left"
+      sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
+      width={460}
+      height={600}
+      src={blok.image.filename}
+      alt={blok.image.alt}
+    />
+    <div class="w-full px-0">
+      <div
+        class="mx-auto px-6 sm:px-6 max-w-3xl md:text-lg lg:prose-xl prose-md prose-headings:font-heading prose-headings:leading-tighter prose-headings:tracking-tighter prose-headings:font-bold prose-img:rounded-md prose-img:shadow-lg prose-headings:scroll-mt-[80px]"
+      >
+        <p>
+          The Seaside Heritage Network defines seaside heritage as that which is
+          linked to the popular mass tourism culture of the 19th and 20th
+          centuries up to the present day, both tangible and intangible.
+        </p>
+        <p>
+          It is important to recognise and celebrate this heritage because
+          seaside tourism was an industry that created its own distinct
+          architectural legacy.
+        </p>
+        <p>
+          It is this which provides the nostalgic backdrop to modern seaside
+          tourism, making our coastal resorts interesting and increasingly
+          dynamic places.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mx-auto relative px-4 lg:py-20 md:px-6 md:py-16 py-12 md:text-lg text-default max-w-5xl"
+  >
+    <h3
+      class="text-center text-2xl font-heading font-semibold mb-8 lg:text-4xl"
+    >
+      Our Aims
+    </h3>
+
+    <div class="grid mx-auto gap-8 md:gap-y-12 sm:grid-cols-2">
+      <div>
+        <div class="flex flex-row max-w-md">
+          <div class="flex justify-center">
+            <Icon
+              name="tabler:circle-number-1"
+              class="w-7 h-7 mr-2 rtl:mr-0 rtl:ml-2"
+            />
+          </div>
+           To bring together individuals and groups with a shared interest in
+          seaside heritage around the UK. This would include third sector
+          campaign groups, building preservation trusts, civic trusts, owners of
+          historic buildings (private and public), museums, academics and
+          historians, as well as members of the public who will be able to
+          benefit from this wide range of expertise.
+        </div>
+      </div>
+      <div>
+        <div class="flex flex-row max-w-md">
+          <div class="flex justify-center">
+            <Icon
+              name="tabler:circle-number-2"
+              class="w-7 h-7 mr-2 rtl:mr-0 rtl:ml-2"
+            />
+          </div>
+           To celebrate the unique contribution of seaside heritage to British
+          life and demonstrate the importance of built heritage to the
+          continuation of that legacy so that it can be better identified and
+          explained.
+        </div>
+      </div>
+      <div>
+        <div class="flex flex-row max-w-md">
+          <div class="flex justify-center">
+            <Icon
+              name="tabler:circle-number-3"
+              class="w-7 h-7 mr-2 rtl:mr-0 rtl:ml-2"
+            />
+          </div>
+           To raise the profile of seaside heritage by giving it a collective
+          voice.
+        </div>
+      </div>
+      <div>
+        <div class="flex flex-row max-w-md">
+          <div class="flex justify-center">
+            <Icon
+              name="tabler:circle-number-4"
+              class="w-7 h-7 mr-2 rtl:mr-0 rtl:ml-2"
+            />
+          </div>
+           To share best practice and connect relevant organisations via a
+          website, social media presence and conferences in order to drive a
+          change in ideas and actions regarding seaside heritage.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

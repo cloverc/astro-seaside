@@ -20,6 +20,7 @@ export default defineConfig({
         contact: "storyblok/Contact",
         eventList: "storyblok/EventList",
         event: "storyblok/Event",
+        missionValues: "storyblok/MissionValues",
         teamMembersList: "storyblok/TeamMembersList",
         teamMember: "storyblok/TeamMember",
         featuredEvents: "storyblok/FeaturedEvents",
