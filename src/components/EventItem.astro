@@ -21,6 +21,13 @@ const HeadlineTag = cardHeadlineTag;
       src={event.image.filename}
       alt={event.image.alt}
     />
+    {
+      !!event.image.copyright && (
+        <div class="absolute text-sm text-white bottom-0 right-2">
+          {event.image.copyright}
+        </div>
+      )
+    }
   </div>
 
   <div class="mt-2">
