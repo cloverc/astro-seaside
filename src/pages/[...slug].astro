@@ -4,24 +4,6 @@ import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
 import PageLayout from "../layouts/PageLayout.astro";
 import Newsletter from "../components/Newsletter.astro";
 
-export async function getStaticPaths() {
-  const storyblokApi = useStoryblokApi();
-
-  const { data } = await storyblokApi.get("cdn/links", {
-    version: import.meta.env.DEV ? "draft" : "published",
-  });
-  let links = data.links;
-  links = Object.values(links);
-
-  return links.map((link: any) => {
-    return {
-      params: {
-        slug: link.slug === "home" ? undefined : link.slug,
-      },
-    };
-  });
-}
-
 const { slug } = Astro.params;
 
 const storyblokApi = useStoryblokApi();
