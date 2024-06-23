@@ -1,5 +1,4 @@
 ---
-
 const {
   title = await Astro.slots.render("title"),
   subtitle = await Astro.slots.render("subtitle"),
@@ -15,7 +14,7 @@ const {
         {
           tagline && (
             <p
-              class="text-base text-secondary font-bold tracking-wide uppercase"
+              class="text-base text-secondary py-2 font-bold tracking-wide uppercase"
               set:html={tagline}
             />
           )
@@ -31,10 +30,7 @@ const {
         <div class="max-w-3xl mx-auto">
           {
             subtitle && (
-              <p
-                class="text-xl text-muted mb-6"
-                set:html={subtitle}
-              />
+              <p class="text-xl text-muted mb-6" set:html={subtitle} />
             )
           }
         </div>
