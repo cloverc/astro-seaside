@@ -17,7 +17,7 @@ export default defineConfig({
     domains: ["astro.build"],
   },
   output: "server",
-  adapter: netlify(),
+  adapter: netlify({ imageCDN: false }),
   integrations: [
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
