@@ -26,6 +26,8 @@ export default defineConfig({
         featuredEvents: "storyblok/FeaturedEvents",
         topTenList: "storyblok/TopTenList",
         topTen: "storyblok/TopTenItem",
+        topTenNominationsList: "storyblok/TopTenNominationsList",
+        nominee: "storyblok/Nominee",
 
         // Heroes
         hero: "storyblok/Heroes/Hero",

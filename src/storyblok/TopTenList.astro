@@ -8,9 +8,9 @@ const storyblokApi = useStoryblokApi();
 
 const { data } = await storyblokApi.get("cdn/stories", {
   version: import.meta.env.DEV ? "draft" : "published",
-  starts_with: "bucket-spade-list/",
+  starts_with: "bucket-spade-list/top-ten-winners-2023/",
   is_startpage: false,
-  sort_by: "created_at:asc",
+  sort_by: "created_at:desc",
 });
 
 const winners = data.stories;

@@ -6,12 +6,13 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "check": "astro check",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.2.1",
-    "@astrojs/netlify": "^3.0.2",
+    "@astrojs/check": "^0.7.0",
+    "@astrojs/netlify": "^5.3.2",
     "@astrolib/seo": "^1.0.0-beta.4",
     "@fontsource/inter": "^5.0.8",
     "@fontsource/kameron": "^5.0.8",
@@ -21,12 +22,12 @@
   "devDependencies": {
     "@astrojs/tailwind": "^5.0.0",
     "@iconify-json/tabler": "^1.1.89",
-    "@storyblok/astro": "^3.0.1",
+    "@storyblok/astro": "^4.1.0",
     "@tailwindcss/typography": "^0.5.10",
     "@vitejs/plugin-basic-ssl": "^1.0.1",
-    "astro": "^3.2.4",
+    "astro": "^4.11.0",
     "prettier": "^3.0.3",
-    "prettier-plugin-astro": "^0.12.0",
+    "prettier-plugin-astro": "^0.14.0",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.2.2"
   }

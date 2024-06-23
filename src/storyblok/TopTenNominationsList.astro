@@ -1,0 +1,52 @@
+---
+import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
+import Nominee from "./Nominee.astro";
+import HeroText from "../components/HeroText.astro";
+import Link from "../components/Link.astro";
+
+const { blok } = Astro.props;
+const storyblokApi = useStoryblokApi();
+
+const { data } = await storyblokApi.get("cdn/stories", {
+  version: import.meta.env.DEV ? "draft" : "published",
+  starts_with: "bucket-spade-list/vote-for-2024-winners/",
+  is_startpage: false,
+  sort_by: "created_at:asc",
+});
+
+const nominees = data.stories;
+---
+
+<section
+  class="mx-auto sm:px-6 lg:py-20-b max-w-7xl px-6 py-12-b sm:py-16"
+  {...storyblokEditable(blok)}
+>
+  <HeroText
+    tagline="Bucket & Spade List"
+    title="Vote for the 2024 Bucket and Spade list"
+    subtitle="Voting is now open for the 2024 Bucket and Spade top seaside experiences. Choose from the shortlist of seaside favourites and remember to cast your vote by 31 August 2024. The winners will be revealed at our 'Big Day Out in Weston-super-Mare' in September."
+  />
+  <div class="m-neg32 mb-12 flex flex-row justify-center">
+    <Link href="https://forms.office.com/e/M55EmLh8RR" target="_blank">
+      Vote Now
+    </Link>
+  </div>
+  <ul>
+    {
+      nominees?.length &&
+        nominees.map((nominee: any) => {
+          nominee.content.slug = nominee.slug;
+          return (
+            <li class="rounded mb-12 md:mb-20 p-6 bg-card">
+              <Nominee nominee={nominee.content} slug={nominee.slug} />
+            </li>
+          );
+        })
+    }
+  </ul>
+  <div class="m-neg32'[p–] flex flex-row justify-center">
+    <Link href="https://forms.office.com/e/M55EmLh8RR" target="_blank">
+      Vote Now
+    </Link>
+  </div>
+</section>

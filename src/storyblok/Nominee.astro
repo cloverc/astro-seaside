@@ -1,0 +1,43 @@
+---
+import { Image } from "astro:assets";
+import { storyblokEditable } from "@storyblok/astro";
+import { renderRichText } from "@storyblok/astro";
+
+const { nominee, cardHeadlineTag = "h2" } = Astro.props;
+
+const content = renderRichText(nominee.content);
+
+const HeadlineTag = cardHeadlineTag;
+const copyright = String.fromCodePoint(0x00a9);
+---
+
+<article
+  {...storyblokEditable(nominee)}
+  class="bg-stone-100 p-6 mx-auto gap-6 grid md:gap-8 md:max-w-none md:grid-cols-2"
+>
+  <div class="relative">
+    <Image
+      class="object-cover object-centre w-full rounded float-left"
+      sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
+      width={460}
+      height={460}
+      src={nominee.image.filename}
+      alt={nominee.image.alt}
+    />
+    {
+      !!nominee.image.copyright && (
+        <div class="absolute text-sm text-white right-2">
+          {`${copyright} ${nominee.image.copyright}`}
+        </div>
+      )
+    }
+  </div>
+  <div class="py-4">
+    <HeadlineTag
+      class="text-2xl md:text-2xl font-heading text-accent font-extrabold mb-3"
+    >
+      {nominee.title}
+    </HeadlineTag>
+    {content && <div set:html={content} class="mb-1" />}
+  </div>
+</article>

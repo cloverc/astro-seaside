@@ -4,6 +4,7 @@ import { storyblokEditable } from "@storyblok/astro";
 import { renderRichText } from "@storyblok/astro";
 
 const { member, cardHeadlineTag = "h2" } = Astro.props;
+
 const renderedRichText = renderRichText(member.profile);
 
 const HeadlineTag = cardHeadlineTag;
