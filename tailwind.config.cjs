@@ -15,6 +15,9 @@ module.exports = {
         serif: ["var(--shn-font-serif)", ...defaultTheme.fontFamily.serif],
         heading: ["var(--shn-font-heading)", ...defaultTheme.fontFamily.sans],
       },
+      spacing: {
+        neg32: "-2rem",
+      },
     },
   },
   plugins: [require("@tailwindcss/typography")],

@@ -2,6 +2,7 @@
 import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
 import Nominee from "./Nominee.astro";
 import HeroText from "../components/HeroText.astro";
+import Link from "../components/Link.astro";
 
 const { blok } = Astro.props;
 const storyblokApi = useStoryblokApi();
@@ -25,6 +26,11 @@ const nominees = data.stories;
     title="Vote for the 2024 Bucket and Spade list"
     subtitle="Voting is now open for the 2024 Bucket and Spade top seaside experiences. Choose from the shortlist of seaside favourites and remember to cast your vote by 31 August 2024. The winners will be revealed at our 'Big Day Out in Weston-super-Mare' in September."
   />
+  <div class="m-neg32 mb-12 flex flex-row justify-center">
+    <Link href="https://forms.office.com/e/M55EmLh8RR" target="_blank">
+      Vote Now
+    </Link>
+  </div>
   <ul>
     {
       nominees?.length &&
@@ -38,4 +44,9 @@ const nominees = data.stories;
         })
     }
   </ul>
+  <div class="m-neg32'[p–] flex flex-row justify-center">
+    <Link href="https://forms.office.com/e/M55EmLh8RR" target="_blank">
+      Vote Now
+    </Link>
+  </div>
 </section>
