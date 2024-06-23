@@ -1,6 +1,6 @@
 ---
 import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
-import TopTenItem from "./TopTenItem.astro";
+import Nominee from "./Nominee.astro";
 import HeroText from "../components/HeroText.astro";
 
 const { blok } = Astro.props;
@@ -8,12 +8,12 @@ const storyblokApi = useStoryblokApi();
 
 const { data } = await storyblokApi.get("cdn/stories", {
   version: import.meta.env.DEV ? "draft" : "published",
-  starts_with: "bucket-spade-list/top-ten-winners-2023/",
+  starts_with: "bucket-spade-list/vote-for-2024-winners/",
   is_startpage: false,
   sort_by: "created_at:asc",
 });
 
-const winners = data.stories;
+const nominees = data.stories;
 ---
 
 <section
@@ -22,21 +22,17 @@ const winners = data.stories;
 >
   <HeroText
     tagline="Bucket & Spade List"
-    title="Top Ten Winners 2023"
-    subtitle="The Seaside Heritage Network is delighted to announce its inaugural Bucket and Spade List, the Top Ten favourite seaside places and experiences as voted for by members of the public."
+    title="Vote for the 2024 Bucket and Spade list"
+    subtitle="Voting is now open for the 2024 Bucket and Spade top seaside experiences. Choose from the shortlist of seaside favourites and remember to cast your vote by 31 August 2024. The winners will be revealed at our 'Big Day Out in Weston-super-Mare' in September."
   />
   <ul>
     {
-      winners?.length &&
-        winners.map((winner: any, index: any) => {
-          winner.content.slug = winner.slug;
+      nominees?.length &&
+        nominees.map((nominee: any) => {
+          nominee.content.slug = nominee.slug;
           return (
             <li class="rounded mb-12 md:mb-20 p-6 bg-card">
-              <TopTenItem
-                winner={winner.content}
-                slug={winner.slug}
-                index={index + 1}
-              />
+              <Nominee nominee={nominee.content} slug={nominee.slug} />
             </li>
           );
         })
