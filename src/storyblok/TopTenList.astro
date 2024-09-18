@@ -4,11 +4,19 @@ import TopTenItem from "./TopTenItem.astro";
 import HeroText from "../components/HeroText.astro";
 
 const { blok } = Astro.props;
+
+const currentPath = Astro.url.pathname;
+
+// Use a regular expression to extract a 4-digit year from the path (e.g., `/bucket-spade-list/top-ten-winners-2023/`)
+const yearMatch = currentPath.match(/(\d{4})/);
+const year = yearMatch ? yearMatch[0] : new Date().getFullYear(); // Default to the current year if no match
+
 const storyblokApi = useStoryblokApi();
 
+// Build the Storyblok API path dynamically based on the year
 const { data } = await storyblokApi.get("cdn/stories", {
   version: import.meta.env.DEV ? "draft" : "published",
-  starts_with: "bucket-spade-list/top-ten-winners-2023/",
+  starts_with: `bucket-spade-list/top-ten-winners-${year}/`,
   is_startpage: false,
   sort_by: "created_at:desc",
 });
@@ -22,8 +30,8 @@ const winners = data.stories;
 >
   <HeroText
     tagline="Bucket & Spade List"
-    title="Top Ten Winners 2023"
-    subtitle="The Seaside Heritage Network is delighted to announce its inaugural Bucket and Spade List, the Top Ten favourite seaside places and experiences as voted for by members of the public."
+    title={`Top Ten Winners ${year}`}
+    subtitle={`The Seaside Heritage Network is delighted to announce the Bucket and Spade List, the Top Ten favourite seaside places and experiences as voted for by members of the public for ${year}.`}
   />
   <ul>
     {
