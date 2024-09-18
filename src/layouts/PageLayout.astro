@@ -1,9 +1,20 @@
 ---
+import { useStoryblokApi } from "@storyblok/astro";
 import Layout from "./Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
 const { metadata } = Astro.props;
+
+const storyblokApi = useStoryblokApi();
+
+const { data } = await storyblokApi.get("cdn/stories", {
+  version: import.meta.env.DEV ? "draft" : "published",
+  starts_with: "bucket-spade-list",
+  is_startpage: true,
+});
+
+const bucketPageLinks = data ? data.stories : [];
 
 const sharedSocialLinks = [
   {
@@ -22,6 +33,12 @@ const sharedSocialLinks = [
     href: "https://www.youtube.com/@SeasideHeritageNetwork",
   },
 ];
+
+// Map the Storyblok data to match the header structure for Bucket & Spade List
+const bucketHeaderLinks = bucketPageLinks.map((item: { name: string; full_slug: string; }) => ({
+  text: item.name,
+  href: `/${item.full_slug}`,
+}));
 
 /** Main menu items */
 const headerData = {
@@ -45,16 +62,7 @@ const headerData = {
     {
       text: "Bucket & Spade List",
       href: "#",
-      links: [
-        {
-          text: "Vote for 2024 Winners",
-          href: "/bucket-spade-list/vote-for-2024-winners/",
-        },
-        {
-          text: "Top Ten Winners 2023",
-          href: "/bucket-spade-list/top-ten-winners-2023/",
-        },
-      ],
+      links: bucketHeaderLinks // Dynamically loaded Bucket & Spade links
     },
     { text: "Contact", href: "/contact/" },
   ],
