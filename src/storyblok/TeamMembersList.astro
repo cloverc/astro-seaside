@@ -12,7 +12,7 @@ const { data } = await storyblokApi.get("cdn/stories", {
   is_startpage: false,
 });
 
-const team = data.stories;
+const team = data ? data.stories : [];
 ---
 
 <section
@@ -27,7 +27,6 @@ const team = data.stories;
         team_member.content.slug = team_member.slug;
         return (   
             <TeamMember member={team_member.content} slug={team_member.slug} />
-          </div>
         );
       })
   }
