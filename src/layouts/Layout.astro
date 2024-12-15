@@ -8,6 +8,9 @@ const { metadata } = Astro.props;
 
 const siteTitle: string = metadata.siteTitle;
 const pageTitle: string = metadata.pageTitle;
+const description: string =
+  metadata.description ||
+  "Discover the rich heritage of seaside tourism and its unique architectural legacy with the Seaside Heritage Network.";
 
 const titleText = `${pageTitle} - ${siteTitle}`;
 ---
@@ -20,6 +23,7 @@ const titleText = `${pageTitle} - ${siteTitle}`;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{titleText}</title>
+    <meta name="description" content={description} />
     <CustomStyles />
     <ViewTransitions />
   </head>
