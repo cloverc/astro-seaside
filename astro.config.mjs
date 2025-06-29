@@ -35,6 +35,7 @@ export default defineConfig({
         topTen: "storyblok/TopTenItem",
         topTenNominationsList: "storyblok/TopTenNominationsList",
         nominee: "storyblok/Nominee",
+        voteCallout: "storyblok/VoteCallout",
 
         // Heroes
         hero: "storyblok/Heroes/Hero",

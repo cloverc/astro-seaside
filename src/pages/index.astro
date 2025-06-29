@@ -3,7 +3,6 @@ import { useStoryblokApi } from "@storyblok/astro";
 
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
 import PageLayout from "../layouts/PageLayout.astro";
-import BucketSpade from "../components/BucketSpade.astro";
 import Newsletter from "../components/Newsletter.astro";
 
 const sbApi = useStoryblokApi();
@@ -23,6 +22,5 @@ const story = data.story;
 
 <PageLayout metadata={metadata}>
   <StoryblokComponent blok={story.content} />
-  <BucketSpade />
   <Newsletter />
 </PageLayout>
