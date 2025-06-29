@@ -9,7 +9,7 @@ const storyblokApi = useStoryblokApi();
 
 const { data } = await storyblokApi.get("cdn/stories", {
   version: import.meta.env.DEV ? "draft" : "published",
-  starts_with: "bucket-spade-list/vote-for-2024-winners/",
+  starts_with: "bucket-spade-list/vote-for-2025-winners/",
   is_startpage: false,
   sort_by: "created_at:asc",
 });
@@ -23,11 +23,11 @@ const nominees = data.stories;
 >
   <HeroText
     tagline="Bucket & Spade List"
-    title="Vote for the 2024 Bucket and Spade list"
-    subtitle="Voting is now open for the 2024 Bucket and Spade top seaside experiences. Choose from the shortlist of seaside favourites and remember to cast your vote by 31 August 2024. The winners will be revealed at our 'Big Day Out in Weston-super-Mare' in September."
+    title="Vote for the 2025 Bucket and Spade list"
+    subtitle="Voting is now open for the 2025 Bucket and Spade top seaside experiences. Choose from the shortlist of seaside favourites and remember to cast your vote by 30 August 2025. The winners will be revealed at our 'Big Day In' online event on Saturday 6 September."
   />
   <div class="m-neg32 mb-12 flex flex-row justify-center">
-    <Link href="https://forms.office.com/e/M55EmLh8RR" target="_blank">
+    <Link href="https://bit.ly/bucketspade2025vote" target="_blank">
       Vote Now
     </Link>
   </div>
@@ -45,7 +45,7 @@ const nominees = data.stories;
     }
   </ul>
   <div class="m-neg32'[p–] flex flex-row justify-center">
-    <Link href="https://forms.office.com/e/M55EmLh8RR" target="_blank">
+    <Link href="https://bit.ly/bucketspade2025vote" target="_blank">
       Vote Now
     </Link>
   </div>
