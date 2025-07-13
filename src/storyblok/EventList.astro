@@ -2,12 +2,12 @@
 import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
 import EventItem from "../components/EventItem.astro";
 import HeroText from "../components/HeroText.astro";
+import { filterAndSortEvents } from "../utils/filterEvents";
 
 const { blok } = Astro.props;
 const storyblokApi = useStoryblokApi();
 
 const currentPath = Astro.url.pathname;
-
 const eventGroup = currentPath.includes("upcoming-events");
 
 const { data } = await storyblokApi.get("cdn/stories/", {
@@ -16,7 +16,9 @@ const { data } = await storyblokApi.get("cdn/stories/", {
   is_startpage: false,
 });
 
-const events = data.stories;
+const now = new Date();
+
+const events = filterAndSortEvents(data.stories, now, eventGroup);
 
 const pageTitle = eventGroup ? "Upcoming Events" : "Past Events";
 ---
@@ -28,14 +30,19 @@ const pageTitle = eventGroup ? "Upcoming Events" : "Past Events";
   <HeroText tagline="What's On" title={pageTitle} />
   <ul>
     {
-      events?.length &&
-        events.map((event: any) => {
-          return (
-            <li class="rounded mb-12 md:mb-20 p-6 bg-card">
-              <EventItem event={event.content} slug={event.full_slug} />
-            </li>
-          );
-        })
+      events.length ? (
+        events.map((event) => (
+          <li class="rounded mb-12 md:mb-20 p-6 bg-card">
+            <EventItem event={event.content} slug={event.full_slug} />
+          </li>
+        ))
+      ) : (
+        <li class="text-center text-lg text-muted-foreground py-10">
+          {pageTitle === "Upcoming Events"
+            ? "No upcoming events at the moment. Check back soon!"
+            : "No past events found."}
+        </li>
+      )
     }
   </ul>
 </section>
