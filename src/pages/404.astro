@@ -1,8 +1,10 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
+import Link from "../components/Link.astro";
 
 const metadata = {
-  title: "Not Found",
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: "Not Found",
 };
 ---
 
@@ -18,7 +20,7 @@ const metadata = {
         <p class="mt-4 mb-8 text-lg text-muted dark:text-slate-400">
           But dont worry, you can find plenty of other things on our homepage.
         </p>
-        <a rel="noopener noreferrer" href="/" class="btn ml-4">Back to homepage</a>
+        <Link href="/">Back to homepage</Link>
       </div>
     </div>
   </section>

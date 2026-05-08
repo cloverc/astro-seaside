@@ -8,14 +8,18 @@ const { slug } = Astro.params;
 
 const storyblokApi = useStoryblokApi();
 
-const { data } = await storyblokApi.get(
-  `cdn/stories/${slug === undefined ? "home" : slug}`,
-  {
-    version: import.meta.env.DEV ? "draft" : "published",
-  },
-);
-
-const story = data.story;
+let story;
+try {
+  const { data } = await storyblokApi.get(
+    `cdn/stories/${slug === undefined ? "home" : slug}`,
+    {
+      version: import.meta.env.DEV ? "draft" : "published",
+    },
+  );
+  story = data.story;
+} catch (e) {
+  return Astro.redirect("/404");
+}
 
 const metadata = {
   siteTitle: "Seaside Heritage Network",

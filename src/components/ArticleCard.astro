@@ -1,16 +1,21 @@
 ---
-import { Image } from "astro:assets";
 import Link from "../components/Link.astro";
 const { event, slug } = Astro.props;
 ---
 
 <article class="column bg-card rounded">
-  <Image
+  <img
     class="object-cover w-full h-56 mb-2 rounded shadow-lg bg-gray-400"
-    sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
-    width={360}
-    height={240}
-    src={event.image.filename}
+    src={`${event.image.filename}/m/400x224/filters:quality(70):format(webp)`}
+    srcset={`
+      ${event.image.filename}/m/400x224/filters:quality(70):format(webp) 400w,
+      ${event.image.filename}/m/760x428/filters:quality(70):format(webp) 760w
+    `}
+    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 400px"
+    width="400"
+    height="224"
+    loading="lazy"
+    decoding="async"
     alt={event.image.alt}
   />
   <div class="p-6">

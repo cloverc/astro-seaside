@@ -2,8 +2,6 @@
 import { storyblokEditable } from "@storyblok/astro";
 import Link from "../../components/Link.astro";
 
-import { Image } from "astro:assets";
-
 const { blok } = Astro.props;
 ---
 
@@ -38,14 +36,19 @@ const { blok } = Astro.props;
 
       <div class="basis-3/5">
         <div class="relative m-auto max-w-5xl">
-          <Image
+          <img
             class="mx-auto rounded-md w-full"
-            sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
-            width={750}
-            height={600}
+            src={`${blok.image.filename}/m/750x0/filters:quality(70):format(webp)`}
+            srcset={`
+              ${blok.image.filename}/m/400x0/filters:quality(70):format(webp) 400w,
+              ${blok.image.filename}/m/768x0/filters:quality(70):format(webp) 768w,
+              ${blok.image.filename}/m/1024x0/filters:quality(70):format(webp) 1024w
+            `}
+            sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, 1024px"
+            width="750"
+            height="600"
             loading="eager"
             fetchpriority="high"
-            src={blok.image.filename}
             alt={blok.image.alt}
           />
         </div>
