@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { storyblokEditable } from "@storyblok/astro";
 import { renderRichText } from "@storyblok/astro";
 
@@ -14,12 +13,18 @@ const HeadlineTag = cardHeadlineTag;
   {...storyblokEditable(member)}
   class="column bg-stone-100 p-6 text-dark rounded-lg text-left"
 >
-  <Image
+  <img
     class="object-cover object-centre w-full lg:h-72 md:h-64 rounded"
-    sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
-    width={460}
-    height={340}
-    src={member.profile_picture.filename}
+    src={`${member.profile_picture.filename}/m/400x288/filters:quality(70):format(webp)`}
+    srcset={`
+      ${member.profile_picture.filename}/m/400x288/filters:quality(70):format(webp) 400w,
+      ${member.profile_picture.filename}/m/720x516/filters:quality(70):format(webp) 720w
+    `}
+    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+    width="400"
+    height="288"
+    loading="lazy"
+    decoding="async"
     alt={member.profile_picture.alt}
   />
   <div class="py-4">
