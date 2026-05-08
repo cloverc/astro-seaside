@@ -1,7 +1,6 @@
 ---
 import { storyblokEditable } from "@storyblok/astro";
 import Link from "../components/Link.astro";
-import { Image } from "astro:assets";
 
 const { blok } = Astro.props;
 const copyright = String.fromCodePoint(0x00a9);
@@ -10,11 +9,19 @@ const copyright = String.fromCodePoint(0x00a9);
 <section {...storyblokEditable(blok)} class="mx-auto bg-card">
   <div class="md:flex place-items-top max-w-full">
     <div class="h-60 md:h-full w-full md:w-3/5 relative">
-      <Image
+      <img
         class="object-cover w-full h-full shadow-lg bg-gray-400"
-        width={600}
-        height={500}
-        src={blok.image.filename}
+        src={`${blok.image.filename}/m/600x0/filters:quality(70):format(webp)`}
+        srcset={`
+          ${blok.image.filename}/m/400x0/filters:quality(70):format(webp) 400w,
+          ${blok.image.filename}/m/600x0/filters:quality(70):format(webp) 600w,
+          ${blok.image.filename}/m/900x0/filters:quality(70):format(webp) 900w
+        `}
+        sizes="(max-width: 767px) 100vw, 60vw"
+        width="600"
+        height="500"
+        loading="lazy"
+        decoding="async"
         alt={blok.image.alt}
       />
       <div class="absolute text-sm text-white bottom-0 right-2">

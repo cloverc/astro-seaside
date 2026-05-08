@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import { storyblokEditable } from "@storyblok/astro";
 import { renderRichText } from "@storyblok/astro";
@@ -16,12 +15,19 @@ const copyright = String.fromCodePoint(0x00a9);
   class="bg-stone-100 p-6 mx-auto gap-6 grid md:gap-8 md:max-w-none md:grid-cols-2"
 >
   <div class="relative">
-    <Image
+    <img
       class="object-cover object-centre w-full rounded float-left"
-      sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
-      width={460}
-      height={460}
-      src={winner.image.filename}
+      src={`${winner.image.filename}/m/460x0/filters:quality(70):format(webp)`}
+      srcset={`
+        ${winner.image.filename}/m/400x0/filters:quality(70):format(webp) 400w,
+        ${winner.image.filename}/m/690x0/filters:quality(70):format(webp) 690w,
+        ${winner.image.filename}/m/920x0/filters:quality(70):format(webp) 920w
+      `}
+      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 460px"
+      width="460"
+      height="460"
+      loading="lazy"
+      decoding="async"
       alt={winner.image.alt}
     />
     {

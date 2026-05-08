@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import HeroText from "../components/HeroText.astro";
 import { storyblokEditable } from "@storyblok/astro";
@@ -12,12 +11,19 @@ const { blok } = Astro.props;
   <div
     class="bg-page p-6 mx-auto gap-6 grid md:gap-8 md:max-w-none md:grid-cols-2"
   >
-    <Image
+    <img
       class="object-cover object-centre w-full rounded float-left"
-      sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
-      width={460}
-      height={600}
-      src={blok.image.filename}
+      src={`${blok.image.filename}/m/460x0/filters:quality(70):format(webp)`}
+      srcset={`
+        ${blok.image.filename}/m/400x0/filters:quality(70):format(webp) 400w,
+        ${blok.image.filename}/m/460x0/filters:quality(70):format(webp) 460w,
+        ${blok.image.filename}/m/920x0/filters:quality(70):format(webp) 920w
+      `}
+      sizes="(max-width: 767px) 100vw, 50vw"
+      width="460"
+      height="600"
+      loading="lazy"
+      decoding="async"
       alt={blok.image.alt}
     />
     <div class="w-full px-0">

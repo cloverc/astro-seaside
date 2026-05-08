@@ -1,6 +1,5 @@
 ---
 import { storyblokEditable, renderRichText } from "@storyblok/astro";
-import { Image } from "astro:assets";
 import Link from "../components/Link.astro";
 import { Icon } from "astro-icon/components";
 import { getFormattedDate } from "../utils/utils.ts";
@@ -35,13 +34,19 @@ const content = renderRichText(blok.content);
       >
         {blok.title}
       </h3>
-      <Image
+      <img
         class="max-w-full lg:max-w-[900px] mx-auto mb-6 sm:rounded-md bg-gray-400 border"
-        sizes="(max-width: 700px) 400px, 700px"
-        width={700}
-        height={500}
+        src={`${blok.image.filename}/m/700x0/filters:quality(70):format(webp)`}
+        srcset={`
+          ${blok.image.filename}/m/400x0/filters:quality(70):format(webp) 400w,
+          ${blok.image.filename}/m/700x0/filters:quality(70):format(webp) 700w,
+          ${blok.image.filename}/m/900x0/filters:quality(70):format(webp) 900w
+        `}
+        sizes="(max-width: 700px) 400px, (max-width: 1023px) 700px, 900px"
+        width="700"
+        height="500"
         loading="eager"
-        src={blok.image.filename}
+        fetchpriority="high"
         alt={blok.image.alt}
       />
     </header>
