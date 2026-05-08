@@ -1,7 +1,6 @@
 ---
 import Link from "./Link.astro";
 import { Icon } from "astro-icon/components";
-import { Image } from "astro:assets";
 import { getFormattedDate } from "../utils/utils.ts";
 
 const { event, slug, cardHeadlineTag = "h2" } = Astro.props;
@@ -13,12 +12,19 @@ const HeadlineTag = cardHeadlineTag;
   <div
     class="rounded bg-gray-400 shadow-lg h-0 lg:pb-[56.25%] md:h-72 md:pb-[75%] overflow-hidden pb-[56.25%] relative"
   >
-    <Image
+    <img
       class="absolute inset-0 object-cover w-full h-full mb-6 rounded shadow-lg bg-gray-400"
-      sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, (max-width: 2039px) 1024px, 2040px"
-      width={408}
-      height={340}
-      src={event.image.filename}
+      src={`${event.image.filename}/m/600x0/filters:quality(70):format(webp)`}
+      srcset={`
+        ${event.image.filename}/m/400x0/filters:quality(70):format(webp) 400w,
+        ${event.image.filename}/m/600x0/filters:quality(70):format(webp) 600w,
+        ${event.image.filename}/m/800x0/filters:quality(70):format(webp) 800w
+      `}
+      sizes="(max-width: 767px) 100vw, 50vw"
+      width="600"
+      height="400"
+      loading="lazy"
+      decoding="async"
       alt={event.image.alt}
     />
     {
