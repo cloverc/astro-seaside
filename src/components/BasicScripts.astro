@@ -40,11 +40,38 @@
     return;
   };
 
+  function setupDropdowns() {
+    document.querySelectorAll(".dropdown > button").forEach((button) => {
+      const dropdown = button.closest(".dropdown");
+
+      button.addEventListener("focus", () => {
+        button.setAttribute("aria-expanded", "true");
+      });
+
+      button.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          button.setAttribute("aria-expanded", "false");
+          button.blur();
+        }
+      });
+
+      dropdown.addEventListener("focusout", (e) => {
+        if (!dropdown.contains(e.relatedTarget)) {
+          button.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
+  }
+
   // Check menu on window load
-  window.addEventListener("DOMContentLoaded", () => initialize());
+  window.addEventListener("DOMContentLoaded", () => {
+    initialize();
+    setupDropdowns();
+  });
 
   // Check menu on after swap
   document.addEventListener("astro:after-swap", () => {
     initialize();
+    setupDropdowns();
   });
 </script>
