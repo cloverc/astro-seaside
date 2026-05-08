@@ -35,10 +35,12 @@ const sharedSocialLinks = [
 ];
 
 // Map the Storyblok data to match the header structure for Bucket & Spade List
-const bucketHeaderLinks = bucketPageLinks.map((item: { name: string; full_slug: string; }) => ({
-  text: item.name,
-  href: `/${item.full_slug}`,
-}));
+const bucketHeaderLinks = bucketPageLinks.map(
+  (item: { name: string; full_slug: string }) => ({
+    text: item.name,
+    href: `/${item.full_slug}`,
+  }),
+);
 
 /** Main menu items */
 const headerData = {
@@ -62,7 +64,7 @@ const headerData = {
     {
       text: "Bucket & Spade List",
       href: "#",
-      links: bucketHeaderLinks // Dynamically loaded Bucket & Spade links
+      links: bucketHeaderLinks, // Dynamically loaded Bucket & Spade links
     },
     { text: "Contact", href: "/contact/" },
   ],
