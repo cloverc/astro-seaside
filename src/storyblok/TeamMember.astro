@@ -2,7 +2,7 @@
 import { storyblokEditable } from "@storyblok/astro";
 import { renderRichText } from "@storyblok/astro";
 
-const { member, cardHeadlineTag = "h2" } = Astro.props;
+const { member, cardHeadlineTag = "h2", isFirst = false } = Astro.props;
 
 const renderedRichText = renderRichText(member.profile);
 
@@ -23,8 +23,9 @@ const HeadlineTag = cardHeadlineTag;
     sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
     width="400"
     height="288"
-    loading="lazy"
-    decoding="async"
+    loading={isFirst ? "eager" : "lazy"}
+    fetchpriority={isFirst ? "high" : "auto"}
+    decoding={isFirst ? "sync" : "async"}
     alt={member.profile_picture.alt}
   />
   <div class="py-4">

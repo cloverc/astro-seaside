@@ -1,3 +1,60 @@
+@font-face {
+  font-family: "Kameron";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/kameron-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Kameron";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/kameron-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Kameron";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/kameron-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Kameron";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/kameron-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/inter-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/inter-latin-700-normal.woff2") format("woff2");
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

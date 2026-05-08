@@ -23,10 +23,10 @@ const team = data ? data.stories : [];
    <div class="grid mx-auto px-6 place-items-top gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3 max-w-6xl">
   {
     team?.length &&
-      team.map((team_member: any) => {
+      team.map((team_member: any, index: number) => {
         team_member.content.slug = team_member.slug;
-        return (   
-            <TeamMember member={team_member.content} slug={team_member.slug} />
+        return (
+            <TeamMember member={team_member.content} slug={team_member.slug} isFirst={index === 0} />
         );
       })
   }
