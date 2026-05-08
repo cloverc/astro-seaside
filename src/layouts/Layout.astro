@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import "../assets/styles/tailwind.css";
 import CustomStyles from "../components/CustomStyles.astro";
 import BasicScripts from "../components/BasicScripts.astro";
@@ -21,19 +21,13 @@ const titleText = `${pageTitle} - ${siteTitle}`;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preload" href="/fonts/kameron-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/kameron-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/kameron-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/kameron-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/inter-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/inter-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/inter-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="generator" content={Astro.generator} />
     <title>{titleText}</title>
     <meta name="description" content={description} />
     <CustomStyles />
-    <ViewTransitions />
+    <ClientRouter />
   </head>
 
   <body class="antialiased text-default bg-page flex flex-col min-h-screen">
