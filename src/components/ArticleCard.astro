@@ -12,7 +12,7 @@ const { event, slug } = Astro.props;
       ${event.image.filename}/m/500x281/filters:quality(70):format(webp) 500w,
       ${event.image.filename}/m/800x450/filters:quality(70):format(webp) 800w
     `}
-    sizes="(max-width: 767px) 100vw, (max-width: 1023px) calc(50vw - 24px), 400px"
+    sizes="auto, (max-width: 767px) 100vw, (max-width: 1023px) calc(50vw - 24px), 400px"
     width="400"
     height="224"
     loading="lazy"

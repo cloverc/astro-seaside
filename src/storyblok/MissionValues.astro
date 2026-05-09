@@ -19,7 +19,7 @@ const { blok } = Astro.props;
         ${blok.image.filename}/m/460x0/filters:quality(70):format(webp) 460w,
         ${blok.image.filename}/m/920x0/filters:quality(70):format(webp) 920w
       `}
-      sizes="(max-width: 767px) 100vw, 50vw"
+      sizes="auto, (max-width: 767px) 100vw, 50vw"
       width="460"
       height="600"
       loading="lazy"
