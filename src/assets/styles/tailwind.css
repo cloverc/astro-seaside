@@ -154,13 +154,15 @@ footer,
   @apply bg-page;
 }
 
-#header.expanded nav {
+#header.h-screen nav {
   position: fixed;
   top: 128px;
   left: 0;
   right: 0;
   bottom: 128px !important;
-  padding: 0 5px;
+  padding: 8px;
+  overflow: auto;
+  scroll-padding: 8px;
 }
 
 blockquote {
