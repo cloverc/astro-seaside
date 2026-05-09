@@ -102,6 +102,18 @@ const footerData = {
 ---
 
 <Layout metadata={metadata}>
+  {
+    Astro.url.pathname === "/" && (
+      <link
+        slot="head"
+        rel="preload"
+        as="image"
+        href="https://a.storyblok.com/f/251170/4298x3047/4582369638/penzanze-jubilee-pool.jpg/m/768x0/filters:quality(70):format(webp)"
+        imagesrcset="https://a.storyblok.com/f/251170/4298x3047/4582369638/penzanze-jubilee-pool.jpg/m/400x0/filters:quality(70):format(webp) 400w, https://a.storyblok.com/f/251170/4298x3047/4582369638/penzanze-jubilee-pool.jpg/m/768x0/filters:quality(70):format(webp) 768w"
+        imagesizes="(max-width: 1023px) 100vw, 60vw"
+      />
+    )
+  }
   <slot name="header">
     <Header {...headerData} isSticky />
   </slot>

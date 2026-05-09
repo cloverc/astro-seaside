@@ -5,6 +5,7 @@ import ArticleCard from "../components/ArticleCard.astro";
 const storyblokApi = useStoryblokApi();
 
 const { data } = await storyblokApi.get("cdn/stories/", {
+  version: import.meta.env.DEV ? "draft" : "published",
   starts_with: "events/upcoming-events",
   is_startpage: false,
   per_page: 2,
