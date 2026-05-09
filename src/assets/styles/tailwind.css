@@ -113,6 +113,10 @@ footer,
   src: url("/fonts/inter-latin-700-normal.woff2") format("woff2");
 }
 
+@utility grid-two-col {
+  @apply mx-auto gap-6 grid md:gap-8 md:max-w-none md:grid-cols-2;
+}
+
 @utility bg-page {
   background-color: var(--shn-color-bg-page);
 }

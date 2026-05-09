@@ -8,9 +8,7 @@ const { blok } = Astro.props;
 
 <section class="mx-auto lg:py-20 py-12 sm:py-16" {...storyblokEditable(blok)}>
   <HeroText tagline="About" title="Mission and Values" />
-  <div
-    class="bg-page p-6 mx-auto gap-6 grid md:gap-8 md:max-w-none md:grid-cols-2"
-  >
+  <div class="bg-page p-6 grid-two-col">
     <img
       class="object-cover object-center w-full rounded float-left"
       src={`${blok.image.filename}/m/460x0/filters:quality(70):format(webp)`}
