@@ -44,8 +44,9 @@
     document.querySelectorAll(".dropdown > button").forEach((button) => {
       const dropdown = button.closest(".dropdown");
 
-      button.addEventListener("focus", () => {
-        button.setAttribute("aria-expanded", "true");
+      button.addEventListener("click", () => {
+        const isExpanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", String(!isExpanded));
       });
 
       button.addEventListener("keydown", (e) => {
