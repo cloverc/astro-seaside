@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import HeroText from "../components/HeroText.astro";
+import SocialLinks from "../components/SocialLinks.astro";
 import { storyblokEditable } from "@storyblok/astro";
 
 const { blok } = Astro.props;
@@ -86,30 +87,11 @@ const socialLinks = [
               class="mb-4 text-2xl font-semibold font-heading"
               set:html="Connect with us:"
             />
-            <ul
+            <SocialLinks
+              links={socialLinks}
+              size="base"
               class="mb-4 md:order-1 -ml-2 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4"
-            >
-              {
-                socialLinks.map(({ ariaLabel, href, text, icon }) => (
-                  <li>
-                    <a
-                      class="hover:bg-blue-500 rounded-lg text-base p-2.5 inline-flex items-center"
-                      aria-label={ariaLabel}
-                      href={href}
-                    >
-                      {icon && (
-                        <Icon
-                          name={icon}
-                          class="w-6 h-6 pr-1"
-                          aria-hidden="true"
-                        />
-                      )}
-                      <Fragment set:html={text} />
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
+            />
           </div>
         </li>
       </ul>

@@ -1,0 +1,46 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Link {
+  ariaLabel?: string;
+  href?: string;
+  text?: string;
+  icon?: string;
+}
+
+interface Props {
+  links: Array<Link>;
+  class?: string;
+  variant?: "blue" | "gray";
+  size?: "sm" | "base";
+}
+
+const {
+  links,
+  class: className = "",
+  variant = "blue",
+  size = "sm",
+} = Astro.props;
+
+const hoverClass =
+  variant === "gray" ? "hover:bg-gray-100" : "hover:bg-blue-500";
+const textClass = size === "base" ? "text-base" : "text-sm";
+const iconClass = size === "base" ? "w-6 h-6 pr-1" : "w-5 h-5";
+---
+
+<ul class={className}>
+  {
+    links.map(({ ariaLabel, href, text, icon }) => (
+      <li>
+        <a
+          class={`${hoverClass} rounded-lg ${textClass} p-2.5 inline-flex items-center`}
+          aria-label={ariaLabel}
+          href={href}
+        >
+          {icon && <Icon name={icon} class={iconClass} aria-hidden="true" />}
+          <Fragment set:html={text} />
+        </a>
+      </li>
+    ))
+  }
+</ul>

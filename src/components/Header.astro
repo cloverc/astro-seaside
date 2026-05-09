@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import Logo from "./Logo.astro";
+import SocialLinks from "./SocialLinks.astro";
 import ToggleMenu from "./ToggleMenu.astro";
 
 interface Link {
@@ -134,22 +135,10 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
       <div class="lg:flex lg:items-center lg:justify-between py-6 lg:py-8">
         {
           !!socialLinks?.length && (
-            <ul class="flex mb-4 lg:order-1 -ml-2 lg:ml-4 lg:mb-0 rtl:ml-0 rtl:-mr-2 rtl:lg:ml-0 rtl:lg:mr-4 mt-2">
-              {socialLinks.map(({ ariaLabel, href, text, icon }) => (
-                <li>
-                  <a
-                    class="hover:bg-blue-500 rounded-lg text-sm p-2.5 inline-flex items-center"
-                    aria-label={ariaLabel}
-                    href={href}
-                  >
-                    {icon && (
-                      <Icon name={icon} class="w-5 h-5" aria-hidden="true" />
-                    )}
-                    <Fragment set:html={text} />
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <SocialLinks
+              links={socialLinks}
+              class="flex mb-4 lg:order-1 -ml-2 lg:ml-4 lg:mb-0 rtl:ml-0 rtl:-mr-2 rtl:lg:ml-0 rtl:lg:mr-4 mt-2"
+            />
           )
         }
       </div>
