@@ -1,9 +1,9 @@
 ---
 import { storyblokEditable } from "@storyblok/astro";
 import Link from "../components/Link.astro";
+import { COPYRIGHT } from "../utils/utils";
 
 const { blok } = Astro.props;
-const copyright = String.fromCodePoint(0x00a9);
 ---
 
 <section {...storyblokEditable(blok)} class="mx-auto bg-card">
@@ -25,7 +25,7 @@ const copyright = String.fromCodePoint(0x00a9);
         alt={blok.image.alt}
       />
       <div class="absolute text-sm text-white bottom-0 right-2">
-        {`${copyright} ${blok.image.copyright}`}
+        {`${COPYRIGHT} ${blok.image.copyright}`}
       </div>
     </div>
     <div class="w-full md:w-3/5 p-6 lg:p-20">

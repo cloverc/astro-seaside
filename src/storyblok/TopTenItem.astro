@@ -1,13 +1,12 @@
 ---
 import { Icon } from "astro-icon/components";
-import { storyblokEditable } from "@storyblok/astro";
-import { renderRichText } from "@storyblok/astro";
+import { storyblokEditable, renderRichText } from "@storyblok/astro";
+import { COPYRIGHT } from "../utils/utils";
 
 const { winner, index, cardHeadlineTag = "h2" } = Astro.props;
 const renderedRichText = renderRichText(winner.content);
 
 const HeadlineTag = cardHeadlineTag;
-const copyright = String.fromCodePoint(0x00a9);
 ---
 
 <article
@@ -33,7 +32,7 @@ const copyright = String.fromCodePoint(0x00a9);
     {
       !!winner.image.copyright && (
         <div class="absolute text-sm text-white right-2">
-          {`${copyright} ${winner.image.copyright}`}
+          {`${COPYRIGHT} ${winner.image.copyright}`}
         </div>
       )
     }

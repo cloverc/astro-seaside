@@ -1,13 +1,12 @@
 ---
-import { storyblokEditable } from "@storyblok/astro";
-import { renderRichText } from "@storyblok/astro";
+import { storyblokEditable, renderRichText } from "@storyblok/astro";
+import { COPYRIGHT } from "../utils/utils";
 
 const { nominee, cardHeadlineTag = "h2" } = Astro.props;
 
 const content = renderRichText(nominee.content);
 
 const HeadlineTag = cardHeadlineTag;
-const copyright = String.fromCodePoint(0x00a9);
 ---
 
 <article
@@ -17,11 +16,11 @@ const copyright = String.fromCodePoint(0x00a9);
   <div class="relative">
     <img
       class="object-cover object-center w-full rounded float-left"
-      src={`${nominee.image.filename}/m/690x0/filters:quality(50):format(webp)`}
+      src={`${nominee.image.filename}/m/690x0/filters:quality(70):format(webp)`}
       srcset={`
-    ${nominee.image.filename}/m/400x0/filters:quality(50):format(webp) 400w,
-    ${nominee.image.filename}/m/690x0/filters:quality(50):format(webp) 690w,
-    ${nominee.image.filename}/m/1024x0/filters:quality(50):format(webp) 1024w
+    ${nominee.image.filename}/m/400x0/filters:quality(70):format(webp) 400w,
+    ${nominee.image.filename}/m/690x0/filters:quality(70):format(webp) 690w,
+    ${nominee.image.filename}/m/1024x0/filters:quality(70):format(webp) 1024w
   `}
       sizes="auto, (max-width: 639px) 400px, (max-width: 767px) 690px, 1024px"
       width="690"
@@ -33,7 +32,7 @@ const copyright = String.fromCodePoint(0x00a9);
     {
       !!nominee.image.copyright && (
         <div class="absolute text-sm text-white right-2">
-          {`${copyright} ${nominee.image.copyright}`}
+          {`${COPYRIGHT} ${nominee.image.copyright}`}
         </div>
       )
     }

@@ -6,3 +6,5 @@ const formatter: Intl.DateTimeFormat = new Intl.DateTimeFormat("en-GB", {
 
 export const getFormattedDate = (date: Date): string =>
   date ? formatter.format(date) : "";
+
+export const COPYRIGHT = "©";
