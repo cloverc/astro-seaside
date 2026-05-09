@@ -41,10 +41,9 @@ const { blok } = Astro.props;
             src={`${blok.image.filename}/m/750x0/filters:quality(70):format(webp)`}
             srcset={`
               ${blok.image.filename}/m/400x0/filters:quality(70):format(webp) 400w,
-              ${blok.image.filename}/m/768x0/filters:quality(70):format(webp) 768w,
-              ${blok.image.filename}/m/1024x0/filters:quality(70):format(webp) 1024w
+              ${blok.image.filename}/m/768x0/filters:quality(70):format(webp) 768w
             `}
-            sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, 1024px"
+            sizes="(max-width: 1023px) 100vw, 60vw"
             width="750"
             height="600"
             loading="eager"

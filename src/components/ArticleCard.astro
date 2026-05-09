@@ -9,9 +9,10 @@ const { event, slug } = Astro.props;
     src={`${event.image.filename}/m/400x224/filters:quality(70):format(webp)`}
     srcset={`
       ${event.image.filename}/m/400x224/filters:quality(70):format(webp) 400w,
-      ${event.image.filename}/m/760x428/filters:quality(70):format(webp) 760w
+      ${event.image.filename}/m/500x281/filters:quality(70):format(webp) 500w,
+      ${event.image.filename}/m/800x450/filters:quality(70):format(webp) 800w
     `}
-    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 400px"
+    sizes="(max-width: 767px) 100vw, (max-width: 1023px) calc(50vw - 24px), 400px"
     width="400"
     height="224"
     loading="lazy"
