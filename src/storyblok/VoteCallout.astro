@@ -32,9 +32,14 @@ const copyright = String.fromCodePoint(0x00a9);
       <h2 class="text-2xl font-heading font-semibold lg:text-4xl">
         {blok.heading}
       </h2>
-      <p class="leading-relaxed line-clamp-4 my-6">
+      <p class="leading-relaxed my-6">
         {blok.description}
       </p>
+      {
+        blok.AdditionalInfo && (
+          <p class="leading-relaxed my-6">{blok.AdditionalInfo}</p>
+        )
+      }
       <div class="py-2 flex flex-row gap-6 justify-start">
         <!-- Dynamic Multi-Links from Storyblok -->
         {

@@ -10,7 +10,7 @@ const env = loadEnv("", process.cwd(), "STORYBLOK");
 export default defineConfig({
   site: "https://seasideheritage.org.uk/",
   redirects: {
-    "/bucket-spade-list/": "/bucket-spade-list/top-ten-winners-2023/",
+    "/bucket-spade-list/": "/bucket-spade-list/top-ten-winners-2025/",
   },
   image: {
     domains: ["astro.build"],
