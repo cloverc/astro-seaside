@@ -1,0 +1,7 @@
+pre-commit:
+  commands:
+    format:
+      run: npm run format
+      stage_fixed: true
+    typecheck:
+      run: npx astro check
