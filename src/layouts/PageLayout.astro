@@ -34,6 +34,12 @@ const sharedSocialLinks = [
   },
 ];
 
+const latestWinners = bucketPageLinks
+  .filter((s: { full_slug: string }) => s.full_slug.includes("top-ten-winners"))
+  .sort((a: { full_slug: string }, b: { full_slug: string }) =>
+    b.full_slug.localeCompare(a.full_slug),
+  )[0];
+
 // Map the Storyblok data to match the header structure for Bucket & Spade List
 const bucketHeaderLinks = bucketPageLinks.map(
   (item: { name: string; full_slug: string }) => ({
@@ -79,7 +85,9 @@ const footerData = {
         { text: "Mission & Aims", href: "/mission/" },
         {
           text: "Bucket & Spade List",
-          href: "/bucket-spade-list/top-ten-winners-2023/",
+          href: latestWinners
+            ? `/${latestWinners.full_slug}`
+            : "/bucket-spade-list/top-ten-winners-2025/",
         },
         { text: "Meet the Team", href: "/team/" },
         { text: "Contact", href: "/contact/" },

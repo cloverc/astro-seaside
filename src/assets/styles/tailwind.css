@@ -1,6 +1,44 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+:focus {
+  outline-color: var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  outline-style: var(--focus-ring-style);
+  outline-width: var(--focus-ring-width);
+}
+
+@supports selector(:focus-visible) {
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline-color: var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    outline-style: var(--focus-ring-style);
+    outline-width: var(--focus-ring-width);
+  }
+}
+
+@supports (-moz-appearance: none) {
+  :root {
+    --focus-ring-offset: 0.2ex;
+  }
+}
+
+:is([tabindex="-1"]):focus,
+:is([tabindex="-1"]):focus-visible {
+  outline: none;
+}
+
+/* Light background sections use dark blue ring */
+footer,
+[href="#main-content"],
+[class~="bg-stone-100"],
+[class~="bg-stone-200"] {
+  --focus-ring-color: var(--shn-color-bg-page);
+}
+
 @theme inline {
   --color-primary: var(--shn-color-accent);
   --color-secondary: var(--shn-color-secondary);
@@ -95,7 +133,7 @@
 }
 
 @utility btn {
-  @apply inline-flex items-center justify-center rounded bg-transparent font-medium text-center text-base text-page leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200 focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600 cursor-pointer;
+  @apply inline-flex items-center justify-center rounded bg-transparent font-medium text-center text-base text-page leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200 hover:bg-gray-100 hover:border-gray-600 cursor-pointer;
 }
 
 @layer components {
@@ -130,9 +168,6 @@ blockquote {
   display: block;
 }
 
-.focus-ring {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded;
-}
 
 [data-shn-toggle-menu] path {
   @apply transition;

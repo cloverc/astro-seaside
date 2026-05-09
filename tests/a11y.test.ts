@@ -4,6 +4,10 @@ import { expect, test } from '@playwright/test';
 const routes = [
   { name: 'home', path: '/' },
   { name: '404', path: '/this-page-does-not-exist' },
+  { name: 'upcoming events', path: '/events/upcoming-events/' },
+  { name: 'contact', path: '/contact/' },
+  { name: 'mission', path: '/mission/' },
+  { name: 'meet the team', path: '/team/' },
 ];
 
 test('skip link is the first tab stop and targets main content', async ({ page }) => {
