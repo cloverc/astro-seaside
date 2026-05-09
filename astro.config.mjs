@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import netlify from "@astrojs/netlify";
 import { storyblok } from "@storyblok/astro";
 import { loadEnv } from "vite";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import icon from "astro-icon";
 const env = loadEnv("", process.cwd(), "STORYBLOK");
 
@@ -17,6 +17,9 @@ export default defineConfig({
   },
   output: "server",
   adapter: netlify({ imageCDN: false }),
+  vite: {
+    plugins: [tailwindcss()],
+  },
   integrations: [
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
@@ -39,9 +42,6 @@ export default defineConfig({
         // Heroes
         hero: "storyblok/Heroes/Hero",
       },
-    }),
-    tailwind({
-      applyBaseStyles: false,
     }),
     icon({
       include: {

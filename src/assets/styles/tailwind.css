@@ -1,3 +1,23 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme inline {
+  --color-primary: var(--shn-color-accent);
+  --color-secondary: var(--shn-color-secondary);
+  --color-accent: var(--shn-color-accent);
+  --color-default: var(--shn-color-text-default);
+
+  --font-sans:
+    var(--shn-font-sans), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif:
+    var(--shn-font-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times,
+    serif;
+  --font-heading: var(--shn-font-heading), ui-sans-serif, system-ui, sans-serif;
+
+  --spacing-neg32: -2rem;
+}
+
 @font-face {
   font-family: "Kameron";
   font-style: normal;
@@ -55,42 +75,36 @@
   src: url("/fonts/inter-latin-700-normal.woff2") format("woff2");
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@utility bg-page {
+  background-color: var(--shn-color-bg-page);
+}
+@utility bg-card {
+  background-color: var(--shn-color-bg-card);
+}
+@utility bg-secondary {
+  background-color: var(--shn-color-secondary);
+}
+@utility text-page {
+  color: var(--shn-color-text-default);
+}
+@utility text-dark {
+  color: var(--shn-color-text-dark);
+}
+@utility text-muted {
+  color: var(--aw-color-text-muted);
+}
 
-@layer utilities {
-  .bg-page {
-    background-color: var(--shn-color-bg-page);
-  }
-  .bg-card {
-    background-color: var(--shn-color-bg-card);
-  }
-  .bg-secondary {
-    background-color: var(--shn-color-secondary);
-  }
-  .text-page {
-    color: var(--shn-color-text-default);
-  }
-  .text-dark {
-    color: var(--shn-color-text-dark);
-  }
-  .text-muted {
-    color: var(--aw-color-text-muted);
-  }
+@utility btn {
+  @apply inline-flex items-center justify-center rounded bg-transparent font-medium text-center text-base text-page leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200 focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600 cursor-pointer;
 }
 
 @layer components {
-  .btn {
-    @apply inline-flex items-center justify-center rounded bg-transparent font-medium text-center text-base text-page leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200 focus:ring-blue-500 focus:ring-2 focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600 cursor-pointer;
-  }
-
   .btn-primary {
     @apply btn font-semibold bg-accent text-white border-primary hover:bg-pink-500 hover:border-secondary hover:text-white;
   }
 
   .btn-secondary {
-    @apply btn border-none shadow-none text-muted text-gray-400 hover:text-white;
+    @apply btn border-none shadow-none text-gray-400 hover:text-white;
   }
 }
 
@@ -124,9 +138,9 @@ blockquote {
   @apply transition;
 }
 [data-shn-toggle-menu].expanded g > path:first-child {
-  @apply -rotate-45 translate-y-[15px] translate-x-[-3px];
+  @apply -rotate-45 translate-y-3.75 -translate-x-0.75;
 }
 
 [data-shn-toggle-menu].expanded g > path:last-child {
-  @apply rotate-45 translate-y-[-8px] translate-x-[14px];
+  @apply rotate-45 -translate-y-2 translate-x-3.5;
 }
