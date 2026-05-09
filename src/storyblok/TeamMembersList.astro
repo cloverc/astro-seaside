@@ -15,7 +15,10 @@ const { data } = await storyblokApi.get("cdn/stories", {
 const team = data ? data.stories : [];
 ---
 
-<section class="mx-auto lg:py-20 py-12 sm:py-16" {...storyblokEditable(blok)}>
+<section
+  class="mx-auto sm:px-6 lg:py-20-b max-w-6xl px-6 py-12-b sm:py-16"
+  {...storyblokEditable(blok)}
+>
   <HeroText tagline="About" title="Meet the Team" />
   <div
     class="grid mx-auto px-6 place-items-top gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3 max-w-6xl"

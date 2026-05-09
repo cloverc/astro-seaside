@@ -37,7 +37,7 @@ const { socialLinks = [], links = [], footNote = "" } = Astro.props;
           <div class="col-span-6 md:col-span-3 lg:col-span-2">
             <div class="font-medium mb-2">{title}</div>
             {links && Array.isArray(links) && links.length > 0 && (
-              <ul class="text-sm">
+              <ul>
                 {links.map(({ text, href, ariaLabel }) => (
                   <li class="mb-2">
                     <a
