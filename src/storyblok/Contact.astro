@@ -69,7 +69,11 @@ const socialLinks = [
               set:html="Email us:"
             />
             <span class="flex text-pink-400 items-center mt-2 space-x-2">
-              <Icon name={`tabler:mail`} class="inline-block" aria-hidden="true" />
+              <Icon
+                name={`tabler:mail`}
+                class="inline-block"
+                aria-hidden="true"
+              />
               <a
                 class="hover:text-link hover:underline md:text-lg pl-1 text-base"
                 href="mailto:info@seasideheritage.org.uk"
@@ -95,7 +99,13 @@ const socialLinks = [
                       aria-label={ariaLabel}
                       href={href}
                     >
-                      {icon && <Icon name={icon} class="w-6 h-6 pr-1" aria-hidden="true" />}
+                      {icon && (
+                        <Icon
+                          name={icon}
+                          class="w-6 h-6 pr-1"
+                          aria-hidden="true"
+                        />
+                      )}
                       <Fragment set:html={text} />
                     </a>
                   </li>

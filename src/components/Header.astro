@@ -58,7 +58,11 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
         "flex justify-between",
       ]}
     >
-      <a class="flex items-center" href="/" aria-label="Seaside Heritage Network home">
+      <a
+        class="flex items-center"
+        href="/"
+        aria-label="Seaside Heritage Network home"
+      >
         <Logo />
       </a>
       <div class="flex items-center lg:hidden">
@@ -138,7 +142,9 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
                     aria-label={ariaLabel}
                     href={href}
                   >
-                    {icon && <Icon name={icon} class="w-5 h-5" aria-hidden="true" />}
+                    {icon && (
+                      <Icon name={icon} class="w-5 h-5" aria-hidden="true" />
+                    )}
                     <Fragment set:html={text} />
                   </a>
                 </li>

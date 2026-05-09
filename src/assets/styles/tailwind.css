@@ -168,7 +168,6 @@ blockquote {
   display: block;
 }
 
-
 [data-shn-toggle-menu] path {
   @apply transition;
 }
