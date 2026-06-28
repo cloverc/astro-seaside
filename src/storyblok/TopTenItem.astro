@@ -9,7 +9,10 @@ const renderedRichText = renderRichText(winner.content);
 const HeadlineTag = cardHeadlineTag;
 ---
 
-<article {...storyblokEditable(winner)} class="bg-stone-100 p-6 grid-two-col">
+<article
+  {...storyblokEditable(winner)}
+  class="bg-stone-100 p-6 grid-two-col text-dark"
+>
   <div class="relative">
     <img
       class="object-cover object-center w-full rounded float-left"

@@ -9,10 +9,13 @@ const content = renderRichText(nominee.content);
 const HeadlineTag = cardHeadlineTag;
 ---
 
-<article {...storyblokEditable(nominee)} class="bg-stone-100 p-6 grid-two-col">
-  <div class="relative">
+<article
+  {...storyblokEditable(nominee)}
+  class="bg-stone-100 p-6 grid-two-col text-dark"
+>
+  <div class="relative h-full">
     <img
-      class="object-cover object-center w-full rounded float-left"
+      class="object-cover object-center w-full h-full rounded float-left"
       src={`${nominee.image.filename}/m/690x0/filters:quality(70):format(webp)`}
       srcset={`
     ${nominee.image.filename}/m/400x0/filters:quality(70):format(webp) 400w,

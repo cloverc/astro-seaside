@@ -15,7 +15,10 @@ const storyblokApi = useStoryblokApi();
 
 // Build the Storyblok API path dynamically based on the year
 const { data } = await storyblokApi.get("cdn/stories", {
-  version: import.meta.env.DEV ? "draft" : "published",
+  version:
+    import.meta.env.DEV || process.env.STORYBLOK_VERSION === "draft"
+      ? "draft"
+      : "published",
   starts_with: `bucket-spade-list/top-ten-winners-${year}/`,
   is_startpage: false,
   sort_by: "created_at:desc",
