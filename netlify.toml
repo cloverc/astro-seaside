@@ -1,4 +1,4 @@
-[context.preview]
+[context.branch-deploy]
   environment = { STORYBLOK_VERSION = "draft" }
 
 [[headers]]
