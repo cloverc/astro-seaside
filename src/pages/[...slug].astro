@@ -14,7 +14,7 @@ try {
     `cdn/stories/${slug === undefined ? "home" : slug}`,
     {
       version:
-        import.meta.env.DEV || process.env.STORYBLOK_VERSION === "draft"
+        import.meta.env.DEV || process.env.BRANCH === "preview"
           ? "draft"
           : "published",
     },
