@@ -1,2 +1,7 @@
 [context.preview]
   environment = { STORYBLOK_VERSION = "draft" }
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "frame-ancestors 'self' https://app.storyblok.com"
