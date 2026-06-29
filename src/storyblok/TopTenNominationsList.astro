@@ -35,11 +35,15 @@ const nominees = data.stories;
     title={`Vote for the ${year} Bucket and Spade list`}
     subtitle={`Voting is now open for the ${year} Bucket and Spade top seaside experiences. Choose from the shortlist of seaside favourites and cast your vote.`}
   />
-  <div class="m-neg32 mb-12 flex flex-row justify-center">
-    <Link href="https://bit.ly/bucketspade2025vote" target="_blank">
-      Vote Now
-    </Link>
-  </div>
+  {
+    blok.vote_link?.length > 0 && (
+      <div class="m-neg32 mb-12 flex flex-row justify-center">
+        <Link href={blok.vote_link[0].slug?.cached_url} target="_blank">
+          {blok.vote_link[0].name}
+        </Link>
+      </div>
+    )
+  }
   <ul>
     {
       nominees?.length &&
@@ -53,9 +57,13 @@ const nominees = data.stories;
         })
     }
   </ul>
-  <div class="flex flex-row justify-center">
-    <Link href="https://bit.ly/bucketspade2025vote" target="_blank">
-      Vote Now
-    </Link>
-  </div>
+  {
+    blok.vote_link?.length > 0 && (
+      <div class="flex flex-row justify-center">
+        <Link href={blok.vote_link[0].slug?.cached_url} target="_blank">
+          {blok.vote_link[0].name}
+        </Link>
+      </div>
+    )
+  }
 </section>
