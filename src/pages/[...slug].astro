@@ -13,10 +13,12 @@ try {
   const { data } = await storyblokApi.get(
     `cdn/stories/${slug === undefined ? "home" : slug}`,
     {
-      version:
-        import.meta.env.DEV || process.env.STORYBLOK_VERSION === "draft"
+      version: (() => {
+        const host = Astro.request.headers.get("host") ?? "";
+        return host.includes("preview--") || host.includes("localhost")
           ? "draft"
-          : "published",
+          : "published";
+      })(),
     },
   );
   story = data.story;
