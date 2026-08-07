@@ -2,12 +2,13 @@
 import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
 import HeroText from "../components/HeroText.astro";
 import TeamMember from "./TeamMember.astro";
+import { getStoryblokVersion } from "../utils/storyblok";
 
 const { blok } = Astro.props;
 const storyblokApi = useStoryblokApi();
 
 const { data } = await storyblokApi.get("cdn/stories", {
-  version: import.meta.env.DEV ? "draft" : "published",
+  version: getStoryblokVersion(Astro.request),
   starts_with: "team/",
   is_startpage: false,
 });

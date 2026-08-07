@@ -1,6 +1,10 @@
 ---
 import Link from "../components/Link.astro";
 import { Icon } from "astro-icon/components";
+
+const {
+  href = "https://piers.us9.list-manage.com/subscribe?u=bc30e2a33dfae5ee4abdf15e8&id=7ab71caf2f",
+} = Astro.props;
 ---
 
 <section class="mx-auto lg:py-20 px-6 py-12 sm:py-16">
@@ -17,10 +21,6 @@ import { Icon } from "astro-icon/components";
       Discover all the latest from the Seaside Heritage Network, direct to your
       inbox.
     </p>
-    <Link
-      href="https://piers.us9.list-manage.com/subscribe?u=bc30e2a33dfae5ee4abdf15e8&id=7ab71caf2f"
-    >
-      Sign Up
-    </Link>
+    <Link href={href}> Sign Up </Link>
   </div>
 </section>

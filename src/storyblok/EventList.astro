@@ -3,6 +3,7 @@ import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
 import EventItem from "../components/EventItem.astro";
 import HeroText from "../components/HeroText.astro";
 import { filterAndSortEvents } from "../utils/filterEvents";
+import { getStoryblokVersion } from "../utils/storyblok";
 
 const { blok } = Astro.props;
 const storyblokApi = useStoryblokApi();
@@ -11,7 +12,7 @@ const currentPath = Astro.url.pathname;
 const eventGroup = currentPath.includes("upcoming-events");
 
 const { data } = await storyblokApi.get("cdn/stories/", {
-  version: import.meta.env.DEV ? "draft" : "published",
+  version: getStoryblokVersion(Astro.request),
   starts_with: eventGroup ? "events/upcoming-events" : "events/past-events",
   is_startpage: false,
 });

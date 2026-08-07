@@ -3,16 +3,23 @@ import { useStoryblokApi } from "@storyblok/astro";
 import Layout from "./Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import Newsletter from "../components/Newsletter.astro";
+import { getStoryblokVersion } from "../utils/storyblok";
 
 const { metadata } = Astro.props;
 
 const storyblokApi = useStoryblokApi();
 
-const { data } = await storyblokApi.get("cdn/stories", {
-  version: import.meta.env.DEV ? "draft" : "published",
-  starts_with: "bucket-spade-list",
-  is_startpage: true,
-});
+const [{ data }, { data: homeData }] = await Promise.all([
+  storyblokApi.get("cdn/stories", {
+    version: getStoryblokVersion(Astro.request),
+    starts_with: "bucket-spade-list",
+    is_startpage: true,
+  }),
+  storyblokApi.get("cdn/stories/home", {
+    version: getStoryblokVersion(Astro.request),
+  }),
+]);
 
 const bucketPageLinks = data ? data.stories : [];
 
@@ -120,6 +127,7 @@ const footerData = {
   <main id="main-content" tabindex="-1" class="flex-1">
     <slot />
   </main>
+  <Newsletter href={homeData?.story?.content?.signup_link?.url} />
   <slot name="footer">
     <Footer {...footerData} />
   </slot>

@@ -3,11 +3,11 @@ import { useStoryblokApi } from "@storyblok/astro";
 
 import StoryblokComponent from "@storyblok/astro/StoryblokComponent.astro";
 import PageLayout from "../layouts/PageLayout.astro";
-import Newsletter from "../components/Newsletter.astro";
+import { getStoryblokVersion } from "../utils/storyblok";
 
 const sbApi = useStoryblokApi();
 const { data } = await sbApi.get("cdn/stories/home", {
-  version: import.meta.env.DEV ? "draft" : "published",
+  version: getStoryblokVersion(Astro.request),
 });
 
 const metadata = {
@@ -22,5 +22,4 @@ const story = data.story;
 
 <PageLayout metadata={metadata}>
   <StoryblokComponent blok={story.content} />
-  <Newsletter />
 </PageLayout>
