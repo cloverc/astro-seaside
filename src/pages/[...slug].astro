@@ -25,9 +25,11 @@ try {
   return Astro.redirect("/404");
 }
 
+const baseName = story.name === undefined ? "Home" : story.name;
+const pageParam = parseInt(Astro.url.searchParams.get("page") ?? "1");
 const metadata = {
   siteTitle: "Seaside Heritage Network",
-  pageTitle: story.name === undefined ? "Home" : story.name,
+  pageTitle: pageParam > 1 ? `${baseName} (page ${pageParam})` : baseName,
 };
 ---
 

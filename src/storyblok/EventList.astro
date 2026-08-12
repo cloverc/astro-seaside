@@ -49,13 +49,7 @@ if (isPastEvents) {
 }
 
 const pageTitle = isPastEvents ? "Past Events" : "Upcoming Events";
-const pageTitleWithPage =
-  isPastEvents && totalPages > 1
-    ? `${pageTitle} (page ${currentPage} of ${totalPages})`
-    : pageTitle;
 ---
-
-<title>{pageTitleWithPage} — Seaside Heritage Network</title>
 
 <section
   class="mx-auto sm:px-6 lg:py-20 max-w-6xl px-6 py-12 sm:py-16"
