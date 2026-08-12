@@ -93,7 +93,15 @@ test.describe("dropdown navigation", () => {
     await expect(eventsBtn).toHaveAttribute("aria-expanded", "false");
   });
 
-  test("dropdown links are keyboard accessible", async ({ page }) => {
+  test("dropdown links are keyboard accessible", async ({
+    page,
+    browserName,
+  }) => {
+    test.skip(
+      browserName === "webkit",
+      "WebKit does not focus links via Tab by default",
+    );
+
     await page.goto("/");
 
     const eventsBtn = page.getByRole("button", { name: "Events" });

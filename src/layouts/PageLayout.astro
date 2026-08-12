@@ -126,8 +126,8 @@ const footerData = {
   </slot>
   <main id="main-content" tabindex="-1" class="flex-1">
     <slot />
+    <Newsletter href={homeData?.story?.content?.signup_link?.url} />
   </main>
-  <Newsletter href={homeData?.story?.content?.signup_link?.url} />
   <slot name="footer">
     <Footer {...footerData} />
   </slot>

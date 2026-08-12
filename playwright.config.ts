@@ -9,7 +9,10 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:4321",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "mobile", use: { ...devices["iPhone 13"] } },
+  ],
   webServer: {
     command: "npm run dev",
     url: "http://localhost:4321",

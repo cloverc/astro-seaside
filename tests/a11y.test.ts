@@ -5,6 +5,8 @@ const routes = [
   { name: "home", path: "/" },
   { name: "404", path: "/this-page-does-not-exist" },
   { name: "upcoming events", path: "/events/upcoming-events/" },
+  { name: "past events", path: "/events/past-events/" },
+  { name: "past events page 2", path: "/events/past-events/?page=2" },
   { name: "contact", path: "/contact/" },
   { name: "mission", path: "/mission/" },
   { name: "meet the team", path: "/team/" },
@@ -12,7 +14,13 @@ const routes = [
 
 test("skip link is the first tab stop and targets main content", async ({
   page,
+  browserName,
 }) => {
+  test.skip(
+    browserName === "webkit",
+    "WebKit does not focus links via Tab by default",
+  );
+
   await page.goto("/");
 
   await page.keyboard.press("Tab");
