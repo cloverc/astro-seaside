@@ -2,6 +2,7 @@
 import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
 import EventItem from "../components/EventItem.astro";
 import HeroText from "../components/HeroText.astro";
+import Pagination from "../components/Pagination.astro";
 import { filterAndSortEvents } from "../utils/filterEvents";
 import { getStoryblokVersion } from "../utils/storyblok";
 
@@ -9,20 +10,52 @@ const { blok } = Astro.props;
 const storyblokApi = useStoryblokApi();
 
 const currentPath = Astro.url.pathname;
-const eventGroup = currentPath.includes("upcoming-events");
+const isPastEvents = currentPath.includes("past-events");
 
-const { data } = await storyblokApi.get("cdn/stories/", {
-  version: getStoryblokVersion(Astro.request),
-  starts_with: eventGroup ? "events/upcoming-events" : "events/past-events",
-  is_startpage: false,
-});
+const PER_PAGE = 12;
 
-const now = new Date();
+let events: any[] = [];
+let totalPages = 1;
+let currentPage = 1;
 
-const events = filterAndSortEvents(data.stories, now, eventGroup);
+if (isPastEvents) {
+  currentPage = Math.max(
+    1,
+    parseInt(Astro.url.searchParams.get("page") ?? "1"),
+  );
 
-const pageTitle = eventGroup ? "Upcoming Events" : "Past Events";
+  const { data, headers } = await storyblokApi.get("cdn/stories/", {
+    version: getStoryblokVersion(Astro.request),
+    starts_with: "events/past-events",
+    is_startpage: false,
+    per_page: PER_PAGE,
+    page: currentPage,
+    sort_by: "content.date:desc",
+  });
+
+  events = data.stories ?? [];
+  totalPages = Math.ceil(
+    parseInt((headers as unknown as Record<string, string>).total ?? "0") /
+      PER_PAGE,
+  );
+} else {
+  const { data } = await storyblokApi.get("cdn/stories/", {
+    version: getStoryblokVersion(Astro.request),
+    starts_with: "events/upcoming-events",
+    is_startpage: false,
+  });
+
+  events = filterAndSortEvents(data.stories, new Date(), true);
+}
+
+const pageTitle = isPastEvents ? "Past Events" : "Upcoming Events";
+const pageTitleWithPage =
+  isPastEvents && totalPages > 1
+    ? `${pageTitle} (page ${currentPage} of ${totalPages})`
+    : pageTitle;
 ---
+
+<title>{pageTitleWithPage} — Seaside Heritage Network</title>
 
 <section
   class="mx-auto sm:px-6 lg:py-20 max-w-6xl px-6 py-12 sm:py-16"
@@ -39,11 +72,20 @@ const pageTitle = eventGroup ? "Upcoming Events" : "Past Events";
         ))
       ) : (
         <li class="text-center text-lg text-muted-foreground py-10">
-          {pageTitle === "Upcoming Events"
-            ? "No upcoming events at the moment. Check back soon!"
-            : "No past events found."}
+          {isPastEvents
+            ? "No past events found."
+            : "No upcoming events at the moment. Check back soon!"}
         </li>
       )
     }
   </ul>
+  {
+    isPastEvents && totalPages > 1 && (
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        basePath={currentPath}
+      />
+    )
+  }
 </section>
