@@ -1,5 +1,6 @@
 ---
 import SocialLinks from "./SocialLinks.astro";
+import pilgrimGreen from "../assets/images/Pilgrim_Trust_logo_green.svg";
 
 interface Link {
   text?: string;
@@ -22,53 +23,70 @@ export interface Props {
 const { socialLinks = [], links = [], footNote = "" } = Astro.props;
 ---
 
-<footer class="relative border-t border-gray-200 text-dark font-serif">
-  <div class="bg-white absolute inset-0 pointer-events-none" aria-hidden="true">
-  </div>
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="grid grid-cols-12 gap-4 gap-y-8 sm:gap-8 py-8 md:py-12">
-      <div class="col-span-12 lg:col-span-4">
-        <div class="mb-2">
-          <a class="inline-block font-bold text-xl" href="/">Home</a>
+<footer class="text-dark font-serif">
+  <!-- Main section: logo, nav links, social icons -->
+  <div class="bg-white border-t border-gray-200">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-10 md:py-12">
+      <div class="grid grid-cols-12 gap-8 items-start">
+        {
+          links.map(({ title, links: items }) => (
+            <div class="col-span-12 md:col-span-3">
+              {title && <p class="font-semibold mb-3">{title}</p>}
+              {items && items.length > 0 && (
+                <ul class="space-y-2">
+                  {items.map(({ text, href, ariaLabel }) => (
+                    <li>
+                      <a
+                        class="text-sm hover:underline transition duration-150 ease-in-out"
+                        href={href}
+                        aria-label={ariaLabel}
+                      >
+                        <Fragment set:html={text} />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))
+        }
+
+        <div class="col-span-12 md:col-span-3">
+          <p class="text-xs text-gray-500 mb-2">Supported by</p>
+          <a
+            href="https://www.thepilgrimtrust.org.uk/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="The Pilgrim Trust (opens in a new tab)"
+          >
+            <img
+              src={pilgrimGreen.src}
+              width="136"
+              height="70"
+              decoding="async"
+              alt="The Pilgrim Trust"
+              class="h-14 w-auto"
+            />
+          </a>
         </div>
-      </div>
-      {
-        links.map(({ title, links }) => (
-          <div class="col-span-6 md:col-span-3 lg:col-span-2">
-            <div class="font-medium mb-2">{title}</div>
-            {links && Array.isArray(links) && links.length > 0 && (
-              <ul>
-                {links.map(({ text, href, ariaLabel }) => (
-                  <li class="mb-2">
-                    <a
-                      class="hover:text-gray-700 hover:underline transition duration-150 ease-in-out"
-                      href={href}
-                      aria-label={ariaLabel}
-                    >
-                      <Fragment set:html={text} />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))
-      }
-    </div>
-    <div class="md:flex md:items-center md:justify-between py-6 md:py-8">
-      {
-        !!socialLinks?.length && (
+
+        <div class="col-span-12 md:col-span-3 md:flex md:justify-end">
           <SocialLinks
             links={socialLinks}
             variant="gray"
-            class="flex mb-4 md:order-1 -ml-2 md:ml-4 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4"
+            class="flex flex-row flex-wrap gap-1"
           />
-        )
-      }
-
-      <div class="text-sm mr-4">
-        <Fragment set:html={footNote} />
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Copyright band -->
+  <div class="bg-gray-100 border-t border-gray-200">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-4">
+      <p class="text-xs text-gray-600">
+        <Fragment set:html={footNote} />
+      </p>
     </div>
   </div>
 </footer>

@@ -89,23 +89,27 @@ const footerData = {
   links: [
     {
       links: [
-        { text: "Upcoming Events", href: "/events/upcoming-events/" },
         { text: "About the Network", href: "/about/" },
         { text: "Mission & Aims", href: "/mission/" },
+        { text: "Meet the Team", href: "/team/" },
+      ],
+    },
+    {
+      links: [
+        { text: "Upcoming Events", href: "/events/upcoming-events/" },
         {
           text: "Bucket & Spade List",
           href: latestWinners
             ? `/${latestWinners.full_slug}`
             : "/bucket-spade-list/top-ten-winners-2025/",
         },
-        { text: "Meet the Team", href: "/team/" },
         { text: "Contact", href: "/contact/" },
       ],
     },
   ],
   socialLinks: sharedSocialLinks,
   footNote: `
-    &copy; Seaside Heritage Network All rights reserved. Registered Charity 1216037.
+    &copy; Seaside Heritage Network. Registered Charity in England and Wales (Charity No. 1216037). All rights reserved.
   `,
 };
 ---
