@@ -1,0 +1,156 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+import HeroText from "../components/HeroText.astro";
+import PageLayout from "../layouts/PageLayout.astro";
+import { getStoryblokVersion } from "../utils/storyblok";
+
+const storyblokApi = useStoryblokApi();
+const { data: homeData } = await storyblokApi.get("cdn/stories/home", {
+  version: getStoryblokVersion(Astro.request),
+});
+const signupLink =
+  homeData?.story?.content?.signup_link?.url ??
+  "https://piers.us9.list-manage.com/subscribe?u=bc30e2a33dfae5ee4abdf15e8&id=7ab71caf2f";
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: "About the Network",
+};
+
+const linkClass = "underline decoration-1 hover:decoration-2";
+---
+
+<PageLayout metadata={metadata}>
+  <HeroText tagline="About" title="About the Network" />
+  <section class="mx-auto max-w-3xl px-6 pb-16 sm:px-6">
+    <ol class="relative border-l-4 border-accent pl-8" role="list">
+      <li class="relative mb-10">
+        <span
+          class="absolute -left-11 top-1 h-5 w-5 rounded-full bg-accent"
+          aria-hidden="true"></span>
+        <h2 class="mb-2 font-heading text-xl font-bold">2016</h2>
+        <p>
+          The Seaside Heritage Network was first formed in 2016 by <a
+            href="https://scarboroughmuseumsandgalleries.org.uk/"
+            class={linkClass}>Scarborough Museum Trust</a
+          > with funding support from the Esme Fairbairn Foundation. Its founding
+          members included Southend Museums Service, Hastings Museum and Art Gallery,
+          Manx National Heritage, Blackpool Museum Project and the National Piers
+          Society.
+        </p>
+        <p class="mt-3">
+          The original SHN had a museum focus, with an emphasis on utilising the
+          network to research seaside-related collections, locate custodians of
+          seaside heritage and share vital knowledge and expertise. However, the
+          activities of the early SHN were unable to continue once the funding
+          ended.
+        </p>
+      </li>
+
+      <li class="relative mb-10">
+        <span
+          class="absolute -left-11 top-1 h-5 w-5 rounded-full bg-accent"
+          aria-hidden="true"></span>
+        <h2 class="mb-2 font-heading text-xl font-bold">April 2017</h2>
+        <p>
+          The SHN held the 'Seaside Heritage Conference' at Scarborough Spa,
+          with speakers including current SHN trustees Samantha Richardson,
+          Kathryn Ferry, and Anya Chapman.
+        </p>
+      </li>
+
+      <li class="relative mb-10">
+        <span
+          class="absolute -left-11 top-1 h-5 w-5 rounded-full bg-accent"
+          aria-hidden="true"></span>
+        <h2 class="mb-2 font-heading text-xl font-bold">2022</h2>
+        <p>
+          A small group of volunteers with interests in the heritage of seaside
+          tourism sought to re-establish the Seaside Heritage Network, with a
+          broader focus. With the full support of Scarborough Museums and
+          Galleries, they took over the original name and logo.
+        </p>
+        <p class="mt-3">
+          The 'new' SHN began by providing free online seminars that examined
+          particular examples and issues relating to seaside heritage. These <a
+            href="https://www.youtube.com/@SeasideHeritageNetwork"
+            class={linkClass}>seminars can be viewed on our YouTube channel</a
+          >. Attendance steadily increased, recognising a clear community of
+          people who valued the distinctive heritage of the seaside.
+        </p>
+      </li>
+
+      <li class="relative mb-10">
+        <span
+          class="absolute -left-11 top-1 h-5 w-5 rounded-full bg-accent"
+          aria-hidden="true"></span>
+        <h2 class="mb-2 font-heading text-xl font-bold">2023</h2>
+        <p>
+          The annual 'Bucket and Spade' list was introduced, inviting members of
+          the public to vote on their favourite example of seaside heritage. The
+          inaugural winner was Saltburn Cliff Railway. The SHN also introduced
+          #NationalSeasideDay on 1 July.
+        </p>
+        <p class="mt-3">
+          The annual 'Big Day Out' — an in-person event held in a seaside town
+          to celebrate seaside heritage and announce the winner of the Bucket
+          and Spade list — was also launched. Previous locations have included
+          Blackpool, Weston-Super-Mare, and Scarborough. The event includes an
+          informal interview with somebody who has championed the UK seaside
+          (previous guests have included the designer Wayne Hemingway and the
+          author Paul Doe).
+        </p>
+        <p class="mt-3">
+          The SHN has also been increasingly active in organising guided tours
+          of seaside resorts, with recent examples including Blackpool,
+          Weymouth, Weston-Super-Mare, Brighton, Saltdean, and Margate.
+        </p>
+      </li>
+
+      <li class="relative mb-10">
+        <span
+          class="absolute -left-11 top-1 h-5 w-5 rounded-full bg-accent"
+          aria-hidden="true"></span>
+        <h2 class="mb-2 font-heading text-xl font-bold">2025</h2>
+        <p>
+          From 2025, attendees at the online seminars and the wider public were
+          invited to nominate their favourite examples of seaside heritage —
+          these were whittled down to a shortlist which was then put to a public
+          vote.
+        </p>
+        <p class="mt-3">
+          The Seaside Heritage Network also teamed up with <a
+            href="https://hbap.org.uk/"
+            class={linkClass}>Historic Buildings and Places</a
+          > to organise in-person symposia on seaside heritage. The first symposium,
+          'Recognising Seaside Heritage', was held in London in June 2025.
+        </p>
+        <p class="mt-3">
+          In December 2025, the Seaside Heritage Network was registered as a
+          charity (a 'Foundation CIO') with the Charities Commission — an
+          educational charity which seeks to raise awareness and understanding
+          of the broad heritage associated with the UK seaside holiday.
+        </p>
+      </li>
+
+      <li class="relative mb-10">
+        <span
+          class="absolute -left-11 top-1 h-5 w-5 rounded-full bg-accent"
+          aria-hidden="true"></span>
+        <h2 class="mb-2 font-heading text-xl font-bold">June 2026</h2>
+        <p>
+          The second symposium, 'Valuing Seaside Heritage', was held at Saltdean
+          Lido. A third symposium is planned for 2027.
+        </p>
+      </li>
+    </ol>
+
+    <p class="pl-8">
+      The Seaside Heritage Network is not a membership organisation, but if you
+      are interested in our activities you can <a
+        href={signupLink}
+        class={linkClass}>sign up to our newsletter</a
+      >.
+    </p>
+  </section>
+</PageLayout>

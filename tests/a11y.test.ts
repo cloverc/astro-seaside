@@ -7,6 +7,7 @@ const routes = [
   { name: "upcoming events", path: "/events/upcoming-events/" },
   { name: "past events", path: "/events/past-events/" },
   { name: "past events page 2", path: "/events/past-events/?page=2" },
+  { name: "about the network", path: "/about/" },
   { name: "contact", path: "/contact/" },
   { name: "mission", path: "/mission/" },
   { name: "meet the team", path: "/team/" },
