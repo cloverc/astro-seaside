@@ -36,12 +36,14 @@ const pages = pageRange(currentPage, totalPages);
 const linkClass =
   "inline-flex items-center justify-center px-3 py-2 font-medium underline decoration-1 hover:decoration-2";
 const currentClass =
-  "inline-flex items-center justify-center px-3 py-2 font-bold bg-accent text-white outline outline-1 outline-transparent";
+  "inline-flex items-center justify-center w-10 h-10 font-bold bg-accent text-white";
+const pageClass =
+  "inline-flex items-center justify-center w-10 h-10 font-medium underline decoration-1 hover:decoration-2";
 ---
 
 <nav
   aria-label="Pagination"
-  class="flex flex-wrap items-center justify-center gap-2 py-10"
+  class="flex flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-3 pt-0 pb-10"
 >
   {
     currentPage > 1 && (
@@ -56,24 +58,26 @@ const currentClass =
     )
   }
 
-  {
-    pages.map((page) =>
-      page === "..." ? (
-        <span class="px-2 text-muted-foreground" aria-hidden="true">
-          &hellip;
-        </span>
-      ) : (
-        <a
-          href={pageHref(page)}
-          aria-label={`Page ${page}`}
-          aria-current={page === currentPage ? "page" : undefined}
-          class={page === currentPage ? currentClass : linkClass}
-        >
-          {page}
-        </a>
-      ),
-    )
-  }
+  <div class="flex items-center gap-1">
+    {
+      pages.map((page) =>
+        page === "..." ? (
+          <span class="px-2 text-muted-foreground" aria-hidden="true">
+            &hellip;
+          </span>
+        ) : (
+          <a
+            href={pageHref(page)}
+            aria-label={`Page ${page}`}
+            aria-current={page === currentPage ? "page" : undefined}
+            class={page === currentPage ? currentClass : pageClass}
+          >
+            {page}
+          </a>
+        ),
+      )
+    }
+  </div>
 
   {
     currentPage < totalPages && (

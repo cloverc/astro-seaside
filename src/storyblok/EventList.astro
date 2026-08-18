@@ -12,7 +12,7 @@ const storyblokApi = useStoryblokApi();
 const currentPath = Astro.url.pathname;
 const isPastEvents = currentPath.includes("past-events");
 
-const PER_PAGE = 12;
+const PER_PAGE = 6;
 
 let events: any[] = [];
 let totalPages = 1;
