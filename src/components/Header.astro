@@ -47,7 +47,7 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
   <div class="absolute inset-0"></div>
   <div
     class:list={[
-      "relative text-default py-3 px-3 lg:px-6 mx-auto w-full lg:flex lg:justify-between",
+      "relative text-default py-4 px-4 lg:px-6 mx-auto w-full flex flex-col lg:flex-row lg:justify-between",
       {
         "max-w-7xl": !isFullWidth,
       },
@@ -71,7 +71,7 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
       </div>
     </div>
     <nav
-      class="items-center w-full lg:w-auto hidden lg:flex text-default overflow-y-auto overflow-x-hidden lg:overflow-visible lg:mx-5 mt-2"
+      class="items-center w-full lg:w-auto hidden lg:flex text-default overflow-y-auto overflow-x-hidden lg:overflow-visible lg:mx-5"
       aria-label="Main navigation"
     >
       <ul
@@ -129,10 +129,10 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
     <div
       class:list={[
         { "ml-auto rtl:ml-0 rtl:mr-auto": position === "left" },
-        "hidden lg:self-center flex lg:flex items-center lg:mb-0 fixed w-full lg:w-auto lg:static justify-end left-0 rtl:left-auto rtl:right-0 bottom-0 p-3 lg:p-0",
+        "hidden lg:self-center lg:flex items-center w-full lg:w-auto justify-end lg:p-0",
       ]}
     >
-      <div class="lg:flex lg:items-center lg:justify-between py-6 lg:py-8">
+      <div class="lg:flex lg:items-center lg:justify-between lg:py-8">
         {
           !!socialLinks?.length && (
             <SocialLinks
