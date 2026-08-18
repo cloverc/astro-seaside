@@ -6,7 +6,7 @@ import { storyblokEditable } from "@storyblok/astro";
 const { blok } = Astro.props;
 ---
 
-<section class="mx-auto lg:py-20 py-12 sm:py-16" {...storyblokEditable(blok)}>
+<section class="mx-auto lg:py-12 pb-12 sm:pb-16" {...storyblokEditable(blok)}>
   <HeroText tagline="About" title="Mission and Values" />
   <div class="mx-auto max-w-5xl px-4 sm:px-6">
     <div class="bg-page p-6 grid gap-6 md:gap-8 md:grid-cols-5">
@@ -48,14 +48,14 @@ const { blok } = Astro.props;
     </div>
   </div>
   <div
-    class="mx-auto relative px-4 lg:py-20 md:px-6 md:py-16 py-12 md:text-lg text-default max-w-5xl"
+    class="mx-auto relative px-4 lg:py-12 md:px-6 pt-12 sm:pt-16 pb-12 sm:pb-16 md:text-lg text-default max-w-5xl"
   >
     <h2
-      class="text-center text-2xl md:text-3xl font-heading font-semibold mb-4 lg:text-4xl"
+      class="text-2xl md:text-3xl font-heading font-semibold mb-4 lg:text-4xl"
     >
       Our Formal Charitable Objectives
     </h2>
-    <p class="text-center mb-8 md:text-lg">
+    <p class="mb-8 md:text-lg">
       To advance the education of the public in the subject of seaside heritage
       by:
     </p>
