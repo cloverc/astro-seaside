@@ -48,6 +48,24 @@ const titleText = `${pageTitle} - ${siteTitle}`;
     <meta name="description" content={description} />
     <CustomStyles />
     <ClientRouter />
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script
+      is:inline
+      async
+      src="https://plausible.io/js/pa-Q7leXjOZqLus_yXJJ7uD7.js"></script>
+    <script is:inline>
+      ((window.plausible =
+        window.plausible ||
+        function () {
+          (plausible.q = plausible.q || []).push(arguments);
+        }),
+        (plausible.init =
+          plausible.init ||
+          function (i) {
+            plausible.o = i || {};
+          }));
+      plausible.init();
+    </script>
   </head>
 
   <body class="antialiased text-default bg-page flex flex-col min-h-screen">
