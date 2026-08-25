@@ -161,9 +161,13 @@ footer,
   scroll-padding: 8px;
 }
 
-.dropdown:hover .dropdown-menu,
+.dropdown > button[aria-expanded="true"] + .dropdown-menu,
 .dropdown:focus-within .dropdown-menu {
   display: block;
+}
+
+.dropdown > button[aria-expanded="true"] svg {
+  transform: rotate(180deg);
 }
 
 [data-shn-toggle-menu] path {

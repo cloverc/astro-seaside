@@ -37,7 +37,7 @@ const nominees = data.stories;
   />
   {
     blok.vote_link?.length > 0 && (
-      <div class="m-neg32 mb-12 flex flex-row justify-center">
+      <div class="mb-12 flex flex-row justify-center">
         <Link href={blok.vote_link[0].slug?.cached_url} target="_blank">
           {blok.vote_link[0].name}
         </Link>

@@ -75,31 +75,42 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
       aria-label="Main navigation"
     >
       <ul
-        class="flex flex-col lg:flex-row lg:self-center w-full lg:w-auto text-xl lg:text-[1.05rem] tracking-[0.01rem] font-heading font-medium"
+        class="flex flex-col lg:flex-row lg:self-center w-full lg:w-auto text-xl lg:text-[1.05rem] tracking-[0.01rem] font-heading font-medium border-t border-white/20 lg:border-none"
       >
         {
-          links.map(({ text, href, links }) => (
-            <li class={links?.length ? "dropdown" : ""}>
-              {links?.length ? (
+          links.map(({ text, href, links: sublinks }, index) => (
+            <li
+              class:list={[
+                sublinks?.length ? "dropdown" : "",
+                "border-b border-white/20 lg:border-none",
+              ]}
+            >
+              {sublinks?.length ? (
                 <>
                   <button
-                    class="hover:text-link px-4 py-3 flex items-center"
-                    aria-haspopup="true"
+                    class="hover:text-link px-4 py-6 lg:py-3 flex items-center w-full justify-between lg:w-auto lg:justify-start"
                     aria-expanded="false"
+                    aria-controls={`nav-dropdown-${index}`}
                   >
                     {text}
                     <Icon
                       name="tabler:chevron-down"
-                      class="w-3.5 h-3.5 ml-0.5 rtl:ml-0 rtl:mr-0.5 hidden lg:inline"
+                      class="w-6 h-6 lg:w-3.5 lg:h-3.5 ml-2 lg:ml-0.5 text-accent lg:text-current transition-transform duration-200"
                       aria-hidden="true"
                     />
                   </button>
-                  <ul class="dropdown-menu lg:bg-page lg:border rounded lg:absolute pl-4 lg:pl-0 lg:hidden font-medium lg:min-w-[200px]">
-                    {links.map(({ text: text2, href: href2 }) => (
+                  <ul
+                    id={`nav-dropdown-${index}`}
+                    class="dropdown-menu lg:bg-page lg:border rounded lg:absolute pl-4 lg:pl-0 pb-4 lg:pb-0 hidden font-medium lg:min-w-[200px]"
+                  >
+                    {sublinks.map(({ text: text2, href: href2 }) => (
                       <li>
                         <a
+                          aria-current={
+                            href2 === currentPath ? "page" : undefined
+                          }
                           class:list={[
-                            "first:rounded-t px-2 last:rounded-b hover:underline py-2 block whitespace-no-wrap",
+                            "first:rounded-t px-2 last:rounded-b underline hover:decoration-2 py-1.5 block",
                             { "aw-link-active": href2 === currentPath },
                           ]}
                           href={href2}
@@ -112,8 +123,9 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
                 </>
               ) : (
                 <a
+                  aria-current={href === currentPath ? "page" : undefined}
                   class:list={[
-                    "hover:text-link hover:underline transition duration-150 ease-in-out px-4 py-3 flex items-center",
+                    "hover:text-link hover:underline transition duration-150 ease-in-out px-4 py-6 lg:py-3 flex items-center w-full lg:w-auto",
                     { "aw-link-active": href === currentPath },
                   ]}
                   href={href}
