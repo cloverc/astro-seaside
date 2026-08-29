@@ -1,0 +1,545 @@
+---
+import HeroText from "../../components/HeroText.astro";
+import PageLayout from "../../layouts/PageLayout.astro";
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: "Resource Hub",
+};
+
+const resources = [
+  {
+    id: "1",
+    title: "Heritage Assessment Guide for Coastal Buildings",
+    category: "Best Practice",
+    format: "PDF",
+    description:
+      "A practical guide to assessing the heritage significance of buildings in coastal and seaside settings, including listed structures.",
+  },
+  {
+    id: "2",
+    title: "Documenting Seaside Amusements",
+    category: "Best Practice",
+    format: "Video",
+    description:
+      "An introduction to methods for documenting and recording amusement parks and funfair heritage on film.",
+  },
+  {
+    id: "3",
+    title: "Best Practice in Seaside Conservation Schemes",
+    category: "Best Practice",
+    format: "PDF",
+    description:
+      "Case studies and guidance from recent conservation projects at seaside resorts across the UK.",
+  },
+  {
+    id: "4",
+    title: "Margate Old Town Walking Tour",
+    category: "Discover",
+    format: "PDF",
+    description:
+      "A self-guided walking tour exploring the heritage of Margate Old Town, from the Tudor harbour to the seafront.",
+  },
+  {
+    id: "5",
+    title: "Funding Your Seaside Heritage Project",
+    category: "Best Practice",
+    format: "Article",
+    description:
+      "An overview of funding sources available to groups and organisations working on seaside heritage projects.",
+  },
+  {
+    id: "6",
+    title: "The Future of the British Pier",
+    category: "Research",
+    format: "PDF",
+    description:
+      "A research report examining the current condition and future prospects of piers in England and Wales.",
+  },
+  {
+    id: "7",
+    title: "Climate Adaptation for Coastal Heritage",
+    category: "Best Practice",
+    format: "PDF",
+    description:
+      "Practical guidance on adapting seaside heritage buildings and structures to changing climate conditions.",
+  },
+  {
+    id: "8",
+    title: "Blackpool Promenade Walking Tour",
+    category: "Discover",
+    format: "PDF",
+    description:
+      "Explore the rich heritage of Blackpool's promenade, from the Tower to the Pleasure Beach.",
+  },
+  {
+    id: "9",
+    title: "Engaging Communities in Seaside Heritage",
+    category: "Best Practice",
+    format: "Video",
+    description:
+      "A filmed panel discussion on approaches to community engagement in seaside heritage projects.",
+  },
+  {
+    id: "10",
+    title: "Planning Policy and the Seaside",
+    category: "Research",
+    format: "Article",
+    description:
+      "An analysis of how national planning policy frameworks address the distinctive challenges of seaside heritage.",
+  },
+  {
+    id: "11",
+    title: "Oral History Methods for Seaside Research",
+    category: "Discover",
+    format: "PDF",
+    description:
+      "Guidance on using oral history techniques to document personal and community memories of the seaside.",
+  },
+  {
+    id: "12",
+    title: "Weymouth Heritage Walk",
+    category: "Discover",
+    format: "PDF",
+    description:
+      "A self-guided tour of Weymouth's Georgian seafront and the historic harbour area.",
+  },
+];
+
+const CATEGORIES = ["Discover", "Best Practice", "Research"];
+const FORMATS = ["PDF", "Video", "Article"];
+
+const badgeColors: Record<string, string> = {
+  Discover: "bg-teal-600",
+  "Best Practice": "bg-blue-600",
+  Research: "bg-purple-700",
+};
+
+const labelColors: Record<string, string> = {
+  Discover: "text-teal-600",
+  "Best Practice": "text-blue-600",
+  Research: "text-purple-700",
+};
+
+function ctaLabel(format: string) {
+  if (format === "PDF") return "Download PDF";
+  if (format === "Video") return "Watch video";
+  return "Read more";
+}
+---
+
+<PageLayout metadata={metadata}>
+  <HeroText
+    tagline="Resources"
+    title="The Resource Hub"
+    subtitle="Practical resources, research, commentary and downloadable material on seaside heritage — guides, best practice, and research. Free to use and growing, as contributors send material in."
+  />
+
+  <!-- Browse area -->
+  <section class="min-h-96" style="background-color: #F9F9F8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Sidebar: search + filters -->
+        <aside
+          id="rh-sidebar-inner"
+          class="lg:col-span-1 lg:self-start lg:sticky bg-white rounded-lg border border-gray-400 p-5 space-y-5"
+          aria-label="Search and filter resources"
+        >
+          <!-- Search -->
+          <div class="relative">
+            <svg
+              class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600 pointer-events-none"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input
+              id="rh-search"
+              type="text"
+              placeholder="Search resources"
+              class="w-full pl-8 pr-8 py-2 border border-gray-400 rounded bg-white text-dark text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
+              aria-label="Search resources"
+            />
+            <button
+              id="rh-search-clear"
+              type="button"
+              class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
+              aria-label="Clear search"
+            >
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Mobile filter toggle -->
+          <button
+            id="rh-mobile-filter-toggle"
+            type="button"
+            class="lg:hidden w-full flex items-center justify-between text-sm font-semibold text-dark border-t border-gray-100 pt-4"
+            aria-expanded="false"
+            aria-controls="rh-filter-panel"
+          >
+            <span id="rh-mobile-toggle-label">Filter resources</span>
+            <svg
+              id="rh-mobile-chevron"
+              class="w-4 h-4 text-gray-600 transition-transform duration-200"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+
+          <!-- Filter panel (collapsible on mobile, always open on desktop) -->
+          <div id="rh-filter-panel" class="hidden lg:block space-y-5">
+            <!-- Category -->
+            <div>
+              <h3
+                class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3"
+              >
+                Category
+              </h3>
+              <ul class="space-y-0.5">
+                {
+                  CATEGORIES.map((cat) => (
+                    <li>
+                      <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
+                        <input
+                          type="checkbox"
+                          value={cat}
+                          data-rh-filter="category"
+                          class="w-4 h-4 rounded accent-blue-700 shrink-0"
+                        />
+                        <span
+                          class={`w-2 h-2 rounded-full shrink-0 ${badgeColors[cat] ?? "bg-gray-400"}`}
+                          aria-hidden="true"
+                        />
+                        {cat}
+                      </label>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            <hr class="border-gray-200" />
+
+            <!-- Content type -->
+            <div>
+              <h3
+                class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3"
+              >
+                Content type
+              </h3>
+              <ul class="space-y-0.5">
+                {
+                  FORMATS.map((fmt) => (
+                    <li>
+                      <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
+                        <input
+                          type="checkbox"
+                          value={fmt}
+                          data-rh-filter="format"
+                          class="w-4 h-4 rounded accent-blue-700 shrink-0"
+                        />
+                        {fmt}
+                      </label>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            <button
+              type="button"
+              id="rh-clear-all"
+              class="hidden text-sm text-gray-600 hover:text-dark underline decoration-1 transition-colors"
+            >
+              Clear all filters
+            </button>
+
+            <!-- Active chips -->
+            <div
+              id="rh-chips"
+              class="hidden flex-wrap gap-2"
+              aria-live="polite"
+            >
+            </div>
+          </div>
+        </aside>
+
+        <!-- Results: 3 columns -->
+        <div class="lg:col-span-3">
+          <p id="rh-count" class="text-sm text-gray-700 mb-5">
+            Showing {resources.length} of {resources.length} resources
+          </p>
+
+          <ul
+            id="rh-grid"
+            class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            aria-label="Resources"
+          >
+            {
+              resources.map((r) => (
+                <li
+                  data-rh-card
+                  data-category={r.category}
+                  data-format={r.format}
+                  data-search-text={`${r.title} ${r.description}`.toLowerCase()}
+                >
+                  <article class="bg-white rounded-sm border border-gray-400 p-5 flex flex-col h-full relative">
+                    <div
+                      class={`absolute top-0 right-4 w-6 h-8 ${badgeColors[r.category] ?? "bg-gray-600"}`}
+                      style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%)"
+                      aria-hidden="true"
+                    />
+                    <div class="mb-3">
+                      <span
+                        class={`text-[0.65rem] font-semibold uppercase tracking-wider leading-tight ${labelColors[r.category] ?? "text-gray-600"}`}
+                      >
+                        {r.category} · {r.format}
+                      </span>
+                    </div>
+                    <h2 class="text-base font-heading font-semibold text-dark mb-2 leading-snug">
+                      {r.title}
+                    </h2>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4 flex-1">
+                      {r.description}
+                    </p>
+                    <a
+                      href="#"
+                      class="inline-flex items-center gap-1 text-sm font-semibold text-accent mt-auto"
+                    >
+                      <span class="underline decoration-1 hover:decoration-2">
+                        {ctaLabel(r.format)}
+                      </span>
+                      <span aria-hidden="true">→</span>
+                    </a>
+                  </article>
+                </li>
+              ))
+            }
+          </ul>
+
+          <p id="rh-empty" class="hidden text-center text-gray-500 py-20">
+            No resources match your search. Try adjusting the filters.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script is:inline>
+  (function () {
+    var total = document.querySelectorAll("[data-rh-card]").length;
+    var searchInput = document.getElementById("rh-search");
+    var countEl = document.getElementById("rh-count");
+    var chipsEl = document.getElementById("rh-chips");
+    var emptyEl = document.getElementById("rh-empty");
+    var grid = document.getElementById("rh-grid");
+    var sidebarInner = document.getElementById("rh-sidebar-inner");
+    var clearAllBtn = document.getElementById("rh-clear-all");
+    var header = document.getElementById("header");
+    var mobileToggle = document.getElementById("rh-mobile-filter-toggle");
+    var mobileToggleLabel = document.getElementById("rh-mobile-toggle-label");
+    var mobileChevron = document.getElementById("rh-mobile-chevron");
+    var filterPanel = document.getElementById("rh-filter-panel");
+    var searchClearBtn = document.getElementById("rh-search-clear");
+
+    var state = { q: "", category: new Set(), format: new Set() };
+
+    // Sidebar sticky top offset from header
+    function setSidebarTop() {
+      if (header && sidebarInner) {
+        sidebarInner.style.top = header.offsetHeight + 24 + "px";
+      }
+    }
+    setSidebarTop();
+    window.addEventListener("resize", setSidebarTop);
+
+    // Mobile filter toggle
+    if (mobileToggle && filterPanel) {
+      mobileToggle.addEventListener("click", function () {
+        var isOpen = mobileToggle.getAttribute("aria-expanded") === "true";
+        mobileToggle.setAttribute("aria-expanded", isOpen ? "false" : "true");
+        filterPanel.classList.toggle("hidden", isOpen);
+        if (mobileChevron)
+          mobileChevron.style.transform = isOpen ? "" : "rotate(180deg)";
+      });
+    }
+
+    function updateMobileToggleLabel() {
+      if (!mobileToggleLabel) return;
+      var count = state.category.size + state.format.size;
+      mobileToggleLabel.textContent =
+        count > 0 ? "Filter resources (" + count + ")" : "Filter resources";
+    }
+
+    // Checkbox changes
+    document.querySelectorAll("[data-rh-filter]").forEach(function (cb) {
+      cb.addEventListener("change", function () {
+        var key = cb.dataset.rhFilter;
+        if (cb.checked) state[key].add(cb.value);
+        else state[key].delete(cb.value);
+        highlightCheckedRows();
+        applyFilters();
+        renderChips();
+        updateClearAllBtn();
+        updateMobileToggleLabel();
+      });
+    });
+
+    // Search
+    if (searchInput) {
+      searchInput.addEventListener("input", function () {
+        state.q = searchInput.value.toLowerCase().trim();
+        if (searchClearBtn)
+          searchClearBtn.classList.toggle("hidden", !searchInput.value);
+        applyFilters();
+      });
+    }
+
+    // Search clear button
+    if (searchClearBtn && searchInput) {
+      searchClearBtn.addEventListener("click", function () {
+        searchInput.value = "";
+        state.q = "";
+        searchClearBtn.classList.add("hidden");
+        applyFilters();
+        searchInput.focus();
+      });
+    }
+
+    // Clear all (static button in sidebar)
+    if (clearAllBtn) {
+      clearAllBtn.addEventListener("click", clearAll);
+    }
+
+    function clearAll() {
+      state.category.clear();
+      state.format.clear();
+      document.querySelectorAll("[data-rh-filter]").forEach(function (cb) {
+        cb.checked = false;
+      });
+      highlightCheckedRows();
+      applyFilters();
+      renderChips();
+      updateClearAllBtn();
+      updateMobileToggleLabel();
+    }
+
+    function highlightCheckedRows() {
+      document.querySelectorAll(".rh-option").forEach(function (label) {
+        var cb = label.querySelector("input[type='checkbox']");
+        label.style.background = cb && cb.checked ? "#eff6ff" : "";
+      });
+    }
+
+    function updateClearAllBtn() {
+      if (!clearAllBtn) return;
+      var hasAny = state.category.size > 0 || state.format.size > 0;
+      clearAllBtn.classList.toggle("hidden", !hasAny);
+      clearAllBtn.classList.toggle("block", hasAny);
+    }
+
+    function applyFilters() {
+      var shown = 0;
+      document.querySelectorAll("[data-rh-card]").forEach(function (card) {
+        var cat = card.dataset.category;
+        var fmt = card.dataset.format;
+        var text = card.dataset.searchText || "";
+        var matchQ = !state.q || text.includes(state.q);
+        var matchCat = state.category.size === 0 || state.category.has(cat);
+        var matchFmt = state.format.size === 0 || state.format.has(fmt);
+        var visible = matchQ && matchCat && matchFmt;
+        card.style.display = visible ? "" : "none";
+        if (visible) shown++;
+      });
+      if (countEl)
+        countEl.textContent =
+          "Showing " + shown + " of " + total + " resources";
+      if (emptyEl) emptyEl.classList.toggle("hidden", shown > 0);
+      if (grid) grid.classList.toggle("hidden", shown === 0);
+    }
+
+    function renderChips() {
+      if (!chipsEl) return;
+      var chips = [];
+      state.category.forEach(function (v) {
+        chips.push({ key: "category", value: v });
+      });
+      state.format.forEach(function (v) {
+        chips.push({ key: "format", value: v });
+      });
+
+      if (chips.length === 0) {
+        chipsEl.classList.add("hidden");
+        chipsEl.classList.remove("flex");
+        chipsEl.innerHTML = "";
+        return;
+      }
+
+      chipsEl.classList.remove("hidden");
+      chipsEl.classList.add("flex");
+
+      chipsEl.innerHTML = chips
+        .map(function (chip) {
+          return (
+            '<button type="button" data-chip-key="' +
+            chip.key +
+            '" data-chip-value="' +
+            chip.value +
+            '" class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-sm font-medium px-2.5 py-1 rounded hover:bg-blue-100 transition-colors">' +
+            chip.value +
+            '<svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>' +
+            '<span class="sr-only">Remove ' +
+            chip.value +
+            " filter</span></button>"
+          );
+        })
+        .join("");
+
+      chipsEl.querySelectorAll("[data-chip-key]").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          var key = chip.dataset.chipKey;
+          var value = chip.dataset.chipValue;
+          state[key].delete(value);
+          document
+            .querySelectorAll("[data-rh-filter='" + key + "']")
+            .forEach(function (cb) {
+              if (cb.value === value) cb.checked = false;
+            });
+          highlightCheckedRows();
+          applyFilters();
+          renderChips();
+          updateClearAllBtn();
+        });
+      });
+    }
+  })();
+</script>

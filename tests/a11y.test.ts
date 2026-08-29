@@ -11,6 +11,7 @@ const routes = [
   { name: "contact", path: "/contact/" },
   { name: "mission", path: "/mission/" },
   { name: "meet the team", path: "/team/" },
+  { name: "resource hub", path: "/resource-hub/" },
 ];
 
 test("skip link is the first tab stop and targets main content", async ({

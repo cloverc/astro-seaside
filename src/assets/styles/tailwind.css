@@ -150,6 +150,13 @@ footer,
   @apply bg-page;
 }
 
+#header nav a[aria-current="page"] {
+  color: var(--shn-color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
 #header.h-screen nav {
   position: fixed;
   top: 86px;
