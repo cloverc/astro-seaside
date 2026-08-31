@@ -1,8 +1,18 @@
 ---
+import { Image } from "astro:assets";
 import { useStoryblokApi } from "@storyblok/astro";
 import HeroText from "../components/HeroText.astro";
 import PageLayout from "../layouts/PageLayout.astro";
 import { getStoryblokVersion } from "../utils/storyblok";
+import img2016 from "../assets/images/timeline/2016_esme_fairbairn_logo.jpg";
+import img2017 from "../assets/images/timeline/2017_seaside_conference.jpg";
+import img2022 from "../assets/images/timeline/2022_first_online_seminar_image.jpg";
+import img2023a from "../assets/images/timeline/2023_bucket_and_spade_winners_blackpool.jpg";
+import img2023b from "../assets/images/timeline/2023_walking_tour_weston.jpg";
+import img2025a from "../assets/images/timeline/2025_national_seaside_day.png";
+import img2025b from "../assets/images/timeline/2025_recognising_seaside_heritage_conference.jpg";
+import img2026a from "../assets/images/timeline/2026_walking_tour_sussex_coast.jpg";
+import img2026b from "../assets/images/timeline/2026_valuing_seaside_heritage_conference_saltdean.jpg";
 
 const storyblokApi = useStoryblokApi();
 const { data: homeData } = await storyblokApi.get("cdn/stories/home", {
@@ -18,6 +28,7 @@ const metadata = {
 };
 
 const linkClass = "underline decoration-1 hover:decoration-2";
+const imgClass = "w-full rounded object-cover aspect-[16/9]";
 ---
 
 <PageLayout metadata={metadata}>
@@ -31,16 +42,25 @@ const linkClass = "underline decoration-1 hover:decoration-2";
         <div class="mb-2">
           <h2 class="font-heading text-xl font-bold leading-tight">2016</h2>
         </div>
-        <p>
-          The Seaside Heritage Network was first formed in 2016 by <a
-            href="https://scarboroughmuseumsandgalleries.org.uk/"
-            class={linkClass}>Scarborough Museum Trust</a
-          > with funding support from the Esme Fairbairn Foundation. Its founding
-          members included Southend Museums Service, Hastings Museum and Art Gallery,
-          Manx National Heritage, Blackpool Museum Project and the National Piers
-          Society.
-        </p>
-        <p class="mt-3">
+        <div class="flex flex-col lg:flex-row gap-4 items-start">
+          <p class="flex-1">
+            The Seaside Heritage Network was first formed in 2016 by <a
+              href="https://scarboroughmuseumsandgalleries.org.uk/"
+              class={linkClass}>Scarborough Museum Trust</a
+            > with funding support from the Esme Fairbairn Foundation. Its founding
+            members included Southend Museums Service, Hastings Museum and Art Gallery,
+            Manx National Heritage, Blackpool Museum Project and the National Piers
+            Society.
+          </p>
+          <Image
+            src={img2016}
+            alt="Esmée Fairbairn Foundation logo"
+            class="rounded border border-white/10 bg-white px-1 w-full lg:w-[280px] lg:shrink-0"
+            widths={[280, 560, 800]}
+            sizes="(max-width: 1024px) 100vw, 280px"
+          />
+        </div>
+        <p class="mt-4">
           The original SHN had a museum focus, with an emphasis on utilising the
           network to research seaside-related collections, locate custodians of
           seaside heritage and share vital knowledge and expertise. However, the
@@ -62,6 +82,18 @@ const linkClass = "underline decoration-1 hover:decoration-2";
           with speakers including current SHN trustees Samantha Richardson,
           Kathryn Ferry, and Anya Chapman.
         </p>
+        <figure class="mt-4">
+          <Image
+            src={img2017}
+            alt="Beside the Seaside conference brochure, Scarborough Spa, April 2017"
+            class={imgClass}
+            widths={[600, 1200]}
+            sizes="(max-width: 768px) 100vw, 672px"
+          />
+          <figcaption class="mt-1.5 text-xs text-gray-400">
+            Seaside Heritage Conference at Scarborough Spa
+          </figcaption>
+        </figure>
       </li>
 
       <li class="relative mb-10">
@@ -85,6 +117,18 @@ const linkClass = "underline decoration-1 hover:decoration-2";
           >. Attendance steadily increased, recognising a clear community of
           people who valued the distinctive heritage of the seaside.
         </p>
+        <figure class="mt-4">
+          <Image
+            src={img2022}
+            alt="Seaside Heritage Network online seminar: Big Heritage — Issues, Challenges, Opportunities"
+            class={imgClass}
+            widths={[600, 1200]}
+            sizes="(max-width: 768px) 100vw, 672px"
+          />
+          <figcaption class="mt-1.5 text-xs text-gray-400">
+            First online seminar
+          </figcaption>
+        </figure>
       </li>
 
       <li class="relative mb-10">
@@ -109,11 +153,35 @@ const linkClass = "underline decoration-1 hover:decoration-2";
           (previous guests have included the designer Wayne Hemingway and the
           author Paul Doe).
         </p>
-        <p class="mt-3">
+        <figure class="mt-4">
+          <Image
+            src={img2023a}
+            alt="Bucket and Spade list winners at the Big Day Out, Blackpool 2023"
+            class={imgClass}
+            widths={[600, 1200]}
+            sizes="(max-width: 768px) 100vw, 672px"
+          />
+          <figcaption class="mt-1.5 text-xs text-gray-400">
+            Bucket and Spade winners in Blackpool
+          </figcaption>
+        </figure>
+        <p class="mt-4">
           The SHN has also been increasingly active in organising guided tours
           of seaside resorts, with recent examples including Blackpool,
           Weymouth, Weston-Super-Mare, Brighton, Saltdean, and Margate.
         </p>
+        <figure class="mt-4">
+          <Image
+            src={img2023b}
+            alt="Guided walking tour of Weston-super-Mare, 2023"
+            class={imgClass}
+            widths={[600, 1200]}
+            sizes="(max-width: 768px) 100vw, 672px"
+          />
+          <figcaption class="mt-1.5 text-xs text-gray-400">
+            Walking tour of Weston-Super-Mare
+          </figcaption>
+        </figure>
       </li>
 
       <li class="relative mb-10">
@@ -129,14 +197,38 @@ const linkClass = "underline decoration-1 hover:decoration-2";
           these were whittled down to a shortlist which was then put to a public
           vote.
         </p>
-        <p class="mt-3">
+        <figure class="mt-4">
+          <Image
+            src={img2025a}
+            alt="National Seaside Day, 1st July 2025"
+            class="rounded w-full max-w-[420px] border border-white/20"
+            widths={[420, 840]}
+            sizes="(max-width: 768px) 100vw, 420px"
+          />
+          <figcaption class="mt-1.5 text-xs text-gray-400">
+            National Seaside Day
+          </figcaption>
+        </figure>
+        <p class="mt-4">
           The Seaside Heritage Network also teamed up with <a
             href="https://hbap.org.uk/"
             class={linkClass}>Historic Buildings and Places</a
           > to organise in-person symposia on seaside heritage. The first symposium,
           'Recognising Seaside Heritage', was held in London in June 2025.
         </p>
-        <p class="mt-3">
+        <figure class="mt-4">
+          <Image
+            src={img2025b}
+            alt="Recognising Seaside Heritage symposium, London, June 2025"
+            class={imgClass}
+            widths={[600, 1200]}
+            sizes="(max-width: 768px) 100vw, 672px"
+          />
+          <figcaption class="mt-1.5 text-xs text-gray-400">
+            Recognising Seaside Heritage symposium
+          </figcaption>
+        </figure>
+        <p class="mt-4">
           In December 2025, the Seaside Heritage Network was registered as a
           charity (a 'Foundation CIO') with the Charities Commission — an
           educational charity which seeks to raise awareness and understanding
@@ -156,10 +248,34 @@ const linkClass = "underline decoration-1 hover:decoration-2";
           The second symposium, 'Valuing Seaside Heritage', was held at Saltdean
           Lido. A third symposium is planned for 2027.
         </p>
+        <figure class="mt-4">
+          <Image
+            src={img2026b}
+            alt="Valuing Seaside Heritage symposium at Saltdean Lido, June 2026"
+            class={imgClass}
+            widths={[600, 1200]}
+            sizes="(max-width: 768px) 100vw, 672px"
+          />
+          <figcaption class="mt-1.5 text-xs text-gray-400">
+            Valuing Seaside Heritage conference Saltdean
+          </figcaption>
+        </figure>
+        <figure class="mt-4">
+          <Image
+            src={img2026a}
+            alt="Guided walking tour of the Sussex coast, 2026"
+            class={imgClass}
+            widths={[600, 1200]}
+            sizes="(max-width: 768px) 100vw, 672px"
+          />
+          <figcaption class="mt-1.5 text-xs text-gray-400">
+            Walking tour of the Sussex coast
+          </figcaption>
+        </figure>
       </li>
     </ol>
 
-    <p class="pl-8">
+    <p class="pl-8 mt-10">
       The Seaside Heritage Network is not a membership organisation, but if you
       are interested in our activities you can <a
         href={signupLink}
