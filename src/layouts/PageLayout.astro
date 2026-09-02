@@ -10,16 +10,50 @@ const { metadata } = Astro.props;
 
 const storyblokApi = useStoryblokApi();
 
-const [{ data }, { data: homeData }] = await Promise.all([
+const version = getStoryblokVersion(Astro.request);
+
+const [{ data }, { data: homeData }, globalConfigResult] = await Promise.all([
   storyblokApi.get("cdn/stories", {
-    version: getStoryblokVersion(Astro.request),
+    version,
     starts_with: "bucket-spade-list",
     is_startpage: true,
   }),
-  storyblokApi.get("cdn/stories/home", {
-    version: getStoryblokVersion(Astro.request),
-  }),
+  storyblokApi.get("cdn/stories/home", { version }),
+  storyblokApi.get("cdn/stories/global-config", { version }).catch(() => null),
 ]);
+
+const gc = globalConfigResult?.data?.story?.content ?? {};
+
+const siteUrl = Astro.site?.href ?? "https://seasideheritage.org.uk/";
+const orgName = gc.org_name ?? "Seaside Heritage Network";
+
+const schemaGraph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: orgName,
+      url: siteUrl,
+      description:
+        "A charity raising awareness and understanding of the broad heritage associated with the UK seaside holiday.",
+      inLanguage: "en-GB",
+      sameAs: [
+        gc.instagram_url ?? "https://www.instagram.com/seaside_network/",
+        gc.x_url ?? "https://twitter.com/seaside_network",
+        gc.youtube_url ?? "https://www.youtube.com/@SeasideHeritageNetwork",
+      ].filter(Boolean),
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}#website`,
+      url: siteUrl,
+      name: orgName,
+      inLanguage: "en-GB",
+      publisher: { "@id": `${siteUrl}#organization` },
+    },
+  ],
+};
 
 const bucketPageLinks = data ? data.stories : [];
 
@@ -27,17 +61,17 @@ const sharedSocialLinks = [
   {
     ariaLabel: "Instagram",
     icon: "tabler:brand-instagram",
-    href: "https://www.instagram.com/seaside_network/",
+    href: gc.instagram_url ?? "https://www.instagram.com/seaside_network/",
   },
   {
     ariaLabel: "X",
     icon: "tabler:brand-x",
-    href: "https://twitter.com/seaside_network",
+    href: gc.x_url ?? "https://twitter.com/seaside_network",
   },
   {
     ariaLabel: "YouTube",
     icon: "tabler:brand-youtube",
-    href: "https://www.youtube.com/@SeasideHeritageNetwork",
+    href: gc.youtube_url ?? "https://www.youtube.com/@SeasideHeritageNetwork",
   },
 ];
 
@@ -108,13 +142,14 @@ const footerData = {
     },
   ],
   socialLinks: sharedSocialLinks,
-  footNote: `
-    &copy; Seaside Heritage Network. Registered Charity in England and Wales (Charity No. 1216037). All rights reserved.
-  `,
+  footNote: `&copy; ${gc.org_name ?? "Seaside Heritage Network"}. Registered Charity in England and Wales (Charity No. ${gc.charity_number ?? "1216037"}). All rights reserved.`,
 };
 ---
 
 <Layout metadata={metadata}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
+  </Fragment>
   {
     Astro.url.pathname === "/" && (
       <link
