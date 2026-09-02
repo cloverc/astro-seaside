@@ -41,9 +41,9 @@ const HeadlineTag = cardHeadlineTag;
       {event.title}
     </HeadlineTag>
     <div class="mb-3">
-      <span class="text-m font-semibold">
-        <Icon name="tabler:clock" class="w-5 h-5 inline-block -mt-0.5" />
-        <time class="px-1.5 inline-block" datetime={event.date}
+      <span class="inline-flex items-center gap-1.5 text-m font-semibold">
+        <Icon name="tabler:clock" class="w-5 h-5 shrink-0" />
+        <time datetime={event.date}
           >{getFormattedDate(new Date(event.date))}</time
         >
       </span>
@@ -51,11 +51,9 @@ const HeadlineTag = cardHeadlineTag;
     {
       event.location && (
         <div class="mb-3 -mt-3">
-          <span class="text-m font-semibold">
-            <Icon name="tabler:map-pin" class="w-5 h-5 inline-block -mt-0.5" />
-            <span class="px-1.5" class="inline-block">
-              {event.location}
-            </span>
+          <span class="inline-flex items-center gap-1.5 text-m font-semibold">
+            <Icon name="tabler:map-pin" class="w-5 h-5 shrink-0" />
+            <span>{event.location}</span>
           </span>
         </div>
       )
