@@ -65,11 +65,15 @@ const sharedSocialLinks = [
     icon: "tabler:brand-instagram",
     href: gc.instagram_url ?? "https://www.instagram.com/seaside_network/",
   },
-  {
-    ariaLabel: "YouTube",
-    icon: "tabler:brand-youtube",
-    href: gc.youtube_url ?? "https://www.youtube.com/@SeasideHeritageNetwork",
-  },
+  ...(gc.facebook_url
+    ? [
+        {
+          ariaLabel: "Facebook",
+          icon: "tabler:brand-facebook",
+          href: gc.facebook_url,
+        },
+      ]
+    : []),
   ...(gc.bluesky_url
     ? [
         {
@@ -88,15 +92,11 @@ const sharedSocialLinks = [
         },
       ]
     : []),
-  ...(gc.facebook_url
-    ? [
-        {
-          ariaLabel: "Facebook",
-          icon: "tabler:brand-facebook",
-          href: gc.facebook_url,
-        },
-      ]
-    : []),
+  {
+    ariaLabel: "YouTube",
+    icon: "tabler:brand-youtube",
+    href: gc.youtube_url ?? "https://www.youtube.com/@SeasideHeritageNetwork",
+  },
 ];
 
 const latestWinners = bucketPageLinks
@@ -140,7 +140,6 @@ const headerData = {
     },
     { text: "Contact", href: "/contact/" },
   ],
-  socialLinks: sharedSocialLinks,
 };
 
 const footerData = {

@@ -47,9 +47,10 @@ export default defineConfig({
     icon({
       include: {
         tabler: [
+          "brand-bluesky",
+          "brand-facebook",
           "brand-instagram",
           "brand-linkedin",
-          "brand-x",
           "brand-youtube",
           "chevron-down",
           "circle-letter-a",
