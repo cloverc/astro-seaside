@@ -1,125 +1,32 @@
 ---
 import HeroText from "../../components/HeroText.astro";
 import PageLayout from "../../layouts/PageLayout.astro";
+import { resources, badgeColors } from "../../data/mockResources";
 
 const metadata = {
   siteTitle: "Seaside Heritage Network",
   pageTitle: "Resource Hub",
 };
-
-const resources = [
-  {
-    id: "1",
-    title: "Heritage Assessment Guide for Coastal Buildings",
-    category: "Best Practice",
-    format: "PDF",
-    description:
-      "A practical guide to assessing the heritage significance of buildings in coastal and seaside settings, including listed structures.",
-  },
-  {
-    id: "2",
-    title: "Documenting Seaside Amusements",
-    category: "Best Practice",
-    format: "Video",
-    description:
-      "An introduction to methods for documenting and recording amusement parks and funfair heritage on film.",
-  },
-  {
-    id: "3",
-    title: "Best Practice in Seaside Conservation Schemes",
-    category: "Best Practice",
-    format: "PDF",
-    description:
-      "Case studies and guidance from recent conservation projects at seaside resorts across the UK.",
-  },
-  {
-    id: "4",
-    title: "Margate Old Town Walking Tour",
-    category: "Discover",
-    format: "PDF",
-    description:
-      "A self-guided walking tour exploring the heritage of Margate Old Town, from the Tudor harbour to the seafront.",
-  },
-  {
-    id: "5",
-    title: "Funding Your Seaside Heritage Project",
-    category: "Best Practice",
-    format: "Article",
-    description:
-      "An overview of funding sources available to groups and organisations working on seaside heritage projects.",
-  },
-  {
-    id: "6",
-    title: "The Future of the British Pier",
-    category: "Research",
-    format: "PDF",
-    description:
-      "A research report examining the current condition and future prospects of piers in England and Wales.",
-  },
-  {
-    id: "7",
-    title: "Climate Adaptation for Coastal Heritage",
-    category: "Best Practice",
-    format: "PDF",
-    description:
-      "Practical guidance on adapting seaside heritage buildings and structures to changing climate conditions.",
-  },
-  {
-    id: "8",
-    title: "Blackpool Promenade Walking Tour",
-    category: "Discover",
-    format: "PDF",
-    description:
-      "Explore the rich heritage of Blackpool's promenade, from the Tower to the Pleasure Beach.",
-  },
-  {
-    id: "9",
-    title: "Engaging Communities in Seaside Heritage",
-    category: "Best Practice",
-    format: "Video",
-    description:
-      "A filmed panel discussion on approaches to community engagement in seaside heritage projects.",
-  },
-  {
-    id: "10",
-    title: "Planning Policy and the Seaside",
-    category: "Research",
-    format: "Article",
-    description:
-      "An analysis of how national planning policy frameworks address the distinctive challenges of seaside heritage.",
-  },
-  {
-    id: "11",
-    title: "Oral History Methods for Seaside Research",
-    category: "Discover",
-    format: "PDF",
-    description:
-      "Guidance on using oral history techniques to document personal and community memories of the seaside.",
-  },
-  {
-    id: "12",
-    title: "Weymouth Heritage Walk",
-    category: "Discover",
-    format: "PDF",
-    description:
-      "A self-guided tour of Weymouth's Georgian seafront and the historic harbour area.",
-  },
+const AUDIENCES = [
+  "General Public",
+  "Heritage Professionals",
+  "Academics & Researchers",
 ];
-
-const CATEGORIES = ["Discover", "Best Practice", "Research"];
-const FORMATS = ["PDF", "Video", "Article"];
-
-const badgeColors: Record<string, string> = {
-  Discover: "bg-teal-600",
-  "Best Practice": "bg-blue-600",
-  Research: "bg-purple-700",
-};
-
-const labelColors: Record<string, string> = {
-  Discover: "text-teal-600",
-  "Best Practice": "text-blue-600",
-  Research: "text-purple-700",
-};
+const RESOURCE_TYPES = [
+  "Guides & Factsheets",
+  "Toolkits & Templates",
+  "Case Studies",
+  "Research & Reports",
+];
+const TOPICS = [
+  "Seaside history",
+  "Restoration & regeneration",
+  "Arts & culture",
+  "Funding & policy",
+  "Tourism & visitor economy",
+  "Architecture & design",
+  "Entertainment & fun",
+];
 
 function ctaLabel(format: string) {
   if (format === "PDF") return "Download PDF";
@@ -132,13 +39,13 @@ function ctaLabel(format: string) {
   <HeroText
     tagline="Resources"
     title="The Resource Hub"
-    subtitle="Practical resources, research, commentary and downloadable material on seaside heritage — guides, best practice, and research. Free to use and growing, as contributors send material in."
+    subtitle="Practical resources, research and commentary on seaside heritage: guides, best practice and downloadable material. Free to use and growing."
   />
 
   <!-- Browse area -->
   <section class="min-h-96" style="background-color: #F9F9F8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Sidebar: search + filters -->
         <aside
           id="rh-sidebar-inner"
@@ -215,30 +122,46 @@ function ctaLabel(format: string) {
           </button>
 
           <!-- Filter panel (collapsible on mobile, always open on desktop) -->
-          <div id="rh-filter-panel" class="hidden lg:block space-y-5">
-            <!-- Category -->
-            <div>
-              <h3
-                class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3"
+          <div id="rh-filter-panel" class="hidden lg:block space-y-1">
+            <!-- Audience -->
+            <div class="border-b border-gray-200">
+              <button
+                type="button"
+                data-rh-group="audience"
+                class="rh-group-toggle w-full flex items-center justify-between py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                aria-expanded="true"
               >
-                Category
-              </h3>
-              <ul class="space-y-0.5">
+                Who you are
+                <svg
+                  class="rh-group-chevron w-3.5 h-3.5 text-gray-400 transition-transform duration-200 rotate-180"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <ul class="rh-group-panel space-y-0.5 pb-3">
                 {
-                  CATEGORIES.map((cat) => (
+                  AUDIENCES.map((aud) => (
                     <li>
                       <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
                         <input
                           type="checkbox"
-                          value={cat}
-                          data-rh-filter="category"
+                          value={aud}
+                          data-rh-filter="audience"
                           class="w-4 h-4 rounded accent-blue-700 shrink-0"
                         />
                         <span
-                          class={`w-2 h-2 rounded-full shrink-0 ${badgeColors[cat] ?? "bg-gray-400"}`}
+                          class={`w-2 h-2 rounded-full shrink-0 ${badgeColors[aud] ?? "bg-gray-400"}`}
                           aria-hidden="true"
                         />
-                        {cat}
+                        {aud}
                       </label>
                     </li>
                   ))
@@ -246,27 +169,83 @@ function ctaLabel(format: string) {
               </ul>
             </div>
 
-            <hr class="border-gray-200" />
-
-            <!-- Content type -->
-            <div>
-              <h3
-                class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3"
+            <!-- Topic -->
+            <div class="border-b border-gray-200">
+              <button
+                type="button"
+                data-rh-group="topic"
+                class="rh-group-toggle w-full flex items-center justify-between py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                aria-expanded="false"
               >
-                Content type
-              </h3>
-              <ul class="space-y-0.5">
+                Topic
+                <svg
+                  class="rh-group-chevron w-3.5 h-3.5 text-gray-400 transition-transform duration-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <ul class="rh-group-panel hidden space-y-0.5 pb-3">
                 {
-                  FORMATS.map((fmt) => (
+                  TOPICS.map((topic) => (
                     <li>
                       <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
                         <input
                           type="checkbox"
-                          value={fmt}
-                          data-rh-filter="format"
+                          value={topic}
+                          data-rh-filter="topic"
                           class="w-4 h-4 rounded accent-blue-700 shrink-0"
                         />
-                        {fmt}
+                        {topic}
+                      </label>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            <!-- Resource type -->
+            <div class="border-b border-gray-200">
+              <button
+                type="button"
+                data-rh-group="resourceType"
+                class="rh-group-toggle w-full flex items-center justify-between py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                aria-expanded="false"
+              >
+                Resource type
+                <svg
+                  class="rh-group-chevron w-3.5 h-3.5 text-gray-400 transition-transform duration-200"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <ul class="rh-group-panel hidden space-y-0.5 pb-3">
+                {
+                  RESOURCE_TYPES.map((rt) => (
+                    <li>
+                      <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
+                        <input
+                          type="checkbox"
+                          value={rt}
+                          data-rh-filter="resourceType"
+                          class="w-4 h-4 rounded accent-blue-700 shrink-0"
+                        />
+                        {rt}
                       </label>
                     </li>
                   ))
@@ -292,53 +271,87 @@ function ctaLabel(format: string) {
           </div>
         </aside>
 
-        <!-- Results: 3 columns -->
-        <div class="lg:col-span-3">
+        <!-- Results list -->
+        <div class="lg:col-span-2">
           <p id="rh-count" class="text-sm text-gray-700 mb-5">
             Showing {resources.length} of {resources.length} resources
           </p>
 
-          <ul
-            id="rh-grid"
-            class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-            aria-label="Resources"
-          >
+          <ul id="rh-grid" class="space-y-6" aria-label="Resources">
             {
               resources.map((r) => (
                 <li
                   data-rh-card
-                  data-category={r.category}
-                  data-format={r.format}
+                  data-audience={r.audience}
+                  data-resource-type={r.resourceType}
+                  data-topics={r.topics.join("|")}
                   data-search-text={`${r.title} ${r.description}`.toLowerCase()}
+                  class="rounded bg-white p-6 border border-gray-400"
                 >
-                  <article class="bg-white rounded-sm border border-gray-400 p-5 flex flex-col h-full relative">
-                    <div
-                      class={`absolute top-0 right-4 w-6 h-8 ${badgeColors[r.category] ?? "bg-gray-600"}`}
-                      style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%)"
-                      aria-hidden="true"
-                    />
-                    <div class="mb-3">
-                      <span
-                        class={`text-[0.65rem] font-semibold uppercase tracking-wider leading-tight ${labelColors[r.category] ?? "text-gray-600"}`}
+                  <article class="flex flex-col sm:flex-row gap-6 items-start">
+                    <div class="flex-1 min-w-0">
+                      <a href={`/resource-hub/${r.slug}`} class="group">
+                        <h2 class="text-xl font-heading font-bold text-dark mb-2 leading-snug group-hover:underline decoration-1">
+                          {r.title}
+                        </h2>
+                      </a>
+                      <p class="text-gray-600 leading-relaxed mb-4 line-clamp-3">
+                        {r.description}
+                      </p>
+                      <a
+                        href={`/resource-hub/${r.slug}`}
+                        class="inline-block btn-primary text-sm mb-5"
                       >
-                        {r.category} · {r.format}
-                      </span>
-                    </div>
-                    <h2 class="text-base font-heading font-semibold text-dark mb-2 leading-snug">
-                      {r.title}
-                    </h2>
-                    <p class="text-sm text-gray-600 leading-relaxed mb-4 flex-1">
-                      {r.description}
-                    </p>
-                    <a
-                      href="#"
-                      class="inline-flex items-center gap-1 text-sm font-semibold text-accent mt-auto"
-                    >
-                      <span class="underline decoration-1 hover:decoration-2">
                         {ctaLabel(r.format)}
-                      </span>
-                      <span aria-hidden="true">→</span>
-                    </a>
+                      </a>
+                      <dl class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm border-t border-gray-200 pt-4">
+                        <div>
+                          <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-0.5">
+                            Audience
+                          </dt>
+                          <dd class="flex items-center gap-1.5 text-dark">
+                            <span
+                              class={`w-2 h-2 rounded-full shrink-0 ${badgeColors[r.audience] ?? "bg-gray-400"}`}
+                              aria-hidden="true"
+                            />
+                            {r.audience}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-0.5">
+                            Format
+                          </dt>
+                          <dd class="text-dark">{r.format}</dd>
+                        </div>
+                        <div>
+                          <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-0.5">
+                            Type
+                          </dt>
+                          <dd class="text-dark">{r.resourceType}</dd>
+                        </div>
+                        <div class="col-span-2 sm:col-span-3">
+                          <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-0.5">
+                            Topics
+                          </dt>
+                          <dd class="text-dark">{r.topics.join(" · ")}</dd>
+                        </div>
+                      </dl>
+                    </div>
+
+                    {r.thumbnail && (
+                      <a
+                        href={`/resource-hub/${r.slug}`}
+                        class="shrink-0 w-36 sm:w-44 rounded overflow-hidden block"
+                      >
+                        <img
+                          src={r.thumbnail}
+                          alt={r.title}
+                          class="w-full aspect-[3/4] object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </a>
+                    )}
                   </article>
                 </li>
               ))
@@ -348,6 +361,13 @@ function ctaLabel(format: string) {
           <p id="rh-empty" class="hidden text-center text-gray-500 py-20">
             No resources match your search. Try adjusting the filters.
           </p>
+
+          <nav
+            id="rh-pagination"
+            aria-label="Resource pages"
+            class="hidden mt-8 flex items-center justify-center gap-2"
+          >
+          </nav>
         </div>
       </div>
     </div>
@@ -371,7 +391,14 @@ function ctaLabel(format: string) {
     var filterPanel = document.getElementById("rh-filter-panel");
     var searchClearBtn = document.getElementById("rh-search-clear");
 
-    var state = { q: "", category: new Set(), format: new Set() };
+    var PER_PAGE = 6;
+    var currentPage = 1;
+    var state = {
+      q: "",
+      audience: new Set(),
+      topic: new Set(),
+      resourceType: new Set(),
+    };
 
     // Sidebar sticky top offset from header
     function setSidebarTop() {
@@ -395,10 +422,23 @@ function ctaLabel(format: string) {
 
     function updateMobileToggleLabel() {
       if (!mobileToggleLabel) return;
-      var count = state.category.size + state.format.size;
+      var count =
+        state.audience.size + state.topic.size + state.resourceType.size;
       mobileToggleLabel.textContent =
         count > 0 ? "Filter resources (" + count + ")" : "Filter resources";
     }
+
+    // Filter group toggles
+    document.querySelectorAll(".rh-group-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var panel = btn.nextElementSibling;
+        var chevron = btn.querySelector(".rh-group-chevron");
+        var isOpen = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", isOpen ? "false" : "true");
+        panel.classList.toggle("hidden", isOpen);
+        if (chevron) chevron.style.transform = isOpen ? "" : "rotate(180deg)";
+      });
+    });
 
     // Checkbox changes
     document.querySelectorAll("[data-rh-filter]").forEach(function (cb) {
@@ -406,6 +446,7 @@ function ctaLabel(format: string) {
         var key = cb.dataset.rhFilter;
         if (cb.checked) state[key].add(cb.value);
         else state[key].delete(cb.value);
+        currentPage = 1;
         highlightCheckedRows();
         applyFilters();
         renderChips();
@@ -420,6 +461,7 @@ function ctaLabel(format: string) {
         state.q = searchInput.value.toLowerCase().trim();
         if (searchClearBtn)
           searchClearBtn.classList.toggle("hidden", !searchInput.value);
+        currentPage = 1;
         applyFilters();
       });
     }
@@ -441,8 +483,10 @@ function ctaLabel(format: string) {
     }
 
     function clearAll() {
-      state.category.clear();
-      state.format.clear();
+      state.audience.clear();
+      state.topic.clear();
+      state.resourceType.clear();
+      currentPage = 1;
       document.querySelectorAll("[data-rh-filter]").forEach(function (cb) {
         cb.checked = false;
       });
@@ -462,39 +506,128 @@ function ctaLabel(format: string) {
 
     function updateClearAllBtn() {
       if (!clearAllBtn) return;
-      var hasAny = state.category.size > 0 || state.format.size > 0;
+      var hasAny =
+        state.audience.size > 0 ||
+        state.topic.size > 0 ||
+        state.resourceType.size > 0;
       clearAllBtn.classList.toggle("hidden", !hasAny);
       clearAllBtn.classList.toggle("block", hasAny);
     }
 
     function applyFilters() {
-      var shown = 0;
-      document.querySelectorAll("[data-rh-card]").forEach(function (card) {
-        var cat = card.dataset.category;
-        var fmt = card.dataset.format;
+      var allCards = Array.from(document.querySelectorAll("[data-rh-card]"));
+      var matched = allCards.filter(function (card) {
+        var aud = card.dataset.audience;
+        var rt = card.dataset.resourceType;
+        var cardTopics = (card.dataset.topics || "").split("|");
         var text = card.dataset.searchText || "";
         var matchQ = !state.q || text.includes(state.q);
-        var matchCat = state.category.size === 0 || state.category.has(cat);
-        var matchFmt = state.format.size === 0 || state.format.has(fmt);
-        var visible = matchQ && matchCat && matchFmt;
-        card.style.display = visible ? "" : "none";
-        if (visible) shown++;
+        var matchAud = state.audience.size === 0 || state.audience.has(aud);
+        var matchTopic =
+          state.topic.size === 0 ||
+          cardTopics.some(function (t) {
+            return state.topic.has(t);
+          });
+        var matchRt =
+          state.resourceType.size === 0 || state.resourceType.has(rt);
+        return matchQ && matchAud && matchTopic && matchRt;
       });
+
+      var totalPages = Math.ceil(matched.length / PER_PAGE);
+      if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+      var start = (currentPage - 1) * PER_PAGE;
+      var pageItems = matched.slice(start, start + PER_PAGE);
+
+      allCards.forEach(function (card) {
+        card.style.display = "none";
+      });
+      pageItems.forEach(function (card) {
+        card.style.display = "";
+      });
+
       if (countEl)
         countEl.textContent =
-          "Showing " + shown + " of " + total + " resources";
-      if (emptyEl) emptyEl.classList.toggle("hidden", shown > 0);
-      if (grid) grid.classList.toggle("hidden", shown === 0);
+          "Showing " + matched.length + " of " + total + " resources";
+      if (emptyEl) emptyEl.classList.toggle("hidden", matched.length > 0);
+      if (grid) grid.classList.toggle("hidden", matched.length === 0);
+
+      renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+      var nav = document.getElementById("rh-pagination");
+      if (!nav) return;
+      if (totalPages <= 1) {
+        nav.classList.add("hidden");
+        nav.innerHTML = "";
+        return;
+      }
+      nav.classList.remove("hidden");
+
+      var btnBase =
+        "inline-flex items-center justify-center h-9 px-4 rounded border text-sm font-medium transition-colors ";
+      var btnActive = btnBase + "bg-accent text-white border-accent";
+      var btnNormal = btnBase + "border-gray-300 text-dark hover:bg-gray-100";
+      var btnDisabled =
+        btnBase + "border-gray-200 text-gray-300 cursor-default";
+
+      var html = "";
+      html +=
+        currentPage === 1
+          ? '<span class="' +
+            btnDisabled +
+            '" aria-disabled="true">&larr; Prev</span>'
+          : '<button type="button" data-page="' +
+            (currentPage - 1) +
+            '" class="' +
+            btnNormal +
+            '">&larr; Prev</button>';
+
+      for (var p = 1; p <= totalPages; p++) {
+        html +=
+          '<button type="button" data-page="' +
+          p +
+          '" class="' +
+          (p === currentPage ? btnActive : btnNormal) +
+          '" aria-current="' +
+          (p === currentPage ? "page" : "false") +
+          '">' +
+          p +
+          "</button>";
+      }
+
+      html +=
+        currentPage === totalPages
+          ? '<span class="' +
+            btnDisabled +
+            '" aria-disabled="true">Next &rarr;</span>'
+          : '<button type="button" data-page="' +
+            (currentPage + 1) +
+            '" class="' +
+            btnNormal +
+            '">Next &rarr;</button>';
+
+      nav.innerHTML = html;
+      nav.querySelectorAll("[data-page]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          currentPage = parseInt(btn.dataset.page);
+          applyFilters();
+          grid && grid.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
     }
 
     function renderChips() {
       if (!chipsEl) return;
       var chips = [];
-      state.category.forEach(function (v) {
-        chips.push({ key: "category", value: v });
+      state.audience.forEach(function (v) {
+        chips.push({ key: "audience", value: v });
       });
-      state.format.forEach(function (v) {
-        chips.push({ key: "format", value: v });
+      state.topic.forEach(function (v) {
+        chips.push({ key: "topic", value: v });
+      });
+      state.resourceType.forEach(function (v) {
+        chips.push({ key: "resourceType", value: v });
       });
 
       if (chips.length === 0) {

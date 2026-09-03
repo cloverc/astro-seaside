@@ -1,0 +1,337 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { resources, labelColors } from "../../data/mockResources";
+
+const { slug } = Astro.params;
+const resource = resources.find((r) => r.slug === slug);
+
+if (!resource) {
+  return Astro.redirect("/resource-hub/");
+}
+
+const related = resources
+  .filter(
+    (r) => r.slug !== slug && r.topics.some((t) => resource.topics.includes(t)),
+  )
+  .slice(0, 3);
+
+function ctaLabel(format: string) {
+  if (format === "Video") return "Watch";
+  if (format === "Article") return "Read";
+  return "Download";
+}
+
+const audiencePillColors: Record<string, string> = {
+  "General Public": "bg-gray-200 text-dark border-transparent",
+  "Heritage Professionals": "bg-gray-200 text-dark border-transparent",
+  "Academics & Researchers": "bg-gray-200 text-dark border-transparent",
+};
+
+const audienceDotColors: Record<string, string> = {
+  "General Public": "bg-teal-600",
+  "Heritage Professionals": "bg-blue-600",
+  "Academics & Researchers": "bg-purple-700",
+};
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: `${resource.title} — Resource Hub`,
+};
+---
+
+<PageLayout metadata={metadata}>
+  <!-- Hero -->
+  <div class="bg-page">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-14">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
+        <!-- Left -->
+        <div class="lg:col-span-3">
+          <p
+            class="text-sm font-black uppercase tracking-widest text-secondary mb-4"
+          >
+            {resource.resourceType}
+          </p>
+          <h1
+            class="text-4xl sm:text-5xl font-heading font-bold text-white mb-5 leading-tight"
+          >
+            {resource.title}
+          </h1>
+          <p class="text-lg text-white leading-relaxed mb-8 max-w-lg">
+            {resource.description}
+          </p>
+          <div class="flex flex-wrap items-center gap-4">
+            <a
+              href={resource.fileUrl ?? "#"}
+              target={resource.fileUrl ? "_blank" : undefined}
+              rel={resource.fileUrl ? "noopener noreferrer" : undefined}
+              class="btn-primary inline-flex items-center gap-2"
+            >
+              <svg
+                class="w-5 h-5 shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                ></path>
+              </svg>
+              {ctaLabel(resource.format)}
+              {resource.format}
+            </a>
+            {
+              (resource.fileSize || resource.pageCount) && (
+                <span class="text-sm text-white">
+                  {[
+                    resource.format,
+                    resource.fileSize,
+                    resource.pageCount && `${resource.pageCount} pages`,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
+              )
+            }
+          </div>
+        </div>
+
+        <!-- Thumbnail -->
+        <div class="lg:col-span-2">
+          {
+            resource.thumbnail ? (
+              <img
+                src={resource.thumbnail}
+                alt={resource.title}
+                class="w-full rounded aspect-[4/3] object-cover"
+              />
+            ) : (
+              <div
+                class="w-full aspect-[4/3] rounded border border-white/20 flex flex-col items-center justify-center gap-3"
+                aria-hidden="true"
+              >
+                <svg
+                  class="w-12 h-12 text-white/30"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <span class="text-white/30 text-xs font-medium uppercase tracking-wider">
+                  No image
+                </span>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <section class="py-16 pb-24" style="background-color: #F9F9F8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Main content -->
+        <div class="lg:col-span-2 space-y-10">
+          {
+            resource.bodySections?.map((section) => (
+              <div>
+                <h2 class="text-3xl font-heading font-bold text-dark mb-4">
+                  {section.heading}
+                </h2>
+                {section.bullets && (
+                  <ul class="list-disc list-outside pl-5 space-y-2 text-gray-700 leading-relaxed">
+                    {section.bullets.map((b) => (
+                      <li>{b}</li>
+                    ))}
+                  </ul>
+                )}
+                {section.text && (
+                  <p class="text-gray-700 leading-relaxed">{section.text}</p>
+                )}
+              </div>
+            ))
+          }
+
+          <div>
+            <h2 class="text-2xl font-heading font-bold text-dark mb-4">
+              Who it's for
+            </h2>
+            <div class="flex flex-wrap gap-2">
+              <span
+                class={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${audiencePillColors[resource.audience] ?? "bg-gray-100 text-dark"}`}
+              >
+                <span
+                  class={`w-2 h-2 rounded-full shrink-0 ${audienceDotColors[resource.audience] ?? "bg-gray-400"}`}
+                  aria-hidden="true"></span>
+                {resource.audience}
+              </span>
+            </div>
+          </div>
+
+          {
+            resource.usageNote && (
+              <>
+                <hr class="border-gray-200" />
+                <div>
+                  <h2 class="text-3xl font-heading font-bold text-dark mb-4">
+                    Using this resource
+                  </h2>
+                  <p class="text-gray-700 leading-relaxed">
+                    {resource.usageNote}
+                  </p>
+                </div>
+              </>
+            )
+          }
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="lg:col-span-1">
+          <div
+            class="bg-white rounded border border-gray-400 p-6 space-y-5 lg:sticky lg:top-24"
+          >
+            <h2 class="text-xl font-heading font-bold text-dark">
+              About this resource
+            </h2>
+
+            {
+              resource.producedBy && resource.producedBy.length > 0 && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    Produced by
+                  </p>
+                  {resource.producedBy.map((org) => (
+                    <p class="text-sm text-gray-900">{org}</p>
+                  ))}
+                </div>
+              )
+            }
+
+            {
+              resource.author && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    Author
+                  </p>
+                  <p class="text-sm text-gray-900">{resource.author}</p>
+                </div>
+              )
+            }
+
+            {
+              resource.published && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    Published
+                  </p>
+                  <p class="text-sm text-gray-900">{resource.published}</p>
+                </div>
+              )
+            }
+
+            {
+              resource.location && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    Location
+                  </p>
+                  <p class="text-sm text-gray-900">{resource.location}</p>
+                </div>
+              )
+            }
+
+            {
+              resource.topics.length > 0 && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    Topics
+                  </p>
+                  <p class="text-sm text-gray-900">
+                    {resource.topics.join(" · ")}
+                  </p>
+                </div>
+              )
+            }
+
+            <hr class="border-gray-200" />
+
+            <a
+              href={resource.fileUrl ?? "#"}
+              target={resource.fileUrl ? "_blank" : undefined}
+              rel={resource.fileUrl ? "noopener noreferrer" : undefined}
+              class="btn-primary w-full justify-center gap-2"
+            >
+              <svg
+                class="w-4 h-4 shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                ></path>
+              </svg>
+              {ctaLabel(resource.format)}
+              {resource.format}
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- More like this -->
+  {
+    related.length > 0 && (
+      <section class="py-16" style="background-color: rgb(30 64 175)">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+          <h2 class="text-3xl font-heading font-bold text-white mb-8">
+            More like this
+          </h2>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {related.map((r) => (
+              <li>
+                <article class="bg-white rounded border border-gray-400 p-5 flex flex-col h-full">
+                  <p
+                    class={`text-[0.65rem] font-semibold uppercase tracking-wider mb-2 ${labelColors[r.audience] ?? "text-gray-600"}`}
+                  >
+                    {r.resourceType} · {r.format}
+                  </p>
+                  <a href={`/resource-hub/${r.slug}`} class="group flex-1 mb-3">
+                    <h3 class="text-base font-heading font-bold text-dark leading-snug group-hover:underline decoration-1 mb-2">
+                      {r.title}
+                    </h3>
+                    <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                      {r.description}
+                    </p>
+                  </a>
+                  <a
+                    href={`/resource-hub/${r.slug}`}
+                    class="btn-primary text-white mt-auto self-start transform hover:-translate-y-0.5 hover:shadow-primary/30"
+                  >
+                    {ctaLabel(r.format)}
+                  </a>
+                </article>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+</PageLayout>
