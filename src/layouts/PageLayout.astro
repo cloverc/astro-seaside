@@ -40,8 +40,10 @@ const schemaGraph = {
       inLanguage: "en-GB",
       sameAs: [
         gc.instagram_url ?? "https://www.instagram.com/seaside_network/",
-        gc.x_url ?? "https://twitter.com/seaside_network",
         gc.youtube_url ?? "https://www.youtube.com/@SeasideHeritageNetwork",
+        gc.bluesky_url,
+        gc.linkedin_url,
+        gc.facebook_url,
       ].filter(Boolean),
     },
     {
@@ -64,15 +66,37 @@ const sharedSocialLinks = [
     href: gc.instagram_url ?? "https://www.instagram.com/seaside_network/",
   },
   {
-    ariaLabel: "X",
-    icon: "tabler:brand-x",
-    href: gc.x_url ?? "https://twitter.com/seaside_network",
-  },
-  {
     ariaLabel: "YouTube",
     icon: "tabler:brand-youtube",
     href: gc.youtube_url ?? "https://www.youtube.com/@SeasideHeritageNetwork",
   },
+  ...(gc.bluesky_url
+    ? [
+        {
+          ariaLabel: "Bluesky",
+          icon: "tabler:brand-bluesky",
+          href: gc.bluesky_url,
+        },
+      ]
+    : []),
+  ...(gc.linkedin_url
+    ? [
+        {
+          ariaLabel: "LinkedIn",
+          icon: "tabler:brand-linkedin",
+          href: gc.linkedin_url,
+        },
+      ]
+    : []),
+  ...(gc.facebook_url
+    ? [
+        {
+          ariaLabel: "Facebook",
+          icon: "tabler:brand-facebook",
+          href: gc.facebook_url,
+        },
+      ]
+    : []),
 ];
 
 const latestWinners = bucketPageLinks
