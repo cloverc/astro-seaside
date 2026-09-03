@@ -47,7 +47,7 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
   <div class="absolute inset-0"></div>
   <div
     class:list={[
-      "relative text-default py-4 px-4 lg:py-1 lg:px-6 mx-auto w-full flex flex-col lg:flex-row lg:justify-between lg:items-center",
+      "relative text-default py-4 px-4 lg:py-5 lg:px-6 mx-auto w-full flex flex-col lg:flex-row lg:items-center",
       {
         "max-w-7xl": !isFullWidth,
       },
@@ -71,7 +71,7 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
       </div>
     </div>
     <nav
-      class="items-center w-full lg:w-auto hidden lg:flex text-default overflow-y-auto overflow-x-hidden lg:overflow-visible lg:mx-5"
+      class="items-center w-full lg:w-auto hidden lg:flex text-default overflow-y-auto overflow-x-hidden lg:overflow-visible lg:ml-auto"
       aria-label="Main navigation"
     >
       <ul
@@ -136,22 +136,5 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
         }
       </ul>
     </nav>
-    <div
-      class:list={[
-        { "ml-auto rtl:ml-0 rtl:mr-auto": position === "left" },
-        "hidden lg:self-center lg:flex items-center w-full lg:w-auto justify-end lg:p-0",
-      ]}
-    >
-      <div class="lg:flex lg:items-center lg:justify-between lg:py-8">
-        {
-          !!socialLinks?.length && (
-            <SocialLinks
-              links={socialLinks}
-              class="flex mb-4 lg:order-1 -ml-2 lg:ml-4 lg:mb-0 rtl:ml-0 rtl:-mr-2 rtl:lg:ml-0 rtl:lg:mr-4 mt-2"
-            />
-          )
-        }
-      </div>
-    </div>
   </div>
 </header>
