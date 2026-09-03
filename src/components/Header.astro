@@ -1,7 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
 import Logo from "./Logo.astro";
-import SocialLinks from "./SocialLinks.astro";
 import ToggleMenu from "./ToggleMenu.astro";
 
 interface Link {
@@ -18,17 +17,14 @@ interface MenuLink extends Link {
 export interface Props {
   id?: string;
   links?: Array<MenuLink>;
-  socialLinks?: Array<MenuLink>;
   isSticky?: boolean;
   isFullWidth?: boolean;
-  showSocialIcons?: boolean;
   position?: string;
 }
 
 const {
   id = "header",
   links = [],
-  socialLinks = [],
   isSticky = false,
   isFullWidth = false,
   position = "center",
