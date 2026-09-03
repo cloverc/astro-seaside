@@ -2,34 +2,61 @@
 import { Icon } from "astro-icon/components";
 import HeroText from "../components/HeroText.astro";
 import SocialLinks from "../components/SocialLinks.astro";
-import { storyblokEditable } from "@storyblok/astro";
+import { storyblokEditable, useStoryblokApi } from "@storyblok/astro";
+import { getStoryblokVersion } from "../utils/storyblok";
 
 const { blok } = Astro.props;
+
+const storyblokApi = useStoryblokApi();
+const gcResult = await storyblokApi
+  .get("cdn/stories/global-config", {
+    version: getStoryblokVersion(Astro.request),
+  })
+  .catch(() => null);
+const gc = gcResult?.data?.story?.content ?? {};
 
 const socialLinks = [
   {
     ariaLabel: "Instagram",
     icon: "tabler:brand-instagram",
     text: "Instagram",
-    href: "https://www.instagram.com/seaside_network/",
+    href: gc.instagram_url ?? "https://www.instagram.com/seaside_network/",
   },
-  {
-    ariaLabel: "X",
-    icon: "tabler:brand-x",
-    text: "Twitter",
-    href: "https://twitter.com/seaside_network",
-  },
-  {
-    ariaLabel: "LinkedIn",
-    icon: "tabler:brand-linkedin",
-    text: "LinkedIn",
-    href: "https://www.linkedin.com/company/seaside-heritage",
-  },
+  ...(gc.facebook_url
+    ? [
+        {
+          ariaLabel: "Facebook",
+          icon: "tabler:brand-facebook",
+          text: "Facebook",
+          href: gc.facebook_url,
+        },
+      ]
+    : []),
+  ...(gc.bluesky_url
+    ? [
+        {
+          ariaLabel: "Bluesky",
+          icon: "tabler:brand-bluesky",
+          text: "Bluesky",
+          href: gc.bluesky_url,
+        },
+      ]
+    : []),
+  ...(gc.linkedin_url
+    ? [
+        {
+          ariaLabel: "LinkedIn",
+          icon: "tabler:brand-linkedin",
+          text: "LinkedIn",
+          href: gc.linkedin_url,
+        },
+      ]
+    : []),
   {
     ariaLabel: "YouTube",
     icon: "tabler:brand-youtube",
     text: "YouTube",
-    href: "https://www.youtube.com/@SeasideHeritageNetwork",
+    href: gc.youtube_url ?? "https://www.youtube.com/@SeasideHeritageNetwork",
   },
 ];
 ---
