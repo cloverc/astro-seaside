@@ -23,7 +23,7 @@ export default defineConfig({
   integrations: [
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
-      bridge: true,
+      bridge: process.env.CONTEXT !== "production",
       components: {
         // Content types
         page: "storyblok/Page",
