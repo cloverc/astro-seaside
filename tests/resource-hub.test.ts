@@ -1,137 +1,199 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+async function openFilters(page: Page) {
+  const viewport = page.viewportSize();
+  if (viewport && viewport.width < 1024) {
+    await page.getByRole("button", { name: /Filter resources/ }).click();
+  }
+}
 
 test.describe("resource hub page", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/resource-hub/");
   });
 
-  test("renders heading and all resource cards", async ({ page }) => {
+  test("renders heading", async ({ page }) => {
     await expect(
       page.getByRole("heading", { name: "The Resource Hub", level: 1 }),
     ).toBeVisible();
+  });
 
+  test("shows resource cards", async ({ page }) => {
     const cards = page.locator("[data-rh-card]");
-    await expect(cards).toHaveCount(12);
+    expect(await cards.count()).toBeGreaterThan(0);
   });
 
   test("count text reflects total on load", async ({ page }) => {
-    await expect(page.locator("#rh-count")).toHaveText(
-      "Showing 12 of 12 resources",
-    );
+    await expect(page.locator("#rh-count")).toContainText("resources");
+  });
+
+  test("pagination shows max 6 cards at once", async ({ page }) => {
+    const visible = page.locator("[data-rh-card]:visible");
+    expect(await visible.count()).toBeLessThanOrEqual(6);
   });
 
   test("search filters cards by title", async ({ page }) => {
-    await page.locator("#rh-search").fill("pier");
-
-    const visible = page.locator("[data-rh-card]:visible");
-    await expect(visible).toHaveCount(1);
-    await expect(page.locator("#rh-count")).toHaveText(
-      "Showing 1 of 12 resources",
-    );
+    const firstTitle =
+      (await page
+        .locator("[data-rh-card]")
+        .first()
+        .locator("h2")
+        .textContent()) ?? "";
+    const searchWord =
+      firstTitle.split(" ").find((w) => w.length > 4) ??
+      firstTitle.split(" ")[0];
+    await page.locator("#rh-search").fill(searchWord);
+    await expect(page.locator("[data-rh-card]:visible").first()).toBeVisible();
+    await expect(page.locator("#rh-count")).toContainText("Showing");
   });
 
   test("search filters cards by description text", async ({ page }) => {
-    await page.locator("#rh-search").fill("oral history");
-
-    await expect(page.locator("[data-rh-card]:visible")).toHaveCount(1);
+    const firstDesc =
+      (await page
+        .locator("[data-rh-card]")
+        .first()
+        .locator("p")
+        .first()
+        .textContent()) ?? "";
+    const searchWord =
+      firstDesc.split(" ").find((w) => w.length > 6) ?? firstDesc.split(" ")[0];
+    await page.locator("#rh-search").fill(searchWord);
+    await expect(page.locator("[data-rh-card]:visible").first()).toBeVisible();
   });
 
   test("search with no matches shows empty state", async ({ page }) => {
     await page.locator("#rh-search").fill("xyznotaword");
-
     await expect(page.locator("#rh-empty")).toBeVisible();
     await expect(page.locator("#rh-grid")).not.toBeVisible();
-    await expect(page.locator("#rh-count")).toHaveText(
-      "Showing 0 of 12 resources",
-    );
+    await expect(page.locator("#rh-count")).toContainText("Showing 0 of");
   });
 
-  test("category checkbox filters cards", async ({ page }) => {
-    await page.getByRole("checkbox", { name: "Research" }).check();
+  test("audience checkbox filters cards", async ({ page }) => {
+    await openFilters(page);
+    await page.getByRole("checkbox", { name: "General Public" }).check();
 
     const visible = page.locator("[data-rh-card]:visible");
     const count = await visible.count();
     expect(count).toBeGreaterThan(0);
 
     for (const card of await visible.all()) {
-      await expect(card).toHaveAttribute("data-category", "Research");
+      await expect(card).toHaveAttribute("data-audience", "General Public");
     }
 
     await expect(page.locator("#rh-count")).toContainText(
-      `Showing ${count} of 12 resources`,
+      `Showing ${count} of`,
     );
   });
 
-  test("multiple category checkboxes combine with OR logic", async ({
+  test("multiple audience checkboxes combine with OR logic", async ({
     page,
   }) => {
-    await page.getByRole("checkbox", { name: "Research" }).check();
-    await page.getByRole("checkbox", { name: "Best Practice" }).check();
-
-    const visible = page.locator("[data-rh-card]:visible");
-    for (const card of await visible.all()) {
-      const cat = await card.getAttribute("data-category");
-      expect(["Research", "Best Practice"]).toContain(cat);
-    }
-  });
-
-  test("content type checkbox filters cards", async ({ page }) => {
-    await page.getByRole("checkbox", { name: "Video" }).check();
-
-    const visible = page.locator("[data-rh-card]:visible");
-    const count = await visible.count();
-    expect(count).toBeGreaterThan(0);
-
-    for (const card of await visible.all()) {
-      await expect(card).toHaveAttribute("data-format", "Video");
-    }
-  });
-
-  test("category and content type filters combine with AND logic", async ({
-    page,
-  }) => {
-    await page.getByRole("checkbox", { name: "Best Practice" }).check();
-    await page.getByRole("checkbox", { name: "PDF" }).check();
+    await openFilters(page);
+    await page.getByRole("checkbox", { name: "General Public" }).check();
+    await page
+      .getByRole("checkbox", { name: "Heritage Professionals" })
+      .check();
 
     for (const card of await page.locator("[data-rh-card]:visible").all()) {
-      await expect(card).toHaveAttribute("data-category", "Best Practice");
-      await expect(card).toHaveAttribute("data-format", "PDF");
+      const aud = await card.getAttribute("data-audience");
+      expect(["General Public", "Heritage Professionals"]).toContain(aud);
+    }
+  });
+
+  test("resource type checkbox filters cards", async ({ page }) => {
+    await openFilters(page);
+    await page
+      .locator("button.rh-group-toggle", { hasText: "Resource type" })
+      .click();
+
+    const resourceType = await page
+      .locator("[data-rh-card]")
+      .first()
+      .getAttribute("data-resource-type");
+    test.skip(!resourceType, "First card has no resource type set");
+
+    await page.getByRole("checkbox", { name: resourceType! }).check();
+
+    const visible = page.locator("[data-rh-card]:visible");
+    expect(await visible.count()).toBeGreaterThan(0);
+    for (const card of await visible.all()) {
+      await expect(card).toHaveAttribute("data-resource-type", resourceType!);
+    }
+  });
+
+  test("audience and resource type filters combine with AND logic", async ({
+    page,
+  }) => {
+    await openFilters(page);
+
+    const firstCard = page.locator("[data-rh-card]").first();
+    const audience = await firstCard.getAttribute("data-audience");
+    const resourceType = await firstCard.getAttribute("data-resource-type");
+    test.skip(
+      !audience || !resourceType,
+      "First card missing audience or resource type",
+    );
+
+    await page.getByRole("checkbox", { name: audience! }).check();
+    await page
+      .locator("button.rh-group-toggle", { hasText: "Resource type" })
+      .click();
+    await page.getByRole("checkbox", { name: resourceType! }).check();
+
+    for (const card of await page.locator("[data-rh-card]:visible").all()) {
+      await expect(card).toHaveAttribute("data-audience", audience!);
+      await expect(card).toHaveAttribute("data-resource-type", resourceType!);
     }
   });
 
   test("filter chips appear when filter is selected", async ({ page }) => {
-    await page.getByRole("checkbox", { name: "Research" }).check();
+    await openFilters(page);
+    await page.getByRole("checkbox", { name: "General Public" }).check();
 
     const chips = page.locator("#rh-chips");
     await expect(chips).toBeVisible();
-    await expect(chips.getByRole("button", { name: /Research/ })).toBeVisible();
+    await expect(
+      chips.getByRole("button", { name: /General Public/ }),
+    ).toBeVisible();
   });
 
   test("removing a chip unchecks the filter", async ({ page }) => {
-    await page.getByRole("checkbox", { name: "Research" }).check();
+    await openFilters(page);
+    await page.getByRole("checkbox", { name: "General Public" }).check();
 
     await page
       .locator("#rh-chips")
-      .getByRole("button", { name: /Research/ })
+      .getByRole("button", { name: /General Public/ })
       .click();
 
     await expect(
-      page.getByRole("checkbox", { name: "Research" }),
+      page.getByRole("checkbox", { name: "General Public" }),
     ).not.toBeChecked();
-    await expect(page.locator("[data-rh-card]:visible")).toHaveCount(12);
   });
 
   test("clear all resets all filters", async ({ page }) => {
-    await page.getByRole("checkbox", { name: "Research" }).check();
-    await page.getByRole("checkbox", { name: "PDF" }).check();
+    await openFilters(page);
+    await page.getByRole("checkbox", { name: "General Public" }).check();
+    await page
+      .locator("button.rh-group-toggle", { hasText: "Resource type" })
+      .click();
+
+    const firstResourceType = page
+      .locator("[data-rh-filter='resourceType']")
+      .first();
+    const resourceTypeName = await firstResourceType.getAttribute("value");
+    test.skip(!resourceTypeName, "No resource types available");
+
+    await page.getByRole("checkbox", { name: resourceTypeName! }).check();
 
     await page.getByRole("button", { name: "Clear all filters" }).click();
 
     await expect(
-      page.getByRole("checkbox", { name: "Research" }),
+      page.getByRole("checkbox", { name: "General Public" }),
     ).not.toBeChecked();
-    await expect(page.getByRole("checkbox", { name: "PDF" })).not.toBeChecked();
-    await expect(page.locator("[data-rh-card]:visible")).toHaveCount(12);
+    await expect(
+      page.getByRole("checkbox", { name: resourceTypeName! }),
+    ).not.toBeChecked();
     await expect(page.locator("#rh-chips")).not.toBeVisible();
   });
 
@@ -143,16 +205,22 @@ test.describe("resource hub page", () => {
     ).not.toBeVisible();
   });
 
-  test("search and category filter work together", async ({ page }) => {
-    await page.getByRole("checkbox", { name: "Best Practice" }).check();
-    await page.locator("#rh-search").fill("climate");
+  test("search and audience filter work together", async ({ page }) => {
+    await openFilters(page);
+    await page.getByRole("checkbox", { name: "General Public" }).check();
+
+    const firstCard = page.locator("[data-rh-card]:visible").first();
+    const firstTitle = (await firstCard.locator("h2").textContent()) ?? "";
+    const searchWord =
+      firstTitle.split(" ").find((w) => w.length > 4) ??
+      firstTitle.split(" ")[0];
+    await page.locator("#rh-search").fill(searchWord);
 
     const visible = page.locator("[data-rh-card]:visible");
-    await expect(visible).toHaveCount(1);
-    await expect(visible.first()).toHaveAttribute(
-      "data-category",
-      "Best Practice",
-    );
+    expect(await visible.count()).toBeGreaterThan(0);
+    for (const card of await visible.all()) {
+      await expect(card).toHaveAttribute("data-audience", "General Public");
+    }
   });
 
   test("Resource Hub nav link is marked as current page", async ({ page }) => {

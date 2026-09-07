@@ -1,37 +1,129 @@
 ---
 import HeroText from "../../components/HeroText.astro";
 import PageLayout from "../../layouts/PageLayout.astro";
-import { resources, badgeColors } from "../../data/mockResources";
+import { useStoryblokApi } from "@storyblok/astro";
+import {
+  getStoryblokVersion,
+  fetchDatasourceEntries,
+} from "../../utils/storyblok";
+
+const storyblokApi = useStoryblokApi();
+const version = getStoryblokVersion(Astro.request);
+
+const [storiesResult, dsAudience, dsTopics, dsResourceType] = await Promise.all(
+  [
+    storyblokApi
+      .get("cdn/stories", {
+        version,
+        starts_with: "resource-hub/",
+        per_page: 100,
+      })
+      .catch(() => null),
+    fetchDatasourceEntries("intended-audience"),
+    fetchDatasourceEntries("shared-topics"),
+    fetchDatasourceEntries("resource-type"),
+  ],
+);
+
+const rawStories: any[] = storiesResult?.data?.stories ?? [];
+
+function dsLabel(entries: any[], value: string): string {
+  const v = value.trim();
+  return entries.find((e) => e.value === v)?.name ?? v;
+}
+
+const badgeColors: Record<string, string> = {
+  "General Public": "bg-teal-600",
+  "Heritage Professionals": "bg-blue-600",
+  "Academics & Researchers": "bg-purple-700",
+};
+
+function getFormatLabel(contentBlocks: any[]): string {
+  const block = contentBlocks?.[0];
+  if (!block) return "";
+  if (block.component === "content_video") return "Video";
+  if (block.component === "content_article") return "Article";
+  if (block.component === "content_file") {
+    const filename: string =
+      block.file?.filename ?? block.external_url?.url ?? "";
+    const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+    const extMap: Record<string, string> = {
+      pdf: "PDF",
+      doc: "Word",
+      docx: "Word",
+      xls: "Excel",
+      xlsx: "Excel",
+      ppt: "PowerPoint",
+      pptx: "PowerPoint",
+    };
+    return extMap[ext] ?? "File";
+  }
+  return "";
+}
+
+const resources = rawStories.map((story: any) => {
+  const c = story.content;
+  const audienceKeys: string[] = Array.isArray(c.audience)
+    ? c.audience
+    : c.audience
+      ? [c.audience]
+      : [];
+  const firstAudienceLabel =
+    audienceKeys.length > 0 ? dsLabel(dsAudience, audienceKeys[0]) : "";
+  const topicLabels: string[] = (c.topics ?? []).map((v: string) =>
+    dsLabel(dsTopics, v),
+  );
+  const resourceTypeLabel = c.resource_type
+    ? dsLabel(dsResourceType, c.resource_type)
+    : "";
+  const format = getFormatLabel(c.content ?? []);
+  const thumbnail: string | null = c.featured_image?.filename
+    ? `${c.featured_image.filename}/m/300x400/filters:quality(70):format(webp)`
+    : null;
+  return {
+    slug: story.slug,
+    title: c.title ?? "",
+    format,
+    audience: firstAudienceLabel,
+    resourceType: resourceTypeLabel,
+    topics: topicLabels,
+    description: c.description ?? "",
+    thumbnail,
+  };
+});
+
+const AUDIENCES =
+  dsAudience.length > 0
+    ? dsAudience.map((e: any) => e.name)
+    : ["General Public", "Heritage Professionals", "Academics & Researchers"];
+
+// When the datasource is unavailable, derive topics from actual card data so
+// filter checkbox values always match the data-topics attributes on cards.
+const TOPICS =
+  dsTopics.length > 0
+    ? dsTopics.map((e: any) => e.name)
+    : Array.from(new Set(resources.flatMap((r) => r.topics))).sort();
+
+const RESOURCE_TYPES =
+  dsResourceType.length > 0
+    ? dsResourceType.map((e: any) => e.name)
+    : [
+        "Guides & Factsheets",
+        "Toolkits & Templates",
+        "Case Studies",
+        "Research & Reports",
+      ];
 
 const metadata = {
   siteTitle: "Seaside Heritage Network",
   pageTitle: "Resource Hub",
 };
-const AUDIENCES = [
-  "General Public",
-  "Heritage Professionals",
-  "Academics & Researchers",
-];
-const RESOURCE_TYPES = [
-  "Guides & Factsheets",
-  "Toolkits & Templates",
-  "Case Studies",
-  "Research & Reports",
-];
-const TOPICS = [
-  "Seaside history",
-  "Restoration & regeneration",
-  "Arts & culture",
-  "Funding & policy",
-  "Tourism & visitor economy",
-  "Architecture & design",
-  "Entertainment & fun",
-];
 
 function ctaLabel(format: string) {
-  if (format === "PDF") return "Download PDF";
   if (format === "Video") return "Watch video";
-  return "Read more";
+  if (format === "Article") return "Read more";
+  if (format) return `Download ${format}`;
+  return "View resource";
 }
 ---
 
@@ -49,7 +141,7 @@ function ctaLabel(format: string) {
         <!-- Sidebar: search + filters -->
         <aside
           id="rh-sidebar-inner"
-          class="lg:col-span-1 lg:self-start lg:sticky bg-white rounded-lg border border-gray-400 p-5 space-y-5"
+          class="lg:col-span-1 bg-white rounded-lg border border-gray-400 p-5 space-y-5"
           aria-label="Search and filter resources"
         >
           <!-- Search -->
@@ -291,7 +383,7 @@ function ctaLabel(format: string) {
                   <article class="flex flex-col sm:flex-row gap-6 items-start">
                     <div class="flex-1 min-w-0">
                       <a href={`/resource-hub/${r.slug}`} class="group">
-                        <h2 class="text-xl font-heading font-bold text-dark mb-2 leading-snug group-hover:underline decoration-1">
+                        <h2 class="text-xl font-heading font-medium text-dark mb-2 leading-snug group-hover:underline decoration-1">
                           {r.title}
                         </h2>
                       </a>
@@ -346,7 +438,7 @@ function ctaLabel(format: string) {
                         <img
                           src={r.thumbnail}
                           alt={r.title}
-                          class="w-full aspect-[3/4] object-cover"
+                          class="w-full aspect-3/4 object-cover"
                           loading="lazy"
                           decoding="async"
                         />
@@ -365,7 +457,7 @@ function ctaLabel(format: string) {
           <nav
             id="rh-pagination"
             aria-label="Resource pages"
-            class="hidden mt-8 flex items-center justify-center gap-2"
+            class="mt-8 flex items-center justify-center gap-2"
           >
           </nav>
         </div>
@@ -382,9 +474,7 @@ function ctaLabel(format: string) {
     var chipsEl = document.getElementById("rh-chips");
     var emptyEl = document.getElementById("rh-empty");
     var grid = document.getElementById("rh-grid");
-    var sidebarInner = document.getElementById("rh-sidebar-inner");
     var clearAllBtn = document.getElementById("rh-clear-all");
-    var header = document.getElementById("header");
     var mobileToggle = document.getElementById("rh-mobile-filter-toggle");
     var mobileToggleLabel = document.getElementById("rh-mobile-toggle-label");
     var mobileChevron = document.getElementById("rh-mobile-chevron");
@@ -399,15 +489,6 @@ function ctaLabel(format: string) {
       topic: new Set(),
       resourceType: new Set(),
     };
-
-    // Sidebar sticky top offset from header
-    function setSidebarTop() {
-      if (header && sidebarInner) {
-        sidebarInner.style.top = header.offsetHeight + 24 + "px";
-      }
-    }
-    setSidebarTop();
-    window.addEventListener("resize", setSidebarTop);
 
     // Mobile filter toggle
     if (mobileToggle && filterPanel) {
@@ -674,5 +755,7 @@ function ctaLabel(format: string) {
         });
       });
     }
+
+    applyFilters();
   })();
 </script>

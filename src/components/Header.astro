@@ -30,7 +30,7 @@ const {
   position = "center",
 } = Astro.props;
 
-const currentPath = `/${new URL(Astro.url).pathname}`;
+const currentPath = Astro.url.pathname;
 ---
 
 <header

@@ -151,7 +151,7 @@ footer,
 }
 
 #header nav a[aria-current="page"] {
-  color: var(--shn-color-accent);
+  color: white;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
