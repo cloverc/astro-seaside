@@ -12,6 +12,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Storyblok CLI logs
+.storyblok/logs/
+.storyblok/components/**/logs/
+
 
 # environment variables
 .env

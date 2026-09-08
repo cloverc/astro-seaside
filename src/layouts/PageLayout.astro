@@ -134,7 +134,7 @@ const headerData = {
       ],
     },
     { text: "Resource Hub", href: "/resource-hub/" },
-    { text: "News & Insights", href: "/news/" },
+    { text: "News & Insights", href: "/news-and-insights/" },
     {
       text: "Bucket & Spade List",
       href: "#",
@@ -173,7 +173,11 @@ const footerData = {
 
 <Layout metadata={metadata}>
   <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(schemaGraph)}
+    />
   </Fragment>
   {
     Astro.url.pathname === "/" && (

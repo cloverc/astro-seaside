@@ -1,0 +1,94 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { useStoryblokApi } from "@storyblok/astro";
+import { getStoryblokVersion } from "../../utils/storyblok";
+
+const storyblokApi = useStoryblokApi();
+const version = getStoryblokVersion(Astro.request);
+
+let articles: any[] = [];
+try {
+  const { data } = await storyblokApi.get("cdn/stories", {
+    version,
+    starts_with: "news-and-insights/",
+    filter_query: {
+      component: { in: "news_article,insight_article" },
+    },
+    sort_by: "content.published_date:desc",
+    per_page: 50,
+  });
+  articles = data.stories ?? [];
+} catch {
+  // leave empty
+}
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: "News & Insights — Seaside Heritage Network",
+};
+---
+
+<PageLayout metadata={metadata}>
+  <div class="bg-page px-4 sm:px-6 pt-8 pb-16 md:pt-12 md:pb-24">
+    <div class="max-w-4xl mx-auto">
+      <h1
+        class="font-heading font-semibold text-4xl sm:text-5xl text-white leading-tight mb-4"
+      >
+        News &amp; Insights
+      </h1>
+      <p class="text-secondary text-lg">
+        Articles, reports and reflections from the Seaside Heritage Network.
+      </p>
+    </div>
+  </div>
+
+  <div class="bg-white px-4 sm:px-6 py-16">
+    <div class="max-w-4xl mx-auto">
+      {
+        articles.length === 0 ? (
+          <p class="text-gray-400 text-sm">No articles published yet.</p>
+        ) : (
+          <ul class="divide-y divide-blue-900/10">
+            {articles.map((article) => {
+              const blok = article.content;
+              const date = blok.published_date
+                ? new Date(blok.published_date).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
+                : null;
+              const type =
+                blok.component === "news_article" ? "News" : "Insight";
+              return (
+                <li>
+                  <a
+                    href={`/news-and-insights/${article.slug}/`}
+                    class="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-6 hover:text-blue-700 transition-colors"
+                  >
+                    <span class="shrink-0 text-xs font-bold tracking-widest text-teal-700 uppercase w-20">
+                      {type}
+                    </span>
+                    <span class="flex-1">
+                      <span class="font-heading font-semibold text-xl text-blue-900 group-hover:text-blue-700 leading-snug">
+                        {blok.title}
+                      </span>
+                      {blok.summary && (
+                        <span class="block text-sm text-gray-500 mt-1 line-clamp-2">
+                          {blok.summary}
+                        </span>
+                      )}
+                    </span>
+                    {date && (
+                      <span class="shrink-0 text-sm text-gray-400">{date}</span>
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+</PageLayout>

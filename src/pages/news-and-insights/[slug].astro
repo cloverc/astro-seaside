@@ -1,0 +1,210 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { useStoryblokApi, renderRichText } from "@storyblok/astro";
+import { getStoryblokVersion } from "../../utils/storyblok";
+
+const { slug } = Astro.params;
+
+const storyblokApi = useStoryblokApi();
+const version = getStoryblokVersion(Astro.request);
+
+let story: any;
+let resolvedRelations: any[] = [];
+
+try {
+  const { data } = await storyblokApi.get(
+    `cdn/stories/news-and-insights/${slug}`,
+    {
+      version,
+      resolve_relations: "news_article.author,insight_article.author",
+    },
+  );
+  story = data.story;
+  resolvedRelations = data.rels ?? [];
+} catch {
+  return Astro.redirect("/news-and-insights/");
+}
+
+const blok = story.content;
+const isNewsArticle = blok.component === "news_article";
+
+// Author — linked team member takes priority over guest_author text
+const authorStory = resolvedRelations.find((r: any) => r.uuid === blok.author);
+const authorName: string | null =
+  authorStory?.content?.name ?? blok.guest_author ?? null;
+const authorRole: string | null = authorStory?.content?.title ?? null;
+const authorAvatar: string | null =
+  authorStory?.content?.profile_picture?.filename ?? null;
+
+// Partners (one per line)
+const partners: string[] = blok.partners
+  ? blok.partners
+      .split("\n")
+      .map((s: string) => s.trim())
+      .filter(Boolean)
+  : [];
+
+const bodyHtml: string | null = blok.body
+  ? (renderRichText(blok.body, {
+      renderers: {
+        image: (props) => {
+          const { src, alt, title } = props.attrs;
+          if (title) {
+            return `<figure><img src="${src ?? ""}" alt="${alt ?? ""}"><figcaption>${title}</figcaption></figure>`;
+          }
+          return `<img src="${src ?? ""}" alt="${alt ?? ""}">`;
+        },
+        blok: (props) => {
+          return (props.attrs.body ?? [])
+            .map((b) => {
+              const blokData = b as Record<string, unknown>;
+              if (blokData.component === "quote_block") {
+                const text = String(blokData.text ?? "");
+                const citation = blokData.citation
+                  ? String(blokData.citation)
+                  : "";
+                const citationHtml = citation ? `<cite>${citation}</cite>` : "";
+                return `<blockquote>${text}${citationHtml}</blockquote>`;
+              }
+              return "";
+            })
+            .join("");
+        },
+      },
+    }) ?? null)
+  : null;
+
+const publishedDate = blok.published_date
+  ? new Date(blok.published_date).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+  : null;
+
+type MetaRow = { label: string; value: string };
+const metaRows: MetaRow[] = [
+  ...(publishedDate ? [{ label: "Published", value: publishedDate }] : []),
+  ...(partners.length > 0
+    ? [{ label: "Partners", value: partners.join(" · ") }]
+    : []),
+  ...(isNewsArticle && blok.event
+    ? [{ label: "Event", value: blok.event }]
+    : []),
+  ...(isNewsArticle && blok.location
+    ? [{ label: "Location", value: blok.location }]
+    : []),
+];
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: `${blok.title} — Seaside Heritage Network`,
+};
+---
+
+<PageLayout metadata={metadata}>
+  <div class="bg-page px-4 sm:px-6 pt-8 md:pt-12">
+    <div class="max-w-3xl mx-auto">
+      <a
+        href="/news-and-insights/"
+        class="inline-block text-sm font-medium text-secondary mb-8 hover:underline"
+      >
+        ← Back to News &amp; Insights
+      </a>
+
+      <h1
+        class="font-heading font-semibold text-4xl sm:text-5xl text-white leading-tight mb-12"
+        style="text-wrap: pretty"
+      >
+        {blok.title}
+      </h1>
+
+      {
+        metaRows.length > 0 && (
+          <div class="bg-white rounded-t overflow-hidden">
+            {metaRows.map((row, i) => (
+              <div>
+                {i > 0 && <div class="h-px bg-blue-900/10 mx-6" />}
+                <div class="flex gap-4 px-6 py-4 text-sm leading-relaxed">
+                  <span class="font-semibold text-blue-900 w-28 shrink-0">
+                    {row.label}
+                  </span>
+                  <span class="text-gray-800">{row.value}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  {
+    blok.hero_image?.filename && (
+      <div class="bg-slate-200 px-4 sm:px-6 pb-8">
+        <div class="max-w-3xl mx-auto">
+          <img
+            src={`${blok.hero_image.filename}/m/1200x0/`}
+            alt={blok.hero_image.alt ?? blok.title}
+            class="w-full h-auto block"
+            loading="eager"
+          />
+          {blok.hero_image.title && (
+            <p class="text-xs text-blue-900 py-3 max-w-lg">
+              {blok.hero_image.title}
+            </p>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  <div class="bg-white px-4 sm:px-6 py-14 md:py-20">
+    <div class="max-w-3xl mx-auto">
+      {
+        blok.summary && (
+          <p
+            class="font-heading text-2xl sm:text-3xl text-blue-900 leading-snug mb-10 sm:mb-14"
+            style="text-wrap: pretty"
+          >
+            {blok.summary}
+          </p>
+        )
+      }
+
+      {bodyHtml && <div class="article-body" set:html={bodyHtml} />}
+
+      {
+        authorName && (
+          <div class="mt-14 pt-1">
+            <div class="h-0.5 bg-blue-700 mb-5" />
+            <div class="flex items-center gap-4">
+              {authorAvatar ? (
+                <img
+                  src={`${authorAvatar}/m/96x96/`}
+                  alt={authorName}
+                  class="w-14 h-14 rounded-full object-cover shrink-0"
+                />
+              ) : (
+                <div class="w-14 h-14 rounded-full bg-slate-200 shrink-0" />
+              )}
+              <div>
+                <div class="font-semibold text-blue-900 leading-snug">
+                  {authorName}
+                </div>
+                {authorRole && (
+                  <div class="text-sm text-gray-500 mt-0.5">{authorRole}</div>
+                )}
+                {publishedDate && (
+                  <div class="text-sm text-gray-400 mt-0.5">
+                    {publishedDate}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</PageLayout>
