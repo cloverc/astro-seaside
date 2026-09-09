@@ -37,9 +37,8 @@ function dsLabel(entries: any[], value: string): string {
 
 const blok = story.content;
 
-// --- Nested content block ---
-const contentBlock: any = (blok.content as any[])?.[0] ?? null;
-const contentType: string = contentBlock?.component ?? "";
+// --- Content blocks ---
+const contentBlocks: any[] = blok.content ?? [];
 
 function getFormatLabel(block: any): string {
   if (!block) return "";
@@ -63,15 +62,6 @@ function getFormatLabel(block: any): string {
   return "";
 }
 
-const formatLabel = getFormatLabel(contentBlock);
-
-// For file resources: upload takes precedence over external link
-const fileUrl: string | null =
-  contentType === "content_file"
-    ? contentBlock.file?.filename || contentBlock.external_url?.url || null
-    : null;
-
-// YouTube embed
 function getYouTubeId(url: string): string | null {
   const m = url.match(
     /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([A-Za-z0-9_-]{11})/,
@@ -79,23 +69,11 @@ function getYouTubeId(url: string): string | null {
   return m?.[1] ?? null;
 }
 
-const videoUrl: string | null =
-  contentType === "content_video" ? (contentBlock.video_url ?? null) : null;
-const youtubeId: string | null = videoUrl ? getYouTubeId(videoUrl) : null;
+const formatLabel = contentBlocks
+  .map(getFormatLabel)
+  .filter(Boolean)
+  .join(" · ");
 
-// Article body from nested block
-const articleBodyHtml: string | null =
-  contentType === "content_article" && contentBlock.body
-    ? (renderRichText(contentBlock.body) ?? null)
-    : null;
-
-// Video transcript
-const transcriptHtml: string | null =
-  contentType === "content_video" && contentBlock.transcript
-    ? (renderRichText(contentBlock.transcript) ?? null)
-    : null;
-
-// Supplementary body (shown for file/video; for articles the main body is in the block)
 const supplementaryBodyHtml: string | null = blok.body
   ? (renderRichText(blok.body) ?? null)
   : null;
@@ -115,10 +93,14 @@ const producedBy: string[] = blok.produced_by
       .filter(Boolean)
   : [];
 
-// Author: resolved team_member story or guest_author text fallback
-const authorStory = resolvedRelations.find((r: any) => r.uuid === blok.author);
+// Author: SDK inlines resolved relation into blok.author as a story object
+const authorStory =
+  blok.author && typeof blok.author === "object" ? blok.author : null;
 const authorName: string | null =
   authorStory?.content?.name ?? blok.guest_author ?? null;
+const authorProfileUrl: string | null = authorStory?.slug
+  ? `/team/#${authorStory.slug}`
+  : null;
 
 const topicKeys: string[] = blok.topics ?? [];
 const topics: string[] = topicKeys.map((v) => dsLabel(dsTopics, v));
@@ -137,7 +119,6 @@ const resourceTypeLabel = blok.resource_type
 // --- CTA ---
 function ctaLabel(format: string): string {
   if (format === "Video") return "Watch video";
-  if (format === "Article") return "Read below";
   if (format) return `Download ${format}`;
   return "View resource";
 }
@@ -197,97 +178,55 @@ const metadata = {
             {blok.description}
           </p>
 
-          {
-            contentType !== "content_article" && (
-              <div class="flex flex-wrap items-center gap-4">
-                {fileUrl ? (
-                  <>
-                    <a
-                      href={fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="btn-primary inline-flex items-center gap-2"
-                    >
-                      <svg
-                        class="w-5 h-5 shrink-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
+          <div class="flex flex-wrap items-center gap-4">
+            {
+              contentBlocks.map((block) => {
+                const fmt = getFormatLabel(block);
+                if (block.component === "content_file") {
+                  const fileUrl: string | null =
+                    block.file?.filename || block.external_url?.url || null;
+                  if (!fileUrl) return null;
+                  return (
+                    <>
+                      <a
+                        href={fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn-primary inline-flex items-center gap-2"
                       >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                      {ctaLabel(formatLabel)}
-                    </a>
-                    {(contentBlock?.file_size || contentBlock?.file_note) && (
-                      <span class="text-sm text-white/70">
-                        {[contentBlock.file_size, contentBlock.file_note]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </span>
-                    )}
-                  </>
-                ) : videoUrl ? (
-                  <a
-                    href="#rh-video"
-                    class="btn-primary inline-flex items-center gap-2"
-                  >
-                    <svg
-                      class="w-5 h-5 shrink-0"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    Watch video
-                  </a>
-                ) : null}
-              </div>
-            )
-          }
-
-          {
-            contentType === "content_article" && (
-              <a
-                href="#rh-article"
-                class="btn-primary inline-flex items-center gap-2"
-              >
-                <svg
-                  class="w-5 h-5 shrink-0"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                Read below
-              </a>
-            )
-          }
+                        <svg
+                          class="w-5 h-5 shrink-0"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                        {ctaLabel(fmt)}
+                      </a>
+                      {(block.file_size || block.file_note) && (
+                        <span class="text-sm text-white/70">
+                          {[block.file_size, block.file_note]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </span>
+                      )}
+                    </>
+                  );
+                }
+                if (block.component === "content_video") {
+                  return null;
+                }
+                return null;
+              })
+            }
+          </div>
         </div>
 
         <!-- Featured image -->
@@ -336,51 +275,9 @@ const metadata = {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
         <!-- Main content -->
         <div class="lg:col-span-2 space-y-10">
-          {/* Video embed */}
+          {/* Supplementary body */}
           {
-            contentType === "content_video" && (
-              <div id="rh-video">
-                {youtubeId ? (
-                  <div class="aspect-video rounded overflow-hidden bg-black">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${youtubeId}`}
-                      title={blok.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowfullscreen
-                      class="w-full h-full"
-                      loading="lazy"
-                    />
-                  </div>
-                ) : videoUrl ? (
-                  <p class="text-sm text-gray-700">
-                    <a
-                      href={videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="underline hover:text-dark"
-                    >
-                      Watch on external site →
-                    </a>
-                  </p>
-                ) : null}
-              </div>
-            )
-          }
-
-          {/* Article body */}
-          {
-            articleBodyHtml && (
-              <div
-                id="rh-article"
-                class="prose prose-headings:font-heading prose-headings:font-medium prose-headings:text-dark prose-h2:text-3xl prose-p:text-gray-700 prose-li:text-gray-700 prose-ul:list-disc prose-ul:list-outside prose-ul:pl-5 [&_li::marker]:text-gray-700 max-w-none"
-                set:html={articleBodyHtml}
-              />
-            )
-          }
-
-          {/* Supplementary body (for file/video resources) */}
-          {
-            supplementaryBodyHtml && contentType !== "content_article" && (
+            supplementaryBodyHtml && (
               <div
                 class="prose prose-headings:font-heading prose-headings:font-medium prose-headings:text-dark prose-h2:text-3xl prose-p:text-gray-700 prose-li:text-gray-700 prose-ul:list-disc prose-ul:list-outside prose-ul:pl-5 [&_li::marker]:text-gray-700 max-w-none"
                 set:html={supplementaryBodyHtml}
@@ -388,22 +285,63 @@ const metadata = {
             )
           }
 
-          {/* Video transcript */}
+          {/* Video blocks — after body copy */}
           {
-            transcriptHtml && (
-              <>
-                <hr class="border-gray-200" />
-                <div>
-                  <h2 class="text-2xl font-heading font-medium text-dark mb-4">
-                    Transcript
-                  </h2>
-                  <div
-                    class="prose prose-p:text-gray-700 prose-li:text-gray-700 max-w-none"
-                    set:html={transcriptHtml}
-                  />
-                </div>
-              </>
-            )
+            contentBlocks
+              .filter((b) => b.component === "content_video")
+              .map((block, i) => {
+                const videoUrl: string | null = block.video_url ?? null;
+                const youtubeId: string | null = videoUrl
+                  ? getYouTubeId(videoUrl)
+                  : null;
+                const transcriptHtml: string | null = block.transcript
+                  ? (renderRichText(block.transcript) ?? null)
+                  : null;
+                return (
+                  <>
+                    <div id={i === 0 ? "rh-video" : `rh-video-${i}`}>
+                      {youtubeId ? (
+                        <div class="aspect-video rounded overflow-hidden bg-black">
+                          <iframe
+                            src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
+                            title={block.title ?? blok.title}
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                            class="w-full h-full"
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : videoUrl ? (
+                        <p class="text-sm text-gray-700">
+                          <a
+                            href={videoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="underline hover:text-dark"
+                          >
+                            Watch on external site →
+                          </a>
+                        </p>
+                      ) : null}
+                    </div>
+                    {transcriptHtml && (
+                      <>
+                        <hr class="border-gray-200" />
+                        <div>
+                          <h2 class="text-2xl font-heading font-medium text-dark mb-4">
+                            Transcript
+                          </h2>
+                          <div
+                            class="prose prose-p:text-gray-700 prose-li:text-gray-700 max-w-none"
+                            set:html={transcriptHtml}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </>
+                );
+              })
           }
 
           {/* Usage note */}
@@ -450,7 +388,15 @@ const metadata = {
                   <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
                     Author
                   </p>
-                  <p class="text-sm text-gray-900">{authorName}</p>
+                  <p class="text-sm text-gray-900">
+                    {authorProfileUrl ? (
+                      <a href={authorProfileUrl} class="hover:underline">
+                        {authorName}
+                      </a>
+                    ) : (
+                      authorName
+                    )}
+                  </p>
                 </div>
               )
             }
@@ -499,42 +445,50 @@ const metadata = {
             }
 
             {
-              fileUrl && (
-                <>
-                  <hr class="border-gray-200" />
-                  <div class="space-y-2">
-                    <a
-                      href={fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="btn-primary w-full justify-center gap-2"
-                    >
-                      <svg
-                        class="w-4 h-4 shrink-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                      {ctaLabel(formatLabel)}
-                    </a>
-                    {(contentBlock?.file_size || contentBlock?.file_note) && (
-                      <p class="text-xs text-gray-500 text-center">
-                        {[contentBlock.file_size, contentBlock.file_note]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </p>
-                    )}
-                  </div>
-                </>
-              )
+              contentBlocks
+                .filter((b) => b.component === "content_file")
+                .map((block) => {
+                  const fileUrl: string | null =
+                    block.file?.filename || block.external_url?.url || null;
+                  if (!fileUrl) return null;
+                  const fmt = getFormatLabel(block);
+                  return (
+                    <>
+                      <hr class="border-gray-200" />
+                      <div class="space-y-2">
+                        <a
+                          href={fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="btn-primary w-full justify-center gap-2"
+                        >
+                          <svg
+                            class="w-4 h-4 shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                          {ctaLabel(fmt)}
+                        </a>
+                        {(block.file_size || block.file_note) && (
+                          <p class="text-xs text-gray-500 text-center">
+                            {[block.file_size, block.file_note]
+                              .filter(Boolean)
+                              .join(" · ")}
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  );
+                })
             }
           </div>
         </aside>
@@ -553,17 +507,17 @@ const metadata = {
           <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {related.map((r) => {
               const rc = r.content;
-              const relatedContentBlock = (rc.content as any[])?.[0] ?? null;
-              const relatedFormat = getFormatLabel(relatedContentBlock);
+              const relatedFormat = ((rc.content as any[]) ?? [])
+                .map(getFormatLabel)
+                .filter(Boolean)
+                .join(" · ");
               const relatedTypeLabel = rc.resource_type
                 ? dsLabel(dsResourceType, rc.resource_type)
                 : "";
+              const relatedFirstType =
+                (rc.content as any[])?.[0]?.component ?? "";
               const relatedCtaLabel =
-                relatedFormat === "Video"
-                  ? "Watch"
-                  : relatedFormat === "Article"
-                    ? "Read"
-                    : "Download";
+                relatedFirstType === "content_video" ? "Watch" : "Download";
               return (
                 <li>
                   <article class="bg-white rounded border border-gray-400 p-5 flex flex-col h-full">

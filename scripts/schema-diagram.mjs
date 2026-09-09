@@ -30,19 +30,21 @@ const datasources = JSON.parse(
 );
 
 const showAll = process.argv.includes("--all");
+const showDatasources = showAll || process.argv.includes("--datasources");
 
-// Components relevant to the resource hub
-const RESOURCE_HUB = new Set([
+// Components relevant to resource hub and news & insights
+const CONTENT_TYPES = new Set([
   "resource_item",
   "content_file",
   "content_video",
-  "content_article",
+  "article",
+  "quote_block",
   "team-member",
 ]);
 
 const included = showAll
   ? new Set(components.map((c) => c.name))
-  : RESOURCE_HUB;
+  : CONTENT_TYPES;
 
 // --- Validation (warnings to stderr) ---
 let warnings = 0;
@@ -138,10 +140,14 @@ for (const comp of components) {
   // bloks → nested block relationships
   for (const [key, field] of fields) {
     if (field.type !== "bloks") continue;
-    for (const target of field.component_whitelist ?? []) {
-      if (!included.has(target)) continue;
-      const right = field.maximum === 1 ? "||" : "o{";
+    const whitelist = (field.component_whitelist ?? []).filter((t) =>
+      included.has(t),
+    );
+    const multiChoice = whitelist.length > 1 && field.maximum === 1;
+    for (const target of whitelist) {
       const left = (field.minimum ?? 0) >= 1 ? "||" : "o|";
+      // Multiple choices with max 1 → each type is individually optional (o|)
+      const right = multiChoice ? "o|" : field.maximum === 1 ? "||" : "o{";
       relationshipLines.push(
         `  ${entity} ${left}--${right} ${ident(target)} : "${key}"`,
       );
@@ -160,43 +166,47 @@ for (const comp of components) {
     }
   }
 
-  // option/options with datasource source → datasource entity
-  for (const [key, field] of fields) {
-    if (field.source !== "internal" || !field.datasource_slug) continue;
-    const ds = datasources.find((d) => d.slug === field.datasource_slug);
-    if (!ds) continue;
-    const right = field.type === "options" ? "o{" : "o|";
-    relationshipLines.push(
-      `  ${entity} }o--${right} ${ident(ds.name)} : "${key}"`,
-    );
-  }
-}
-
-// Datasource entities — show valid values as enum-style attributes
-const usedDatasources = new Set();
-for (const comp of components) {
-  if (!included.has(comp.name)) continue;
-  for (const field of Object.values(comp.schema ?? {})) {
-    if (field.source === "internal" && field.datasource_slug) {
+  // option/options with datasource source → datasource entity (only with --datasources)
+  if (showDatasources) {
+    for (const [key, field] of fields) {
+      if (field.source !== "internal" || !field.datasource_slug) continue;
       const ds = datasources.find((d) => d.slug === field.datasource_slug);
-      if (ds) usedDatasources.add(ds.name);
+      if (!ds) continue;
+      const right = field.type === "options" ? "o{" : "o|";
+      relationshipLines.push(
+        `  ${entity} }o--${right} ${ident(ds.name)} : "${key}"`,
+      );
     }
   }
 }
 
-for (const dsName of usedDatasources) {
-  const ds = datasources.find((d) => d.name === dsName);
-  if (!ds) continue;
-  const entity = ident(ds.name);
-
-  entityLines.push(`  ${entity} {`);
-  for (const entry of ds.entries) {
-    const attr = safeAttr(entry.value) || safeAttr(entry.name);
-    const label = entry.name.trim();
-    entityLines.push(`    string ${attr} "${label}"`);
+// Datasource entities — show valid values as enum-style attributes (only with --datasources)
+if (showDatasources) {
+  const usedDatasources = new Set();
+  for (const comp of components) {
+    if (!included.has(comp.name)) continue;
+    for (const field of Object.values(comp.schema ?? {})) {
+      if (field.source === "internal" && field.datasource_slug) {
+        const ds = datasources.find((d) => d.slug === field.datasource_slug);
+        if (ds) usedDatasources.add(ds.name);
+      }
+    }
   }
-  entityLines.push(`  }`);
-  entityLines.push("");
+
+  for (const dsName of usedDatasources) {
+    const ds = datasources.find((d) => d.name === dsName);
+    if (!ds) continue;
+    const entity = ident(ds.name);
+
+    entityLines.push(`  ${entity} {`);
+    for (const entry of ds.entries) {
+      const attr = safeAttr(entry.value) || safeAttr(entry.name);
+      const label = entry.name.trim();
+      entityLines.push(`    string ${attr} "${label}"`);
+    }
+    entityLines.push(`  }`);
+    entityLines.push("");
+  }
 }
 
 const output = [

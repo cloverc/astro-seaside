@@ -1,8 +1,12 @@
 export function getStoryblokVersion(request: Request): "draft" | "published" {
   const host = request.headers.get("host") ?? "";
-  return host.includes("preview--") || host.includes("localhost")
-    ? "draft"
-    : "published";
+  const isLocal =
+    host.includes("localhost") ||
+    host.includes("preview--") ||
+    /^192\.168\.\d+\.\d+/.test(host) ||
+    /^10\.\d+\.\d+\.\d+/.test(host) ||
+    /^172\.(1[6-9]|2\d|3[01])\.\d+\.\d+/.test(host);
+  return isLocal ? "draft" : "published";
 }
 
 export async function fetchDatasourceEntries(slug: string): Promise<any[]> {

@@ -2,36 +2,51 @@
 import { storyblokEditable } from "@storyblok/astro";
 import { renderRichText } from "@storyblok/astro";
 
-const { member, cardHeadlineTag = "h2", isFirst = false } = Astro.props;
+const {
+  blok,
+  member: memberProp,
+  cardHeadlineTag = "h2",
+  isFirst = false,
+} = Astro.props;
+const member = memberProp ?? blok;
 
-const renderedRichText = renderRichText(member.profile);
+const renderedRichText = member.profile ? renderRichText(member.profile) : null;
 
 const HeadlineTag = cardHeadlineTag;
 ---
 
 <article
   {...storyblokEditable(member)}
-  class="column bg-stone-100 p-6 text-dark rounded-lg text-left"
+  id={member.slug ?? undefined}
+  class="grid-two-col text-dark scroll-mt-24 lg:scroll-mt-28"
 >
-  <img
-    class="object-cover object-center w-full lg:h-72 md:h-64 rounded"
-    src={`${member.profile_picture.filename}/m/400x288/filters:quality(70):format(webp)`}
-    srcset={`
-      ${member.profile_picture.filename}/m/400x288/filters:quality(70):format(webp) 400w,
-      ${member.profile_picture.filename}/m/720x516/filters:quality(70):format(webp) 720w
-    `}
-    sizes={isFirst
-      ? "(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
-      : "auto, (max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"}
-    width="400"
-    height="288"
-    loading={isFirst ? "eager" : "lazy"}
-    fetchpriority={isFirst ? "high" : "auto"}
-    decoding={isFirst ? "sync" : "async"}
-    alt={member.profile_picture.alt}
-  />
-  <div class="py-4">
-    <HeadlineTag class="text-2xl font-heading text-accent font-extrabold mb-1">
+  {
+    member.profile_picture?.filename ? (
+      <div class="rounded overflow-hidden relative aspect-[4/3] bg-stone-300">
+        <img
+          class="absolute inset-0 w-full h-full object-cover object-center"
+          src={`${member.profile_picture.filename}/m/400x300/filters:quality(70):format(webp)`}
+          srcset={`
+          ${member.profile_picture.filename}/m/400x300/filters:quality(70):format(webp) 400w,
+          ${member.profile_picture.filename}/m/600x450/filters:quality(70):format(webp) 600w
+        `}
+          sizes="(max-width: 767px) 100vw, 50vw"
+          width="400"
+          height="300"
+          loading={isFirst ? "eager" : "lazy"}
+          fetchpriority={isFirst ? "high" : "auto"}
+          decoding={isFirst ? "sync" : "async"}
+          alt={member.profile_picture.alt ?? member.name}
+        />
+      </div>
+    ) : (
+      <div class="rounded bg-stone-300 aspect-[4/3]" />
+    )
+  }
+  <div class="py-2">
+    <HeadlineTag
+      class="text-2xl md:text-3xl font-heading text-accent font-semibold mb-1"
+    >
       {member.name}
     </HeadlineTag>
     {

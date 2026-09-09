@@ -39,26 +39,28 @@ const badgeColors: Record<string, string> = {
 };
 
 function getFormatLabel(contentBlocks: any[]): string {
-  const block = contentBlocks?.[0];
-  if (!block) return "";
-  if (block.component === "content_video") return "Video";
-  if (block.component === "content_article") return "Article";
-  if (block.component === "content_file") {
-    const filename: string =
-      block.file?.filename ?? block.external_url?.url ?? "";
-    const ext = filename.split(".").pop()?.toLowerCase() ?? "";
-    const extMap: Record<string, string> = {
-      pdf: "PDF",
-      doc: "Word",
-      docx: "Word",
-      xls: "Excel",
-      xlsx: "Excel",
-      ppt: "PowerPoint",
-      pptx: "PowerPoint",
-    };
-    return extMap[ext] ?? "File";
-  }
-  return "";
+  const extMap: Record<string, string> = {
+    pdf: "PDF",
+    doc: "Word",
+    docx: "Word",
+    xls: "Excel",
+    xlsx: "Excel",
+    ppt: "PowerPoint",
+    pptx: "PowerPoint",
+  };
+  const labels = (contentBlocks ?? [])
+    .map((block) => {
+      if (block.component === "content_video") return "Video";
+      if (block.component === "content_file") {
+        const filename: string =
+          block.file?.filename ?? block.external_url?.url ?? "";
+        const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+        return extMap[ext] ?? "File";
+      }
+      return null;
+    })
+    .filter(Boolean) as string[];
+  return [...new Set(labels)].join(" · ");
 }
 
 const resources = rawStories.map((story: any) => {
@@ -68,8 +70,9 @@ const resources = rawStories.map((story: any) => {
     : c.audience
       ? [c.audience]
       : [];
-  const firstAudienceLabel =
-    audienceKeys.length > 0 ? dsLabel(dsAudience, audienceKeys[0]) : "";
+  const audienceLabels: string[] = audienceKeys.map((v) =>
+    dsLabel(dsAudience, v),
+  );
   const topicLabels: string[] = (c.topics ?? []).map((v: string) =>
     dsLabel(dsTopics, v),
   );
@@ -84,7 +87,7 @@ const resources = rawStories.map((story: any) => {
     slug: story.slug,
     title: c.title ?? "",
     format,
-    audience: firstAudienceLabel,
+    audiences: audienceLabels,
     resourceType: resourceTypeLabel,
     topics: topicLabels,
     description: c.description ?? "",
@@ -119,10 +122,7 @@ const metadata = {
   pageTitle: "Resource Hub",
 };
 
-function ctaLabel(format: string) {
-  if (format === "Video") return "Watch video";
-  if (format === "Article") return "Read more";
-  if (format) return `Download ${format}`;
+function ctaLabel(_format: string) {
   return "View resource";
 }
 ---
@@ -374,7 +374,7 @@ function ctaLabel(format: string) {
               resources.map((r) => (
                 <li
                   data-rh-card
-                  data-audience={r.audience}
+                  data-audience={r.audiences.join("|")}
                   data-resource-type={r.resourceType}
                   data-topics={r.topics.join("|")}
                   data-search-text={`${r.title} ${r.description}`.toLowerCase()}
@@ -382,6 +382,20 @@ function ctaLabel(format: string) {
                 >
                   <article class="flex flex-col sm:flex-row gap-6 items-start">
                     <div class="flex-1 min-w-0">
+                      {(r.resourceType || r.format) && (
+                        <div class="flex flex-wrap gap-2 mb-3">
+                          {r.resourceType && (
+                            <span class="text-xs font-semibold uppercase tracking-wider bg-stone-100 text-gray-600 px-2.5 py-1 rounded-full">
+                              {r.resourceType}
+                            </span>
+                          )}
+                          {r.format && (
+                            <span class="text-xs font-semibold uppercase tracking-wider bg-stone-100 text-gray-600 px-2.5 py-1 rounded-full">
+                              {r.format}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       <a href={`/resource-hub/${r.slug}`} class="group">
                         <h2 class="text-xl font-heading font-medium text-dark mb-2 leading-snug group-hover:underline decoration-1">
                           {r.title}
@@ -396,37 +410,33 @@ function ctaLabel(format: string) {
                       >
                         {ctaLabel(r.format)}
                       </a>
-                      <dl class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm border-t border-gray-200 pt-4">
-                        <div>
-                          <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-0.5">
-                            Audience
-                          </dt>
-                          <dd class="flex items-center gap-1.5 text-dark">
-                            <span
-                              class={`w-2 h-2 rounded-full shrink-0 ${badgeColors[r.audience] ?? "bg-gray-400"}`}
-                              aria-hidden="true"
-                            />
-                            {r.audience}
-                          </dd>
-                        </div>
-                        <div>
-                          <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-0.5">
-                            Format
-                          </dt>
-                          <dd class="text-dark">{r.format}</dd>
-                        </div>
-                        <div>
-                          <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-0.5">
-                            Type
-                          </dt>
-                          <dd class="text-dark">{r.resourceType}</dd>
-                        </div>
-                        <div class="col-span-2 sm:col-span-3">
-                          <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-0.5">
-                            Topics
-                          </dt>
-                          <dd class="text-dark">{r.topics.join(" · ")}</dd>
-                        </div>
+                      <dl class="text-sm border-t border-gray-200 pt-4 space-y-3">
+                        {r.audiences.length > 0 && (
+                          <div>
+                            <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                              Audience
+                            </dt>
+                            <dd class="flex flex-wrap gap-x-3 text-dark">
+                              {r.audiences.map((aud) => (
+                                <span class="inline-flex items-center gap-1.5">
+                                  <span
+                                    class={`w-2 h-2 rounded-full shrink-0 ${badgeColors[aud] ?? "bg-gray-400"}`}
+                                    aria-hidden="true"
+                                  />
+                                  {aud}
+                                </span>
+                              ))}
+                            </dd>
+                          </div>
+                        )}
+                        {r.topics.length > 0 && (
+                          <div>
+                            <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                              Topics
+                            </dt>
+                            <dd class="text-dark">{r.topics.join(" · ")}</dd>
+                          </div>
+                        )}
                       </dl>
                     </div>
 
@@ -598,12 +608,16 @@ function ctaLabel(format: string) {
     function applyFilters() {
       var allCards = Array.from(document.querySelectorAll("[data-rh-card]"));
       var matched = allCards.filter(function (card) {
-        var aud = card.dataset.audience;
+        var cardAudiences = (card.dataset.audience || "").split("|");
         var rt = card.dataset.resourceType;
         var cardTopics = (card.dataset.topics || "").split("|");
         var text = card.dataset.searchText || "";
         var matchQ = !state.q || text.includes(state.q);
-        var matchAud = state.audience.size === 0 || state.audience.has(aud);
+        var matchAud =
+          state.audience.size === 0 ||
+          cardAudiences.some(function (a) {
+            return state.audience.has(a);
+          });
         var matchTopic =
           state.topic.size === 0 ||
           cardTopics.some(function (t) {

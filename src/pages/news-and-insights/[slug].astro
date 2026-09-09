@@ -9,32 +9,34 @@ const storyblokApi = useStoryblokApi();
 const version = getStoryblokVersion(Astro.request);
 
 let story: any;
-let resolvedRelations: any[] = [];
 
 try {
   const { data } = await storyblokApi.get(
     `cdn/stories/news-and-insights/${slug}`,
     {
       version,
-      resolve_relations: "news_article.author,insight_article.author",
+      resolve_relations: "article.author",
     },
   );
   story = data.story;
-  resolvedRelations = data.rels ?? [];
 } catch {
   return Astro.redirect("/news-and-insights/");
 }
 
 const blok = story.content;
-const isNewsArticle = blok.component === "news_article";
+const isNewsArticle = blok.article_type === "news";
 
-// Author — linked team member takes priority over guest_author text
-const authorStory = resolvedRelations.find((r: any) => r.uuid === blok.author);
+// Author — SDK inlines resolved relation into blok.author as a story object
+const authorStory =
+  blok.author && typeof blok.author === "object" ? blok.author : null;
 const authorName: string | null =
   authorStory?.content?.name ?? blok.guest_author ?? null;
 const authorRole: string | null = authorStory?.content?.title ?? null;
 const authorAvatar: string | null =
   authorStory?.content?.profile_picture?.filename ?? null;
+const authorProfileUrl: string | null = authorStory?.slug
+  ? `/team/#${authorStory.slug}`
+  : null;
 
 // Partners (one per line)
 const partners: string[] = blok.partners
@@ -87,12 +89,6 @@ const metaRows: MetaRow[] = [
   ...(publishedDate ? [{ label: "Published", value: publishedDate }] : []),
   ...(partners.length > 0
     ? [{ label: "Partners", value: partners.join(" · ") }]
-    : []),
-  ...(isNewsArticle && blok.event
-    ? [{ label: "Event", value: blok.event }]
-    : []),
-  ...(isNewsArticle && blok.location
-    ? [{ label: "Location", value: blok.location }]
     : []),
 ];
 
@@ -190,15 +186,17 @@ const metadata = {
               )}
               <div>
                 <div class="font-semibold text-blue-900 leading-snug">
-                  {authorName}
+                  <span class="font-normal text-gray-500">By </span>
+                  {authorProfileUrl ? (
+                    <a href={authorProfileUrl} class="hover:underline">
+                      {authorName}
+                    </a>
+                  ) : (
+                    authorName
+                  )}
                 </div>
                 {authorRole && (
                   <div class="text-sm text-gray-500 mt-0.5">{authorRole}</div>
-                )}
-                {publishedDate && (
-                  <div class="text-sm text-gray-400 mt-0.5">
-                    {publishedDate}
-                  </div>
                 )}
               </div>
             </div>

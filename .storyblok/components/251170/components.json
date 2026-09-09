@@ -1,5 +1,125 @@
 [
   {
+    "name": "article",
+    "display_name": "Article",
+    "description": null,
+    "created_at": "2026-09-08T15:29:38.768Z",
+    "updated_at": "2026-09-08T15:29:38.768Z",
+    "id": 217873525841181,
+    "schema": {
+      "article_type": {
+        "type": "option",
+        "pos": 0,
+        "required": true,
+        "options": [
+          {
+            "name": "News",
+            "value": "news"
+          },
+          {
+            "name": "Insight",
+            "value": "insight"
+          }
+        ],
+        "description": "Determines how this piece is labelled and categorised",
+        "tooltip": true,
+        "id": "a-type-001"
+      },
+      "title": {
+        "type": "text",
+        "pos": 1,
+        "required": true,
+        "description": "The article title as it will appear on the site",
+        "tooltip": true,
+        "id": "a-title-001"
+      },
+      "summary": {
+        "type": "textarea",
+        "pos": 2,
+        "required": true,
+        "description": "Short summary shown on listing cards and as the opening standfirst on the article page (2–4 sentences)",
+        "tooltip": true,
+        "id": "a-summary-001"
+      },
+      "hero_image": {
+        "type": "asset",
+        "pos": 3,
+        "required": true,
+        "filetypes": ["images"],
+        "description": "Full-width image shown below the hero. Recommended: landscape, at least 1200px wide.",
+        "tooltip": true,
+        "id": "a-heroimage-001"
+      },
+      "partners": {
+        "type": "textarea",
+        "pos": 4,
+        "description": "Partner organisations involved. One per line.",
+        "tooltip": true,
+        "id": "a-partners-001"
+      },
+      "body": {
+        "type": "richtext",
+        "pos": 5,
+        "required": true,
+        "description": "The full article body.",
+        "tooltip": true,
+        "restrict_components": true,
+        "component_whitelist": ["quote_block"],
+        "id": "a-body-001"
+      },
+      "published_date": {
+        "type": "datetime",
+        "pos": 6,
+        "description": "When this article was originally published",
+        "tooltip": true,
+        "id": "a-publisheddate-001"
+      },
+      "author": {
+        "type": "option",
+        "pos": 7,
+        "source": "internal_stories",
+        "folder_slug": "team/",
+        "filter_content_type": ["team-member"],
+        "description": "Link to a team member as author (optional)",
+        "tooltip": true,
+        "id": "a-author-001"
+      },
+      "guest_author": {
+        "type": "text",
+        "pos": 8,
+        "description": "Name of external or guest contributor, if not a team member. Use instead of Author, not alongside it.",
+        "tooltip": true,
+        "id": "a-guestauthor-001"
+      },
+      "topics": {
+        "type": "options",
+        "pos": 9,
+        "source": "internal",
+        "datasource_slug": "shared-topics",
+        "exclude_empty_option": true,
+        "min_options": 1,
+        "description": "Subject areas this article covers. Used to surface related resources.",
+        "tooltip": true,
+        "id": "a-topics-001"
+      }
+    },
+    "image": null,
+    "preview_field": "title",
+    "is_root": true,
+    "preview_tmpl": null,
+    "is_nestable": false,
+    "all_presets": [],
+    "preset_id": null,
+    "real_name": "Article",
+    "component_group_uuid": null,
+    "color": null,
+    "icon": null,
+    "internal_tags_list": [],
+    "internal_tag_ids": [],
+    "content_type_asset_preview": null,
+    "metadata": {}
+  },
+  {
     "name": "button",
     "display_name": null,
     "description": null,
@@ -58,39 +178,6 @@
     "all_presets": [],
     "preset_id": null,
     "real_name": "contact",
-    "component_group_uuid": null,
-    "color": null,
-    "icon": null,
-    "internal_tags_list": [],
-    "internal_tag_ids": [],
-    "content_type_asset_preview": null,
-    "metadata": {}
-  },
-  {
-    "name": "content_article",
-    "display_name": "Article",
-    "description": null,
-    "created_at": "2026-09-07T10:48:36.271Z",
-    "updated_at": "2026-09-07T10:48:36.271Z",
-    "id": 217450562657977,
-    "schema": {
-      "body": {
-        "type": "richtext",
-        "pos": 0,
-        "required": true,
-        "description": "The full article body. Use headings, bullet points and links as needed.",
-        "tooltip": true,
-        "id": "ca-body-001"
-      }
-    },
-    "image": null,
-    "preview_field": null,
-    "is_root": false,
-    "preview_tmpl": null,
-    "is_nestable": true,
-    "all_presets": [],
-    "preset_id": null,
-    "real_name": "Article",
     "component_group_uuid": null,
     "color": null,
     "icon": null,
@@ -404,34 +491,6 @@
     "metadata": {}
   },
   {
-    "name": "grid",
-    "display_name": null,
-    "description": null,
-    "created_at": "2023-09-10T20:50:25.808Z",
-    "updated_at": "2023-09-10T20:50:25.808Z",
-    "id": 4550717,
-    "schema": {
-      "columns": {
-        "type": "bloks"
-      }
-    },
-    "image": null,
-    "preview_field": null,
-    "is_root": false,
-    "preview_tmpl": null,
-    "is_nestable": true,
-    "all_presets": [],
-    "preset_id": null,
-    "real_name": "grid",
-    "component_group_uuid": null,
-    "color": null,
-    "icon": null,
-    "internal_tags_list": [],
-    "internal_tag_ids": [],
-    "content_type_asset_preview": null,
-    "metadata": {}
-  },
-  {
     "name": "hero",
     "display_name": "Hero",
     "description": null,
@@ -476,108 +535,6 @@
     "component_group_uuid": "21a22d57-dbbb-4498-b075-3df401a3fe42",
     "color": "#00b3b0",
     "icon": "block-monitor",
-    "internal_tags_list": [],
-    "internal_tag_ids": [],
-    "content_type_asset_preview": null,
-    "metadata": {}
-  },
-  {
-    "name": "insight_article",
-    "display_name": "Insight Article",
-    "description": null,
-    "created_at": "2026-09-07T16:53:10.974Z",
-    "updated_at": "2026-09-08T10:23:52.486Z",
-    "id": 217540161435459,
-    "schema": {
-      "title": {
-        "type": "text",
-        "pos": 0,
-        "required": true,
-        "description": "The article title as it will appear on the site",
-        "tooltip": true,
-        "id": "ia-title-001"
-      },
-      "summary": {
-        "type": "textarea",
-        "pos": 1,
-        "required": true,
-        "description": "Short summary shown on listing cards and as the opening standfirst on the article page (2\u20134 sentences)",
-        "tooltip": true,
-        "id": "ia-summary-001"
-      },
-      "hero_image": {
-        "type": "asset",
-        "pos": 2,
-        "required": true,
-        "filetypes": ["images"],
-        "description": "Full-width image shown below the hero. Recommended: landscape, at least 1200px wide.",
-        "tooltip": true,
-        "id": "ia-heroimage-001"
-      },
-      "partners": {
-        "type": "textarea",
-        "pos": 4,
-        "description": "Partner organisations involved. One per line.",
-        "tooltip": true,
-        "id": "ia-partners-001"
-      },
-      "body": {
-        "type": "richtext",
-        "pos": 7,
-        "required": true,
-        "description": "The full article body.",
-        "tooltip": true,
-        "restrict_components": true,
-        "component_whitelist": ["quote_block"],
-        "id": "ia-body-001"
-      },
-      "published_date": {
-        "type": "datetime",
-        "pos": 8,
-        "description": "When this article was originally published",
-        "tooltip": true,
-        "id": "ia-publisheddate-001"
-      },
-      "author": {
-        "type": "option",
-        "pos": 9,
-        "source": "internal_stories",
-        "folder_slug": "team/",
-        "filter_content_type": ["team-member"],
-        "description": "Link to a team member as author (optional)",
-        "tooltip": true,
-        "id": "ia-author-001"
-      },
-      "guest_author": {
-        "type": "text",
-        "pos": 10,
-        "description": "Name of external or guest contributor, if not a team member. Use instead of Author, not alongside it.",
-        "tooltip": true,
-        "id": "ia-guestauthor-001"
-      },
-      "topics": {
-        "type": "options",
-        "pos": 11,
-        "source": "internal",
-        "datasource_slug": "shared-topics",
-        "exclude_empty_option": true,
-        "min_options": 1,
-        "description": "Subject areas this article covers. Used to surface related resources.",
-        "tooltip": true,
-        "id": "ia-topics-001"
-      }
-    },
-    "image": null,
-    "preview_field": null,
-    "is_root": true,
-    "preview_tmpl": null,
-    "is_nestable": false,
-    "all_presets": [],
-    "preset_id": null,
-    "real_name": "Insight Article",
-    "component_group_uuid": null,
-    "color": null,
-    "icon": null,
     "internal_tags_list": [],
     "internal_tag_ids": [],
     "content_type_asset_preview": null,
@@ -638,122 +595,6 @@
     "all_presets": [],
     "preset_id": null,
     "real_name": "mission-values",
-    "component_group_uuid": null,
-    "color": null,
-    "icon": null,
-    "internal_tags_list": [],
-    "internal_tag_ids": [],
-    "content_type_asset_preview": null,
-    "metadata": {}
-  },
-  {
-    "name": "news_article",
-    "display_name": "News Article",
-    "description": null,
-    "created_at": "2026-09-07T16:53:11.682Z",
-    "updated_at": "2026-09-08T10:23:52.500Z",
-    "id": 217540164335428,
-    "schema": {
-      "title": {
-        "type": "text",
-        "pos": 0,
-        "required": true,
-        "description": "The article title as it will appear on the site",
-        "tooltip": true,
-        "id": "na-title-001"
-      },
-      "summary": {
-        "type": "textarea",
-        "pos": 1,
-        "required": true,
-        "description": "Short summary shown on listing cards and as the opening standfirst on the article page (2\u20134 sentences)",
-        "tooltip": true,
-        "id": "na-summary-001"
-      },
-      "hero_image": {
-        "type": "asset",
-        "pos": 2,
-        "required": true,
-        "filetypes": ["images"],
-        "description": "Full-width image shown below the hero. Recommended: landscape, at least 1200px wide.",
-        "tooltip": true,
-        "id": "na-heroimage-001"
-      },
-      "partners": {
-        "type": "textarea",
-        "pos": 4,
-        "description": "Partner organisations involved. One per line.",
-        "tooltip": true,
-        "id": "na-partners-001"
-      },
-      "event": {
-        "type": "text",
-        "pos": 5,
-        "description": "Related event name and date, e.g. 'Valuing Seaside Heritage symposium, June 2026'",
-        "tooltip": true,
-        "id": "na-event-001"
-      },
-      "location": {
-        "type": "text",
-        "pos": 6,
-        "description": "Location of the event or subject, e.g. 'Saltdean Lido, Brighton'",
-        "tooltip": true,
-        "id": "na-location-001"
-      },
-      "body": {
-        "type": "richtext",
-        "pos": 7,
-        "required": true,
-        "description": "The full article body.",
-        "tooltip": true,
-        "restrict_components": true,
-        "component_whitelist": ["quote_block"],
-        "id": "na-body-001"
-      },
-      "published_date": {
-        "type": "datetime",
-        "pos": 8,
-        "description": "When this article was originally published",
-        "tooltip": true,
-        "id": "na-publisheddate-001"
-      },
-      "author": {
-        "type": "option",
-        "pos": 9,
-        "source": "internal_stories",
-        "folder_slug": "team/",
-        "filter_content_type": ["team-member"],
-        "description": "Link to a team member as author (optional)",
-        "tooltip": true,
-        "id": "na-author-001"
-      },
-      "guest_author": {
-        "type": "text",
-        "pos": 10,
-        "description": "Name of external or guest contributor, if not a team member. Use instead of Author, not alongside it.",
-        "tooltip": true,
-        "id": "na-guestauthor-001"
-      },
-      "topics": {
-        "type": "options",
-        "pos": 11,
-        "source": "internal",
-        "datasource_slug": "shared-topics",
-        "exclude_empty_option": true,
-        "min_options": 1,
-        "description": "Subject areas this article covers. Used to surface related resources.",
-        "tooltip": true,
-        "id": "na-topics-001"
-      }
-    },
-    "image": null,
-    "preview_field": null,
-    "is_root": true,
-    "preview_tmpl": null,
-    "is_nestable": false,
-    "all_presets": [],
-    "preset_id": null,
-    "real_name": "News Article",
     "component_group_uuid": null,
     "color": null,
     "icon": null,
@@ -881,7 +722,7 @@
     "display_name": "Pull Quote",
     "description": null,
     "created_at": "2026-09-08T10:23:51.352Z",
-    "updated_at": "2026-09-08T10:23:51.352Z",
+    "updated_at": "2026-09-08T11:20:59.839Z",
     "id": 217798374822629,
     "schema": {
       "text": {
@@ -889,7 +730,7 @@
         "pos": 0,
         "required": true,
         "display_name": "Quote text",
-        "description": "The quote itself \u2014 no quotation marks needed",
+        "description": "The quote itself, no quotation marks needed",
         "tooltip": true,
         "id": "qb-text-001"
       },
@@ -911,8 +752,8 @@
     "preset_id": null,
     "real_name": "Pull Quote",
     "component_group_uuid": null,
-    "color": "#0c056d",
-    "icon": "block-quote",
+    "color": "var(--sb-color-accent-background-pink-lace)",
+    "icon": "message-square",
     "internal_tags_list": [],
     "internal_tag_ids": [],
     "content_type_asset_preview": null,
@@ -923,7 +764,7 @@
     "display_name": null,
     "description": "A resource for the Resource Hub",
     "created_at": "2026-09-02T14:24:49.285Z",
-    "updated_at": "2026-09-07T11:07:04.753Z",
+    "updated_at": "2026-09-09T10:34:28.455Z",
     "id": 215734228116516,
     "schema": {
       "title": {
@@ -939,7 +780,7 @@
         "pos": 2,
         "required": true,
         "id": "qa2g80fjQum5_lhzUjqD3A",
-        "description": "A short summary (2\u20134 sentences) shown on listing cards and the resource detail page. See the content guide for tips by resource type",
+        "description": "A short summary (2–4 sentences) shown on listing cards and the resource detail page. See the content guide for tips by resource type",
         "tooltip": true
       },
       "audience": {
@@ -991,17 +832,12 @@
         "type": "bloks",
         "pos": 8,
         "minimum": 1,
-        "maximum": 1,
         "restrict_type": "",
         "restrict_components": true,
-        "component_whitelist": [
-          "content_file",
-          "content_video",
-          "content_article"
-        ],
+        "component_whitelist": ["content_file", "content_video"],
         "component_denylist": [],
         "id": "ri-content-001",
-        "description": "The resource content. Add exactly one block: File, Video, or Article.",
+        "description": "The resource content. Add at least one of: File, Video, or Article. Multiple content type bloks can be added",
         "tooltip": true
       },
       "body": {
@@ -1017,7 +853,7 @@
         "folder_slug": "team/",
         "filter_content_type": ["team-member"],
         "id": "ri-author-001",
-        "description": "Link to a team member as author (optional \u2014 leave blank for SHN staff with no named author)",
+        "description": "Link to a team member as author (optional — leave blank for SHN staff with no named author)",
         "tooltip": true
       },
       "guest_author": {
@@ -1082,7 +918,7 @@
       "title": {
         "type": "text",
         "pos": 1,
-        "description": "Team Member's role, if any (e.g. Chair) \u2013 leave blank if none. Shown next to their name if filled in.",
+        "description": "Team Member's role, if any (e.g. Chair) – leave blank if none. Shown next to their name if filled in.",
         "tooltip": true,
         "id": "PV1XDTUNTleaeAAU5e206A"
       },

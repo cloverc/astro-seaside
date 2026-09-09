@@ -77,7 +77,7 @@ test.describe("resource hub page", () => {
     expect(count).toBeGreaterThan(0);
 
     for (const card of await visible.all()) {
-      await expect(card).toHaveAttribute("data-audience", "General Public");
+      await expect(card).toHaveAttribute("data-audience", /General Public/);
     }
 
     await expect(page.locator("#rh-count")).toContainText(
@@ -95,8 +95,13 @@ test.describe("resource hub page", () => {
       .check();
 
     for (const card of await page.locator("[data-rh-card]:visible").all()) {
-      const aud = await card.getAttribute("data-audience");
-      expect(["General Public", "Heritage Professionals"]).toContain(aud);
+      const aud = (await card.getAttribute("data-audience")) ?? "";
+      const audValues = aud.split("|");
+      expect(
+        audValues.some((a) =>
+          ["General Public", "Heritage Professionals"].includes(a),
+        ),
+      ).toBe(true);
     }
   });
 
@@ -127,21 +132,23 @@ test.describe("resource hub page", () => {
     await openFilters(page);
 
     const firstCard = page.locator("[data-rh-card]").first();
-    const audience = await firstCard.getAttribute("data-audience");
+    const audienceRaw = await firstCard.getAttribute("data-audience");
+    const audience = audienceRaw?.split("|")[0] ?? "";
     const resourceType = await firstCard.getAttribute("data-resource-type");
     test.skip(
       !audience || !resourceType,
       "First card missing audience or resource type",
     );
 
-    await page.getByRole("checkbox", { name: audience! }).check();
+    await page.getByRole("checkbox", { name: audience }).check();
     await page
       .locator("button.rh-group-toggle", { hasText: "Resource type" })
       .click();
     await page.getByRole("checkbox", { name: resourceType! }).check();
 
     for (const card of await page.locator("[data-rh-card]:visible").all()) {
-      await expect(card).toHaveAttribute("data-audience", audience!);
+      const aud = (await card.getAttribute("data-audience")) ?? "";
+      expect(aud.split("|")).toContain(audience!);
       await expect(card).toHaveAttribute("data-resource-type", resourceType!);
     }
   });
@@ -219,7 +226,7 @@ test.describe("resource hub page", () => {
     const visible = page.locator("[data-rh-card]:visible");
     expect(await visible.count()).toBeGreaterThan(0);
     for (const card of await visible.all()) {
-      await expect(card).toHaveAttribute("data-audience", "General Public");
+      await expect(card).toHaveAttribute("data-audience", /General Public/);
     }
   });
 
