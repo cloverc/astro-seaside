@@ -37,7 +37,6 @@ const schemaGraph = {
       url: siteUrl,
       description:
         "A charity raising awareness and understanding of the broad heritage associated with the UK seaside holiday.",
-      inLanguage: "en-GB",
       sameAs: [
         gc.instagram_url ?? "https://www.instagram.com/seaside_network/",
         gc.youtube_url ?? "https://www.youtube.com/@SeasideHeritageNetwork",
@@ -51,7 +50,7 @@ const schemaGraph = {
       "@id": `${siteUrl}#website`,
       url: siteUrl,
       name: orgName,
-      inLanguage: "en-GB",
+      inLanguage: "en-gb",
       publisher: { "@id": `${siteUrl}#organization` },
     },
   ],
@@ -178,6 +177,7 @@ const footerData = {
       is:inline
       set:html={JSON.stringify(schemaGraph)}
     />
+    <slot name="head" />
   </Fragment>
   {
     Astro.url.pathname === "/" && (

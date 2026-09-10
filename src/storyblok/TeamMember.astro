@@ -5,6 +5,7 @@ import { renderRichText } from "@storyblok/astro";
 const {
   blok,
   member: memberProp,
+  slug: slugProp,
   cardHeadlineTag = "h2",
   isFirst = false,
 } = Astro.props;
@@ -17,7 +18,7 @@ const HeadlineTag = cardHeadlineTag;
 
 <article
   {...storyblokEditable(member)}
-  id={member.slug ?? undefined}
+  id={slugProp ?? member.slug ?? undefined}
   class="grid-two-col text-dark scroll-mt-24 lg:scroll-mt-28"
 >
   {

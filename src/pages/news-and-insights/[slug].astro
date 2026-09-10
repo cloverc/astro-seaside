@@ -46,24 +46,35 @@ const partners: string[] = blok.partners
       .filter(Boolean)
   : [];
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 const bodyHtml: string | null = blok.body
   ? (renderRichText(blok.body, {
       renderers: {
         image: (props) => {
           const { src, alt, title } = props.attrs;
+          const safeSrc = escapeHtml(src ?? "");
+          const safeAlt = escapeHtml(alt ?? "");
           if (title) {
-            return `<figure><img src="${src ?? ""}" alt="${alt ?? ""}"><figcaption>${title}</figcaption></figure>`;
+            return `<figure><img src="${safeSrc}" alt="${safeAlt}"><figcaption>${escapeHtml(title)}</figcaption></figure>`;
           }
-          return `<img src="${src ?? ""}" alt="${alt ?? ""}">`;
+          return `<img src="${safeSrc}" alt="${safeAlt}">`;
         },
         blok: (props) => {
           return (props.attrs.body ?? [])
             .map((b) => {
               const blokData = b as Record<string, unknown>;
               if (blokData.component === "quote_block") {
-                const text = String(blokData.text ?? "");
+                const text = escapeHtml(String(blokData.text ?? ""));
                 const citation = blokData.citation
-                  ? String(blokData.citation)
+                  ? escapeHtml(String(blokData.citation))
                   : "";
                 const citationHtml = citation ? `<cite>${citation}</cite>` : "";
                 return `<blockquote>${text}${citationHtml}</blockquote>`;
@@ -94,11 +105,61 @@ const metaRows: MetaRow[] = [
 
 const metadata = {
   siteTitle: "Seaside Heritage Network",
-  pageTitle: `${blok.title} — Seaside Heritage Network`,
+  pageTitle: blok.title,
+};
+
+const siteUrl = Astro.site?.href ?? "https://seasideheritage.org.uk/";
+const articleSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": blok.article_type === "news" ? "Article" : "BlogPosting",
+  headline: blok.title,
+  description: blok.summary ?? undefined,
+  ...(blok.published_date
+    ? { datePublished: new Date(blok.published_date).toISOString() }
+    : {}),
+  ...(story.first_published_at
+    ? {
+        dateModified: new Date(
+          story.published_at ?? story.first_published_at,
+        ).toISOString(),
+      }
+    : {}),
+  url: `${siteUrl}news-and-insights/${slug}/`,
+  inLanguage: "en-gb",
+  image: blok.hero_image?.filename
+    ? `${blok.hero_image.filename}/m/1200x630/filters:quality(80):format(jpeg)`
+    : undefined,
+  author: authorName
+    ? {
+        "@type": "Person",
+        name: authorName,
+        ...(authorRole ? { jobTitle: authorRole } : {}),
+        ...(authorStory?.slug
+          ? { url: `${siteUrl}team/#${authorStory.slug}` }
+          : {}),
+      }
+    : { "@type": "Organization", "@id": `${siteUrl}#organization` },
+  publisher: { "@type": "Organization", "@id": `${siteUrl}#organization` },
+  isPartOf: { "@type": "WebSite", "@id": `${siteUrl}#website` },
+  ...(partners.length > 0
+    ? {
+        sourceOrganization: partners.map((name) => ({
+          "@type": "Organization",
+          name,
+        })),
+      }
+    : {}),
 };
 ---
 
 <PageLayout metadata={metadata}>
+  <Fragment slot="head">
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(articleSchema)}
+    />
+  </Fragment>
   <div class="bg-page px-4 sm:px-6 pt-8 md:pt-12">
     <div class="max-w-3xl mx-auto">
       <a

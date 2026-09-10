@@ -27,10 +27,13 @@ const team = data ? data.stories : [];
     {
       team?.length &&
         team.map((team_member: any, index: number) => {
-          team_member.content.slug = team_member.slug;
           return (
             <li class="rounded bg-stone-100 p-6">
-              <TeamMember member={team_member.content} isFirst={index === 0} />
+              <TeamMember
+                member={team_member.content}
+                slug={team_member.slug}
+                isFirst={index === 0}
+              />
             </li>
           );
         })

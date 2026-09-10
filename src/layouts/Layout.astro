@@ -12,7 +12,10 @@ const description: string =
   metadata.description ||
   "Discover the rich heritage of seaside tourism and its unique architectural legacy with the Seaside Heritage Network.";
 
-const titleText = `${pageTitle} - ${siteTitle}`;
+const titleText =
+  pageTitle && pageTitle !== siteTitle
+    ? `${pageTitle} - ${siteTitle}`
+    : siteTitle;
 ---
 
 <!doctype html>
