@@ -202,6 +202,8 @@ const articleSchema: Record<string, unknown> = {
               ${blok.hero_image.filename}/m/1536x0/filters:quality(80):format(webp) 1536w
             `}
             sizes="(max-width: 640px) calc(100vw - 2rem), min(768px, calc(100vw - 3rem))"
+            width={blok.hero_image.width}
+            height={blok.hero_image.height}
             alt={blok.hero_image.alt ?? blok.title}
             class="w-full h-auto block"
             loading="eager"
