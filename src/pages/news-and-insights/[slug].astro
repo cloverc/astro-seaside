@@ -117,13 +117,7 @@ const articleSchema: Record<string, unknown> = {
   ...(blok.published_date
     ? { datePublished: new Date(blok.published_date).toISOString() }
     : {}),
-  ...(story.first_published_at
-    ? {
-        dateModified: new Date(
-          story.published_at ?? story.first_published_at,
-        ).toISOString(),
-      }
-    : {}),
+  dateModified: new Date(story.published_at ?? story.updated_at).toISOString(),
   url: `${siteUrl}news-and-insights/${slug}/`,
   inLanguage: "en-gb",
   image: blok.hero_image?.filename
