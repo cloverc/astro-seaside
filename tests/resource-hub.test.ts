@@ -107,9 +107,6 @@ test.describe("resource hub page", () => {
 
   test("resource type checkbox filters cards", async ({ page }) => {
     await openFilters(page);
-    await page
-      .locator("button.rh-group-toggle", { hasText: "Resource type" })
-      .click();
 
     const resourceType = await page
       .locator("[data-rh-card]")
@@ -141,9 +138,6 @@ test.describe("resource hub page", () => {
     );
 
     await page.getByRole("checkbox", { name: audience }).check();
-    await page
-      .locator("button.rh-group-toggle", { hasText: "Resource type" })
-      .click();
     await page.getByRole("checkbox", { name: resourceType! }).check();
 
     for (const card of await page.locator("[data-rh-card]:visible").all()) {
@@ -181,9 +175,6 @@ test.describe("resource hub page", () => {
   test("clear all resets all filters", async ({ page }) => {
     await openFilters(page);
     await page.getByRole("checkbox", { name: "General Public" }).check();
-    await page
-      .locator("button.rh-group-toggle", { hasText: "Resource type" })
-      .click();
 
     const firstResourceType = page
       .locator("[data-rh-filter='resourceType']")
@@ -193,7 +184,7 @@ test.describe("resource hub page", () => {
 
     await page.getByRole("checkbox", { name: resourceTypeName! }).check();
 
-    await page.getByRole("button", { name: "Clear all filters" }).click();
+    await page.getByRole("button", { name: "Clear filters" }).click();
 
     await expect(
       page.getByRole("checkbox", { name: "General Public" }),
@@ -208,7 +199,7 @@ test.describe("resource hub page", () => {
     page,
   }) => {
     await expect(
-      page.getByRole("button", { name: "Clear all filters" }),
+      page.getByRole("button", { name: "Clear filters" }),
     ).not.toBeVisible();
   });
 

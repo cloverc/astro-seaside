@@ -168,8 +168,7 @@ footer,
   scroll-padding: 8px;
 }
 
-.dropdown > button[aria-expanded="true"] + .dropdown-menu,
-.dropdown:focus-within .dropdown-menu {
+.dropdown > button[aria-expanded="true"] + .dropdown-menu {
   display: block;
 }
 

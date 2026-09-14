@@ -118,7 +118,12 @@ const currentPath = Astro.url.pathname;
                 </>
               ) : (
                 <a
-                  aria-current={href === currentPath ? "page" : undefined}
+                  aria-current={
+                    href === currentPath ||
+                    (!!href && href !== "/" && currentPath.startsWith(href))
+                      ? "page"
+                      : undefined
+                  }
                   class:list={[
                     "hover:text-link hover:underline transition duration-150 ease-in-out px-4 py-6 lg:py-3 flex items-center w-full lg:w-auto",
                   ]}

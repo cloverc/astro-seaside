@@ -372,9 +372,11 @@ const metadata = {
           : currentFilter === "news"
             ? "News only"
             : "Insights only";
-      if (countEl)
+      if (countEl) {
         countEl.textContent =
           matched.length + " of " + totalAll + " posts · " + label;
+        countEl.classList.toggle("hidden", matched.length === 0);
+      }
 
       if (emptyEl) emptyEl.classList.toggle("hidden", matched.length > 0);
       if (grid) grid.classList.toggle("hidden", matched.length === 0);
