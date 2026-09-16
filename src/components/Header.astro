@@ -120,7 +120,7 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
                 <a
                   aria-current={href === currentPath ? "page" : undefined}
                   class:list={[
-                    "hover:text-link hover:underline transition duration-150 ease-in-out px-4 py-6 lg:py-3 flex items-center w-full lg:w-auto",
+                    "hover:text-link hover:underline transition-colors duration-150 ease-out px-4 py-6 lg:py-3 flex items-center w-full lg:w-auto",
                   ]}
                   href={href}
                 >
