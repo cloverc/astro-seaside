@@ -5,7 +5,7 @@ const { event, slug } = Astro.props;
 
 <article class="column bg-card rounded">
   <img
-    class="object-cover w-full h-56 mb-2 rounded shadow-lg bg-gray-400"
+    class="object-cover w-full h-56 mb-2 rounded-t shadow-lg bg-gray-400 outline outline-1 outline-black/10"
     src={`${event.image.filename}/m/400x224/filters:quality(70):format(webp)`}
     srcset={`
       ${event.image.filename}/m/400x224/filters:quality(70):format(webp) 400w,

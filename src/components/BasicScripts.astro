@@ -11,6 +11,13 @@
       document.body.classList.toggle("overflow-hidden");
       document.getElementById("header")?.classList.toggle("h-screen");
       document.querySelector("#header nav")?.classList.toggle("hidden");
+      document.querySelectorAll("body > *:not(#header)").forEach((el) => {
+        if (isExpanded) {
+          el.setAttribute("inert", "");
+        } else {
+          el.removeAttribute("inert");
+        }
+      });
     });
   }
 
@@ -34,7 +41,9 @@
     document.body.classList.remove("overflow-hidden");
     document.getElementById("header")?.classList.remove("h-screen");
     document.querySelector("#header nav")?.classList.add("hidden");
-    return;
+    document
+      .querySelectorAll("body > *[inert]")
+      .forEach((el) => el.removeAttribute("inert"));
   };
 
   function setupDropdowns() {

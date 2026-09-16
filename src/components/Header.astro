@@ -36,7 +36,7 @@ const currentPath = Astro.url.pathname;
 <header
   class:list={[
     { sticky: isSticky, relative: !isSticky },
-    "top-0 z-40 flex-none mx-auto w-full transition-[opacity] ease-in-out scroll",
+    "top-0 z-40 flex-none mx-auto w-full [transform:translateZ(0)] scroll",
   ]}
   {...id ? { id } : {}}
 >
@@ -72,7 +72,7 @@ const currentPath = Astro.url.pathname;
       aria-label="Main navigation"
     >
       <ul
-        class="flex flex-col lg:flex-row lg:self-center w-full lg:w-auto text-xl lg:text-[0.95rem] tracking-[0.01rem] font-sans font-medium border-t border-white/20 lg:border-none"
+        class="flex flex-col lg:flex-row lg:self-center w-full lg:w-auto text-xl lg:text-sm tracking-[0.01rem] font-sans font-medium border-t border-white/20 lg:border-none"
       >
         {
           links.map(({ text, href, links: sublinks }, index) => (
@@ -126,7 +126,7 @@ const currentPath = Astro.url.pathname;
                       : undefined
                   }
                   class:list={[
-                    "hover:text-link hover:underline transition duration-150 ease-in-out px-4 py-6 lg:py-3 flex items-center w-full lg:w-auto",
+                    "hover:text-link hover:underline transition-colors duration-150 ease-out px-4 py-6 lg:py-3 flex items-center w-full lg:w-auto",
                   ]}
                   href={href}
                 >
