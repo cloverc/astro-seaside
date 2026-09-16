@@ -40,9 +40,9 @@ footer,
 }
 
 @theme inline {
-  --color-primary: var(--shn-color-accent);
   --color-secondary: var(--shn-color-secondary);
   --color-accent: var(--shn-color-accent);
+  --color-accent-hover: var(--shn-color-accent-hover);
   --color-default: var(--shn-color-text-default);
 
   --font-sans:
@@ -133,7 +133,7 @@ footer,
   color: var(--shn-color-text-dark);
 }
 @utility text-muted {
-  color: var(--aw-color-text-muted);
+  color: var(--shn-color-text-muted);
 }
 
 @utility btn {
@@ -142,7 +142,7 @@ footer,
 
 @layer components {
   .btn-primary {
-    @apply btn font-semibold bg-accent text-white border-primary hover:bg-pink-500 hover:border-secondary hover:text-white;
+    @apply btn font-semibold bg-accent text-white hover:bg-accent-hover hover:text-white;
   }
 }
 
