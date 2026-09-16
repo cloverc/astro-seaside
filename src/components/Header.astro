@@ -36,7 +36,7 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
 <header
   class:list={[
     { sticky: isSticky, relative: !isSticky },
-    "top-0 z-40 flex-none mx-auto w-full transition-[opacity] ease-in-out scroll",
+    "top-0 z-40 flex-none mx-auto w-full [transform:translateZ(0)] scroll",
   ]}
   {...id ? { id } : {}}
 >
