@@ -71,7 +71,7 @@ const currentPath = `/${new URL(Astro.url).pathname}`;
       aria-label="Main navigation"
     >
       <ul
-        class="flex flex-col lg:flex-row lg:self-center w-full lg:w-auto text-xl lg:text-[0.95rem] tracking-[0.01rem] font-sans font-medium border-t border-white/20 lg:border-none"
+        class="flex flex-col lg:flex-row lg:self-center w-full lg:w-auto text-xl lg:text-sm tracking-[0.01rem] font-sans font-medium border-t border-white/20 lg:border-none"
       >
         {
           links.map(({ text, href, links: sublinks }, index) => (

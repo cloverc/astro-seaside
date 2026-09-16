@@ -22,7 +22,7 @@ const {
         {
           title && (
             <h1
-              class="text-4xl md:text-6xl font-bold leading-tighter tracking-tighter mb-4 font-heading"
+              class="text-4xl md:text-6xl font-bold leading-tighter tracking-tighter mb-4 font-heading [text-wrap:balance]"
               set:html={title}
             />
           )
@@ -30,7 +30,10 @@ const {
         <div class="max-w-3xl mx-auto">
           {
             subtitle && (
-              <p class="text-xl text-muted mb-6" set:html={subtitle} />
+              <p
+                class="text-xl text-muted mb-6 [text-wrap:pretty]"
+                set:html={subtitle}
+              />
             )
           }
         </div>
