@@ -11,7 +11,13 @@ const {
 } = Astro.props;
 ---
 
-<button class={className} aria-label={label} data-shn-toggle-menu>
+<button
+  class={className}
+  aria-label={label}
+  aria-expanded="false"
+  aria-controls="header-nav"
+  data-shn-toggle-menu
+>
   <span class="sr-only">{label}</span>
   <slot>
     <span

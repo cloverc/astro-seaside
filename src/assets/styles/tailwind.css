@@ -135,6 +135,9 @@ footer,
 @utility text-muted {
   color: var(--shn-color-text-muted);
 }
+@utility text-muted-foreground {
+  color: var(--shn-color-text-muted);
+}
 
 @utility btn {
   @apply inline-flex items-center justify-center rounded bg-transparent font-medium text-center text-base text-page leading-snug transition-colors duration-150 ease-out py-3.5 px-6 md:px-8 hover:bg-gray-100 hover:border-gray-600 active:scale-[0.96] cursor-pointer;

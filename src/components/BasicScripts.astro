@@ -6,9 +6,18 @@
     // Attach event listeners
     attachEvent("[data-shn-toggle-menu]", "click", function (elem) {
       elem.classList.toggle("expanded");
+      const isExpanded = elem.classList.contains("expanded");
+      elem.setAttribute("aria-expanded", String(isExpanded));
       document.body.classList.toggle("overflow-hidden");
       document.getElementById("header")?.classList.toggle("h-screen");
       document.querySelector("#header nav")?.classList.toggle("hidden");
+      document.querySelectorAll("body > *:not(#header)").forEach((el) => {
+        if (isExpanded) {
+          el.setAttribute("inert", "");
+        } else {
+          el.removeAttribute("inert");
+        }
+      });
     });
   }
 
@@ -27,11 +36,14 @@
     const elem = document.querySelector("[data-shn-toggle-menu]");
     if (elem) {
       elem.classList.remove("expanded");
+      elem.setAttribute("aria-expanded", "false");
     }
     document.body.classList.remove("overflow-hidden");
     document.getElementById("header")?.classList.remove("h-screen");
     document.querySelector("#header nav")?.classList.add("hidden");
-    return;
+    document
+      .querySelectorAll("body > *[inert]")
+      .forEach((el) => el.removeAttribute("inert"));
   };
 
   function setupDropdowns() {
