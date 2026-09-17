@@ -37,7 +37,7 @@ function storyToPost(story: any): Post {
   const authorStory =
     c.author && typeof c.author === "object" ? c.author : null;
   const authorName: string | null =
-    authorStory?.content?.name ?? c.guest_author ?? null;
+    authorStory?.content?.name ?? c.guest_author?.[0]?.name ?? null;
   return {
     kind: c.article_type === "news" ? "news" : "insight",
     title: c.title ?? "",
