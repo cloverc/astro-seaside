@@ -77,7 +77,7 @@ const metadata = {
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
       {
         gridPosts.length === 0 ? (
-          <p class="text-center text-gray-500 py-16">
+          <p class="text-center text-gray-600 py-16">
             No news or insights have been published yet. Check back soon.
           </p>
         ) : (
@@ -100,7 +100,7 @@ const metadata = {
                   Insights
                 </button>
               </div>
-              <p id="ni-count" class="text-sm text-gray-500">
+              <p id="ni-count" class="text-sm text-gray-700">
                 {gridPosts.length} of {gridPosts.length} posts · Showing all
                 posts
               </p>
@@ -139,12 +139,26 @@ const metadata = {
                         </span>
                       )}
                     </p>
-                    <h3
-                      class="font-heading font-semibold text-xl text-dark leading-snug mb-2"
-                      style="text-wrap:pretty"
-                    >
-                      {post.title}
-                    </h3>
+                    {post.slug ? (
+                      <a
+                        href={`/news-and-insights/${post.slug}/`}
+                        class="group"
+                      >
+                        <h2
+                          class="font-heading font-medium text-xl text-dark leading-snug mb-2 group-hover:underline decoration-1"
+                          style="text-wrap:pretty"
+                        >
+                          {post.title}
+                        </h2>
+                      </a>
+                    ) : (
+                      <h2
+                        class="font-heading font-medium text-xl text-dark leading-snug mb-2"
+                        style="text-wrap:pretty"
+                      >
+                        {post.title}
+                      </h2>
+                    )}
                     <p class="text-sm text-gray-600 leading-relaxed flex-1 mb-4">
                       {post.summary}
                     </p>
@@ -165,7 +179,7 @@ const metadata = {
               ))}
             </ul>
 
-            <p id="ni-empty" class="hidden text-center text-gray-500 py-16">
+            <p id="ni-empty" class="hidden text-center text-gray-600 py-16">
               No posts match this filter.
             </p>
 

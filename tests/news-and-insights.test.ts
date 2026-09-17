@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test.describe("news and insights page", () => {
@@ -150,5 +151,72 @@ test.describe("news and insights page", () => {
       .getByRole("link", { name: "News & Insights" });
     await expect(link).toHaveAttribute("aria-current", "page");
     await expect(link).toBeVisible();
+  });
+});
+
+test.describe("news and insights empty state", () => {
+  test("shows a message when no articles are published", async ({ page }) => {
+    await page.goto("/news-and-insights/");
+    const cardCount = await page.locator("[data-ni-card]").count();
+    test.skip(
+      cardCount > 0,
+      "Articles are currently published — empty state not reachable",
+    );
+
+    await expect(
+      page.getByText("No news or insights have been published yet."),
+    ).toBeVisible();
+    await expect(page.locator("#pill-all")).toHaveCount(0);
+  });
+});
+
+test.describe("news and insights article page", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/news-and-insights/");
+  });
+
+  test("opening a card shows the article heading", async ({ page }) => {
+    const cardCount = await page.locator("[data-ni-card]").count();
+    test.skip(cardCount === 0, "No articles published to open");
+
+    const firstCard = page.locator("[data-ni-card]").first();
+    const title = (await firstCard.locator("h2").textContent())?.trim();
+
+    await firstCard.getByRole("link", { name: /Read more/ }).click();
+
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(
+      title ?? "",
+    );
+  });
+
+  test("back link returns to the News & Insights index", async ({ page }) => {
+    const cardCount = await page.locator("[data-ni-card]").count();
+    test.skip(cardCount === 0, "No articles published to open");
+
+    await page
+      .locator("[data-ni-card]")
+      .first()
+      .getByRole("link", { name: /Read more/ })
+      .click();
+    await page.getByRole("link", { name: /Back to News & Insights/ }).click();
+
+    await expect(page).toHaveURL(/\/news-and-insights\/?$/);
+  });
+
+  test("article page has no accessibility violations", async ({ page }) => {
+    const cardCount = await page.locator("[data-ni-card]").count();
+    test.skip(cardCount === 0, "No articles published to open");
+
+    await page
+      .locator("[data-ni-card]")
+      .first()
+      .getByRole("link", { name: /Read more/ })
+      .click();
+
+    const results = await new AxeBuilder({ page })
+      .exclude("#storyblok-app")
+      .analyze();
+
+    expect(results.violations).toEqual([]);
   });
 });
