@@ -17,69 +17,6 @@ type Post = {
   author: string | null;
 };
 
-const MOCK_POSTS: Post[] = [
-  {
-    kind: "news",
-    title: "Bucket & Spade List opens for 2027 nominations",
-    summary:
-      "Nominate the seaside buildings and places you think deserve national attention. Nominations close in January.",
-    image: null,
-    slug: null,
-    date: "4 Sep 2026",
-    author: null,
-  },
-  {
-    kind: "insight",
-    title: "What a good viability study actually looks like",
-    summary:
-      "Funders ask for one before they commit. Four members share what made theirs work, and what they would do differently.",
-    image: null,
-    slug: null,
-    date: "18 Aug 2026",
-    author: null,
-  },
-  {
-    kind: "news",
-    title: "Valuing Seaside Heritage: illustrated record now online",
-    summary:
-      "Laura Sorvala's visual summary of the two days at Saltdean Lido is available to download.",
-    image: null,
-    slug: null,
-    date: "2 Aug 2026",
-    author: null,
-  },
-  {
-    kind: "insight",
-    title: "Adaptive reuse at the seaside: eight Art Deco shelters",
-    summary:
-      "Heritage Lab in Ramsgate on consulting a community before deciding what a building should become.",
-    image: null,
-    slug: null,
-    date: "14 Jul 2026",
-    author: null,
-  },
-  {
-    kind: "news",
-    title: "Three new members join the network this autumn",
-    summary:
-      "Organisations in Cleethorpes, Rhyl and Great Yarmouth join a network now covering more than 40 resorts.",
-    image: null,
-    slug: null,
-    date: "30 Jun 2026",
-    author: null,
-  },
-  {
-    kind: "insight",
-    title: "Winter opening: keeping seaside venues alive out of season",
-    summary:
-      "Cash flow is hardest between October and March. Practical approaches from three community-run venues.",
-    image: null,
-    slug: null,
-    date: "11 Jun 2026",
-    author: null,
-  },
-];
-
 let articles: any[] = [];
 try {
   const { data } = await storyblokApi.get("cdn/stories", {
@@ -120,8 +57,7 @@ function storyToPost(story: any): Post {
   };
 }
 
-const realPosts: Post[] = articles.map(storyToPost);
-const gridPosts: Post[] = realPosts.length > 0 ? realPosts : MOCK_POSTS;
+const gridPosts: Post[] = articles.map(storyToPost);
 
 const metadata = {
   siteTitle: "Seaside Heritage Network",
@@ -139,99 +75,107 @@ const metadata = {
   <!-- Posts grid -->
   <section class="min-h-96" style="background-color:#F5F5F4">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-      <!-- Pills + count -->
-      <div
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 mb-7 border-b border-gray-300"
-      >
-        <div class="flex gap-2">
-          <button
-            id="pill-all"
-            type="button"
-            class="ni-pill"
-            data-active="true"
-          >
-            All
-          </button>
-          <button id="pill-news" type="button" class="ni-pill">News</button>
-          <button id="pill-insights" type="button" class="ni-pill"
-            >Insights</button
-          >
-        </div>
-        <p id="ni-count" class="text-sm text-gray-500">
-          {gridPosts.length} of {gridPosts.length} posts · Showing all posts
-        </p>
-      </div>
-
-      <!-- Grid -->
-      <ul
-        id="ni-grid"
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        aria-label="Articles"
-      >
-        {
-          gridPosts.map((post) => (
-            <li
-              data-ni-card
-              data-kind={post.kind}
-              class="bg-white rounded overflow-hidden flex flex-col"
-              style="border:1px solid rgba(12,5,109,.14)"
-            >
-              {post.image ? (
-                <img
-                  src={post.image}
-                  alt=""
-                  class="w-full h-44 object-cover block"
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : (
-                <div class="w-full h-44" style="background-color:#dce8f0" />
-              )}
-              <div class="p-5 pb-6 flex flex-col flex-1">
-                <p class="text-accent font-semibold text-xs tracking-[.08em] uppercase mb-3">
-                  {post.kind === "news" ? "NEWS" : "INSIGHT"}
-                  {post.date && (
-                    <span class="text-gray-600 font-semibold ml-1">
-                      · {post.date}
-                    </span>
-                  )}
-                </p>
-                <h3
-                  class="font-heading font-semibold text-xl text-dark leading-snug mb-2"
-                  style="text-wrap:pretty"
+      {
+        gridPosts.length === 0 ? (
+          <p class="text-center text-gray-500 py-16">
+            No news or insights have been published yet. Check back soon.
+          </p>
+        ) : (
+          <>
+            {/* Pills + count */}
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 mb-7 border-b border-gray-300">
+              <div class="flex gap-2">
+                <button
+                  id="pill-all"
+                  type="button"
+                  class="ni-pill"
+                  data-active="true"
                 >
-                  {post.title}
-                </h3>
-                <p class="text-sm text-gray-600 leading-relaxed flex-1 mb-4">
-                  {post.summary}
-                </p>
-                {post.slug ? (
-                  <a
-                    href={`/news-and-insights/${post.slug}/`}
-                    class="font-semibold text-sm text-blue-700 hover:underline"
-                  >
-                    Read more &rarr;
-                  </a>
-                ) : (
-                  <span class="font-semibold text-sm text-blue-700">
-                    Read more &rarr;
-                  </span>
-                )}
+                  All
+                </button>
+                <button id="pill-news" type="button" class="ni-pill">
+                  News
+                </button>
+                <button id="pill-insights" type="button" class="ni-pill">
+                  Insights
+                </button>
               </div>
-            </li>
-          ))
-        }
-      </ul>
+              <p id="ni-count" class="text-sm text-gray-500">
+                {gridPosts.length} of {gridPosts.length} posts · Showing all
+                posts
+              </p>
+            </div>
 
-      <p id="ni-empty" class="hidden text-center text-gray-500 py-16">
-        No posts match this filter.
-      </p>
+            {/* Grid */}
+            <ul
+              id="ni-grid"
+              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              aria-label="Articles"
+            >
+              {gridPosts.map((post) => (
+                <li
+                  data-ni-card
+                  data-kind={post.kind}
+                  class="bg-white rounded overflow-hidden flex flex-col"
+                  style="border:1px solid rgba(12,5,109,.14)"
+                >
+                  {post.image ? (
+                    <img
+                      src={post.image}
+                      alt=""
+                      class="w-full h-44 object-cover block"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div class="w-full h-44" style="background-color:#dce8f0" />
+                  )}
+                  <div class="p-5 pb-6 flex flex-col flex-1">
+                    <p class="text-accent font-semibold text-xs tracking-[.08em] uppercase mb-3">
+                      {post.kind === "news" ? "NEWS" : "INSIGHT"}
+                      {post.date && (
+                        <span class="text-gray-600 font-semibold ml-1">
+                          · {post.date}
+                        </span>
+                      )}
+                    </p>
+                    <h3
+                      class="font-heading font-semibold text-xl text-dark leading-snug mb-2"
+                      style="text-wrap:pretty"
+                    >
+                      {post.title}
+                    </h3>
+                    <p class="text-sm text-gray-600 leading-relaxed flex-1 mb-4">
+                      {post.summary}
+                    </p>
+                    {post.slug ? (
+                      <a
+                        href={`/news-and-insights/${post.slug}/`}
+                        class="font-semibold text-sm text-blue-700 hover:underline"
+                      >
+                        Read more &rarr;
+                      </a>
+                    ) : (
+                      <span class="font-semibold text-sm text-blue-700">
+                        Read more &rarr;
+                      </span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
 
-      <div
-        id="ni-pagination"
-        class="flex items-center justify-center gap-2 mt-10"
-      >
-      </div>
+            <p id="ni-empty" class="hidden text-center text-gray-500 py-16">
+              No posts match this filter.
+            </p>
+
+            <div
+              id="ni-pagination"
+              class="flex items-center justify-center gap-2 mt-10"
+            />
+          </>
+        )
+      }
     </div>
   </section>
 </PageLayout>
@@ -255,14 +199,18 @@ const metadata = {
       border-color 0.15s;
   }
   .ni-pill[data-active="true"] {
-    background: #1e40af;
-    border-color: #1e40af;
+    background: var(--shn-color-primary);
+    border-color: var(--shn-color-primary);
     color: #fff;
   }
   .ni-pill:not([data-active="true"]) {
     background: transparent;
-    border-color: rgba(12, 5, 109, 0.28);
-    color: #1e40af;
+    border-color: color-mix(in srgb, var(--shn-color-bg-page) 28%, transparent);
+    color: var(--shn-color-primary);
+  }
+  .ni-pill:not([data-active="true"]):hover {
+    background: color-mix(in srgb, var(--shn-color-primary) 8%, transparent);
+    border-color: var(--shn-color-primary);
   }
   @media (max-width: 640px) {
     .ni-pill {
@@ -287,14 +235,15 @@ const metadata = {
     transition: background 0.1s;
   }
   .ni-pg-btn[data-active] {
-    background: #1e40af;
+    background: var(--shn-color-primary);
     color: #fff;
     border: none;
   }
   .ni-pg-btn:not([data-active]) {
     background: transparent;
-    border: 1px solid rgba(12, 5, 109, 0.2);
-    color: #1e40af;
+    border: 1px solid
+      color-mix(in srgb, var(--shn-color-bg-page) 20%, transparent);
+    color: var(--shn-color-primary);
   }
   @media (max-width: 640px) {
     .ni-pg-btn {
