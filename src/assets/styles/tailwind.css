@@ -164,6 +164,10 @@ footer,
   scroll-padding: 8px;
 }
 
+blockquote {
+  @apply bg-stone-200 border-l-4 border-accent text-dark p-4 my-8;
+}
+
 .dropdown > button[aria-expanded="true"] + .dropdown-menu,
 .dropdown:focus-within .dropdown-menu {
   display: block;
