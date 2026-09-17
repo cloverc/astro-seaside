@@ -105,6 +105,59 @@ test.describe("resource hub page", () => {
     }
   });
 
+  test("topic checkbox filters cards", async ({ page }) => {
+    await openFilters(page);
+
+    const firstTopics = (
+      (await page
+        .locator("[data-rh-card]")
+        .first()
+        .getAttribute("data-topics")) ?? ""
+    ).split("|");
+    const topic = firstTopics.find(Boolean);
+    test.skip(!topic, "First card has no topics set");
+
+    await page.getByRole("checkbox", { name: topic! }).check();
+
+    const visible = page.locator("[data-rh-card]:visible");
+    expect(await visible.count()).toBeGreaterThan(0);
+    for (const card of await visible.all()) {
+      const topics = ((await card.getAttribute("data-topics")) ?? "").split(
+        "|",
+      );
+      expect(topics).toContain(topic!);
+    }
+
+    const visibleCount = await visible.count();
+    await expect(page.locator("#rh-count")).toContainText(
+      `Showing ${visibleCount} of`,
+    );
+  });
+
+  test("multiple topic checkboxes combine with OR logic", async ({ page }) => {
+    await openFilters(page);
+
+    const allTopics = new Set<string>();
+    for (const card of await page.locator("[data-rh-card]").all()) {
+      const topics = ((await card.getAttribute("data-topics")) ?? "").split(
+        "|",
+      );
+      topics.filter(Boolean).forEach((t) => allTopics.add(t));
+    }
+    test.skip(allTopics.size < 2, "Fewer than 2 distinct topics in dataset");
+
+    const [topicA, topicB] = Array.from(allTopics);
+    await page.getByRole("checkbox", { name: topicA }).check();
+    await page.getByRole("checkbox", { name: topicB }).check();
+
+    for (const card of await page.locator("[data-rh-card]:visible").all()) {
+      const topics = ((await card.getAttribute("data-topics")) ?? "").split(
+        "|",
+      );
+      expect(topics.some((t) => [topicA, topicB].includes(t))).toBe(true);
+    }
+  });
+
   test("resource type checkbox filters cards", async ({ page }) => {
     await openFilters(page);
 
