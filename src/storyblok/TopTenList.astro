@@ -23,7 +23,7 @@ const { data } = await storyblokApi.get("cdn/stories", {
   })(),
   starts_with: `bucket-spade-list/top-ten-winners-${year}/`,
   is_startpage: false,
-  sort_by: "created_at:desc",
+  sort_by: "position:desc",
 });
 
 const winners = data.stories;

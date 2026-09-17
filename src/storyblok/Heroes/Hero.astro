@@ -11,7 +11,7 @@ const { blok } = Astro.props;
     <div class="pt-0 md:pt-[128px] pointer-events-none"></div>
     <div class="relative md:py-0 lg:py-6 lg:flex lg:h-fit">
       <div
-        class="invisible lg:visible rounded lg:absolute bg-secondary w-4/5 h-4/5 top-[7rem]"
+        class="hidden lg:block rounded lg:absolute bg-secondary w-4/5 h-4/5 top-[7rem]"
       >
       </div>
       <div
@@ -20,7 +20,7 @@ const { blok } = Astro.props;
       >
         {
           blok.headline && (
-            <h1 class="text-3xl md:text-4xl mb-8 font-heading">
+            <h1 class="text-3xl md:text-4xl mb-8 font-heading [text-wrap:balance]">
               {blok.headline}
             </h1>
           )
