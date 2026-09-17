@@ -139,12 +139,26 @@ const metadata = {
                         </span>
                       )}
                     </p>
-                    <h2
-                      class="font-heading font-semibold text-xl text-dark leading-snug mb-2"
-                      style="text-wrap:pretty"
-                    >
-                      {post.title}
-                    </h2>
+                    {post.slug ? (
+                      <a
+                        href={`/news-and-insights/${post.slug}/`}
+                        class="group"
+                      >
+                        <h2
+                          class="font-heading font-medium text-xl text-dark leading-snug mb-2 group-hover:underline decoration-1"
+                          style="text-wrap:pretty"
+                        >
+                          {post.title}
+                        </h2>
+                      </a>
+                    ) : (
+                      <h2
+                        class="font-heading font-medium text-xl text-dark leading-snug mb-2"
+                        style="text-wrap:pretty"
+                      >
+                        {post.title}
+                      </h2>
+                    )}
                     <p class="text-sm text-gray-600 leading-relaxed flex-1 mb-4">
                       {post.summary}
                     </p>
