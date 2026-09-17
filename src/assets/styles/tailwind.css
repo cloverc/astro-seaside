@@ -235,6 +235,8 @@ blockquote {
 
 .article-body blockquote {
   position: relative;
+  background: none;
+  border-left: 0;
   padding: 0.25rem 0 1rem 3.25rem;
   margin: 2.75rem 0 2.25rem;
   font-family: var(--shn-font-heading);
