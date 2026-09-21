@@ -100,7 +100,12 @@ const metadata = {
                   Insights
                 </button>
               </div>
-              <p id="ni-count" class="text-sm text-gray-700">
+              <p
+                id="ni-count"
+                class="text-sm text-gray-700"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {gridPosts.length} of {gridPosts.length} posts · Showing all
                 posts
               </p>
