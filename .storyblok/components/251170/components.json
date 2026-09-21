@@ -876,13 +876,6 @@
         "id": "jCpnBsTXS0qqzvQNrzopFg",
         "description": "When this resource was originally published",
         "tooltip": true
-      },
-      "usage_note": {
-        "type": "textarea",
-        "pos": 15,
-        "id": "ri-usagenote-001",
-        "description": "Optional note about reuse, attribution, or licensing (e.g. 'Free to share with attribution')",
-        "tooltip": true
       }
     },
     "image": null,
