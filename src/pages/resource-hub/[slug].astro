@@ -199,18 +199,25 @@ const resourceSchema: Record<string, unknown> = {
     "@type": documentBlock ? "DigitalDocument" : "CreativeWork",
     name: blok.title,
     description: blok.description ?? undefined,
-    ...(blok.published_date
-      ? { datePublished: new Date(blok.published_date).toISOString() }
+    ...(blok.published_date || story.first_published_at
+      ? {
+          datePublished: new Date(
+            blok.published_date ?? story.first_published_at,
+          ).toISOString(),
+        }
       : {}),
     image: blok.featured_image?.filename
       ? `${blok.featured_image.filename}/m/1200x630/filters:quality(80):format(jpeg)`
       : undefined,
     ...(documentBlock
       ? {
-          contentUrl: documentBlock.file.filename,
-          ...(DOCUMENT_MIME_TYPES[documentExt]
-            ? { encodingFormat: DOCUMENT_MIME_TYPES[documentExt] }
-            : {}),
+          encoding: {
+            "@type": "MediaObject",
+            contentUrl: documentBlock.file.filename,
+            ...(DOCUMENT_MIME_TYPES[documentExt]
+              ? { encodingFormat: DOCUMENT_MIME_TYPES[documentExt] }
+              : {}),
+          },
         }
       : {}),
     ...(associatedMedia.length > 0 ? { associatedMedia } : {}),
@@ -227,17 +234,6 @@ const resourceSchema: Record<string, unknown> = {
         }
       : { "@type": "Organization", "@id": `${siteUrl}#organization` },
     publisher: { "@type": "Organization", "@id": `${siteUrl}#organization` },
-    ...(topics.length > 0
-      ? { about: topics.map((name) => ({ "@type": "Thing", name })) }
-      : {}),
-    ...(audience.length > 0
-      ? {
-          audience: {
-            "@type": "Audience",
-            audienceType: audience.join(", "),
-          },
-        }
-      : {}),
   },
 };
 ---
