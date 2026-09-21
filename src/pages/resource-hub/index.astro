@@ -365,7 +365,12 @@ function ctaLabel(_format: string) {
           >
           </div>
 
-          <p id="rh-count" class="text-sm text-gray-700 mb-5">
+          <p
+            id="rh-count"
+            class="text-sm text-gray-700 mb-5"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             Showing {resources.length} of {resources.length} resources
           </p>
 

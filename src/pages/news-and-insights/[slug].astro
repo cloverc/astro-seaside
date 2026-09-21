@@ -262,9 +262,9 @@ const articleSchema: Record<string, unknown> = {
               ) : (
                 <div class="w-16 h-16 rounded-full bg-slate-200 shrink-0" />
               )}
-              <div>
+              <div class="flex-1">
                 <div class="font-semibold text-blue-900 leading-snug">
-                  <span class="font-normal text-gray-500">By </span>
+                  <span>Written by </span>
                   {authorProfileUrl ? (
                     <a href={authorProfileUrl} class="hover:underline">
                       {authorName}
@@ -281,18 +281,18 @@ const articleSchema: Record<string, unknown> = {
                 {authorRole && (
                   <div class="text-sm text-gray-500 mt-0.5">{authorRole}</div>
                 )}
-                {authorLinkedin && (
-                  <a
-                    href={authorLinkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="-ml-2.5 inline-flex items-center p-2.5 rounded-lg text-blue-900 hover:bg-gray-100 hover:text-blue-700"
-                    aria-label={`${authorName} on LinkedIn`}
-                  >
-                    <Icon name="tabler:brand-linkedin" class="w-6 h-6" />
-                  </a>
-                )}
               </div>
+              {authorLinkedin && (
+                <a
+                  href={authorLinkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center p-2.5 rounded-lg text-blue-900 hover:bg-gray-100 hover:text-blue-700 shrink-0"
+                  aria-label={`${authorName} on LinkedIn`}
+                >
+                  <Icon name="tabler:brand-linkedin" class="w-8 h-8" />
+                </a>
+              )}
             </div>
           </div>
         )
