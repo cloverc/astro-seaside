@@ -152,9 +152,104 @@ const metadata = {
   siteTitle: "Seaside Heritage Network",
   pageTitle: `${blok.title} — Resource Hub`,
 };
+
+const siteUrl = Astro.site?.href ?? "https://seasideheritage.org.uk/";
+
+// Schema type follows content shape (does this resource carry a downloadable
+// file?), not resource_type — a "Guide" can be a PDF, a video, or plain text,
+// so resource_type alone doesn't tell us the right schema.org type.
+const documentBlock = contentBlocks.find(
+  (b) => b.component === "content_file" && b.file?.filename,
+);
+const documentExt =
+  documentBlock?.file?.filename?.split(".").pop()?.toLowerCase() ?? "";
+const DOCUMENT_MIME_TYPES: Record<string, string> = {
+  pdf: "application/pdf",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  xls: "application/vnd.ms-excel",
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ppt: "application/vnd.ms-powerpoint",
+  pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+};
+
+// Secondary media (e.g. a video alongside the main PDF) — represented under
+// the document's associatedMedia rather than dropped, so nothing on the page
+// is invisible to structured data just because it isn't the "main" file.
+const videoBlocks = contentBlocks.filter(
+  (b) => b.component === "content_video" && b.video_url,
+);
+const associatedMedia = videoBlocks.map((b) => ({
+  "@type": "VideoObject",
+  name: b.title ?? blok.title,
+  contentUrl: b.video_url,
+}));
+
+const pageUrl = `${siteUrl}resource-hub/${slug}/`;
+const resourceSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": pageUrl,
+  url: pageUrl,
+  name: blok.title,
+  dateModified: new Date(story.published_at ?? story.updated_at).toISOString(),
+  inLanguage: "en-gb",
+  isPartOf: { "@type": "WebSite", "@id": `${siteUrl}#website` },
+  mainEntity: {
+    "@type": documentBlock ? "DigitalDocument" : "CreativeWork",
+    name: blok.title,
+    description: blok.description ?? undefined,
+    ...(blok.published_date
+      ? { datePublished: new Date(blok.published_date).toISOString() }
+      : {}),
+    image: blok.featured_image?.filename
+      ? `${blok.featured_image.filename}/m/1200x630/filters:quality(80):format(jpeg)`
+      : undefined,
+    ...(documentBlock
+      ? {
+          contentUrl: documentBlock.file.filename,
+          ...(DOCUMENT_MIME_TYPES[documentExt]
+            ? { encodingFormat: DOCUMENT_MIME_TYPES[documentExt] }
+            : {}),
+        }
+      : {}),
+    ...(associatedMedia.length > 0 ? { associatedMedia } : {}),
+    author: authorName
+      ? {
+          "@type": "Person",
+          name: authorName,
+          ...(authorStory?.content?.profile_picture?.filename
+            ? { image: authorStory.content.profile_picture.filename }
+            : {}),
+          ...(authorStory?.slug
+            ? { url: `${siteUrl}team/#${authorStory.slug}` }
+            : {}),
+        }
+      : { "@type": "Organization", "@id": `${siteUrl}#organization` },
+    publisher: { "@type": "Organization", "@id": `${siteUrl}#organization` },
+    ...(topics.length > 0
+      ? { about: topics.map((name) => ({ "@type": "Thing", name })) }
+      : {}),
+    ...(audience.length > 0
+      ? {
+          audience: {
+            "@type": "Audience",
+            audienceType: audience.join(", "),
+          },
+        }
+      : {}),
+  },
+};
 ---
 
 <PageLayout metadata={metadata}>
+  <Fragment slot="head">
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(resourceSchema)}
+    />
+  </Fragment>
   <!-- Hero -->
   <div class="bg-page">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:pt-12 md:pb-16">
@@ -347,21 +442,6 @@ const metadata = {
                   </>
                 );
               })
-          }
-
-          {/* Usage note */}
-          {
-            blok.usage_note && (
-              <>
-                <hr class="border-gray-200" />
-                <div>
-                  <h2 class="text-2xl font-heading font-medium text-dark mb-4">
-                    Using this resource
-                  </h2>
-                  <p class="text-gray-700 leading-relaxed">{blok.usage_note}</p>
-                </div>
-              </>
-            )
           }
         </div>
 
