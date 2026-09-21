@@ -24,7 +24,7 @@
     "@axe-core/playwright": "^4.11.3",
     "@iconify-json/tabler": "^1.1.89",
     "@playwright/test": "^1.59.1",
-    "@storyblok/astro": "^9.0.5",
+    "@storyblok/astro": "^10.3.1",
     "@tailwindcss/typography": "^0.5.19",
     "@vitest/ui": "^3.2.4",
     "astro": "^7.2.0",
