@@ -176,14 +176,36 @@ const DOCUMENT_MIME_TYPES: Record<string, string> = {
 // Secondary media (e.g. a video alongside the main PDF) — represented under
 // the document's associatedMedia rather than dropped, so nothing on the page
 // is invisible to structured data just because it isn't the "main" file.
+//
+// Typed as the generic MediaObject rather than VideoObject: Google's video
+// rich-result eligibility requires thumbnailUrl and uploadDate, and we have
+// no reliable source for an upload date (would need the YouTube Data API or
+// a new manual CMS field) — MediaObject describes the same thing accurately
+// without implying rich-result compliance we can't actually deliver.
 const videoBlocks = contentBlocks.filter(
   (b) => b.component === "content_video" && b.video_url,
 );
-const associatedMedia = videoBlocks.map((b) => ({
-  "@type": "VideoObject",
-  name: b.title ?? blok.title,
-  contentUrl: b.video_url,
-}));
+const associatedMedia = videoBlocks.map((b) => {
+  const youtubeId = getYouTubeId(b.video_url);
+  const transcriptText = b.transcript
+    ? (renderRichText(b.transcript) ?? "")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 500)
+    : "";
+  return {
+    "@type": "MediaObject",
+    name: b.title ?? blok.title,
+    contentUrl: b.video_url,
+    ...(youtubeId
+      ? {
+          thumbnailUrl: `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`,
+        }
+      : {}),
+    ...(transcriptText ? { description: transcriptText } : {}),
+  };
+});
 
 const pageUrl = `${siteUrl}resource-hub/${slug}/`;
 const resourceSchema: Record<string, unknown> = {
