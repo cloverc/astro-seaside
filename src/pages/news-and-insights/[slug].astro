@@ -1,0 +1,302 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { Icon } from "astro-icon/components";
+import { useStoryblokApi, renderRichText } from "@storyblok/astro";
+import { getStoryblokVersion } from "../../utils/storyblok";
+
+const { slug } = Astro.params;
+
+const storyblokApi = useStoryblokApi();
+const version = getStoryblokVersion(Astro.request);
+
+let story: any;
+
+try {
+  const { data } = await storyblokApi.get(
+    `cdn/stories/news-and-insights/${slug}`,
+    {
+      version,
+      resolve_relations: "article.author",
+    },
+  );
+  story = data.story;
+} catch {
+  return Astro.redirect("/news-and-insights/");
+}
+
+const blok = story.content;
+const isNewsArticle = blok.article_type === "news";
+
+// Author — SDK inlines resolved relation into blok.author as a story object
+const authorStory =
+  blok.author && typeof blok.author === "object" ? blok.author : null;
+// guest_author is a single-item Blocks field — a nested guest_author blok, not a flat text field
+const guestAuthor = blok.guest_author?.[0] ?? null;
+const authorName: string | null =
+  authorStory?.content?.name ?? guestAuthor?.name ?? null;
+const authorRole: string | null =
+  authorStory?.content?.title ?? guestAuthor?.role ?? null;
+const authorOrganisation: string | null = guestAuthor?.organisation ?? null;
+const authorAvatar: string | null =
+  authorStory?.content?.profile_picture?.filename ??
+  guestAuthor?.avatar?.filename ??
+  null;
+const authorProfileUrl: string | null = authorStory?.slug
+  ? `/team/#${authorStory.slug}`
+  : null;
+const authorLinkedin: string | null =
+  authorStory?.content?.linkedin ?? guestAuthor?.linkedin ?? null;
+
+// Partners (one per line)
+const partners: string[] = blok.partners
+  ? blok.partners
+      .split("\n")
+      .map((s: string) => s.trim())
+      .filter(Boolean)
+  : [];
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+const bodyHtml: string | null = blok.body
+  ? (renderRichText(blok.body, {
+      renderers: {
+        image: (props) => {
+          const { src, alt, title } = props.attrs;
+          const safeSrc = escapeHtml(src ?? "");
+          const safeAlt = escapeHtml(alt ?? "");
+          if (title) {
+            return `<figure><img src="${safeSrc}" alt="${safeAlt}"><figcaption>${escapeHtml(title)}</figcaption></figure>`;
+          }
+          return `<img src="${safeSrc}" alt="${safeAlt}">`;
+        },
+        blok: (props) => {
+          return (props.attrs.body ?? [])
+            .map((b) => {
+              const blokData = b as Record<string, unknown>;
+              if (blokData.component === "quote_block") {
+                const text = escapeHtml(String(blokData.text ?? ""));
+                const citation = blokData.citation
+                  ? escapeHtml(String(blokData.citation))
+                  : "";
+                const citationHtml = citation ? `<cite>${citation}</cite>` : "";
+                return `<blockquote>${text}${citationHtml}</blockquote>`;
+              }
+              return "";
+            })
+            .join("");
+        },
+      },
+    }) ?? null)
+  : null;
+
+const publishedDate = blok.published_date
+  ? new Date(blok.published_date).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+  : null;
+
+type MetaRow = { label: string; value: string };
+const metaRows: MetaRow[] = [
+  ...(publishedDate ? [{ label: "Published", value: publishedDate }] : []),
+  ...(partners.length > 0
+    ? [{ label: "Partners", value: partners.join(" · ") }]
+    : []),
+];
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: blok.title,
+};
+
+const siteUrl = Astro.site?.href ?? "https://seasideheritage.org.uk/";
+const articleSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": blok.article_type === "news" ? "Article" : "BlogPosting",
+  headline: blok.title,
+  description: blok.summary ?? undefined,
+  ...(blok.published_date
+    ? { datePublished: new Date(blok.published_date).toISOString() }
+    : {}),
+  dateModified: new Date(story.published_at ?? story.updated_at).toISOString(),
+  url: `${siteUrl}news-and-insights/${slug}/`,
+  inLanguage: "en-gb",
+  image: blok.hero_image?.filename
+    ? `${blok.hero_image.filename}/m/1200x630/filters:quality(80):format(jpeg)`
+    : undefined,
+  author: authorName
+    ? {
+        "@type": "Person",
+        name: authorName,
+        ...(authorRole ? { jobTitle: authorRole } : {}),
+        ...(authorAvatar ? { image: authorAvatar } : {}),
+        ...(authorStory?.slug
+          ? { url: `${siteUrl}team/#${authorStory.slug}` }
+          : {}),
+        ...(authorOrganisation
+          ? { worksFor: { "@type": "Organization", name: authorOrganisation } }
+          : {}),
+        ...(authorLinkedin ? { sameAs: [authorLinkedin] } : {}),
+      }
+    : { "@type": "Organization", "@id": `${siteUrl}#organization` },
+  publisher: { "@type": "Organization", "@id": `${siteUrl}#organization` },
+  isPartOf: { "@type": "WebSite", "@id": `${siteUrl}#website` },
+  ...(partners.length > 0
+    ? {
+        sourceOrganization: partners.map((name) => ({
+          "@type": "Organization",
+          name,
+        })),
+      }
+    : {}),
+};
+---
+
+<PageLayout metadata={metadata}>
+  <Fragment slot="head">
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(articleSchema)}
+    />
+  </Fragment>
+  <div class="bg-page px-4 sm:px-6 pt-8 md:pt-12">
+    <div class="max-w-3xl mx-auto">
+      <a
+        href="/news-and-insights/"
+        class="inline-block text-sm font-medium text-secondary mb-8 hover:underline"
+      >
+        ← Back to News &amp; Insights
+      </a>
+
+      <h1
+        class="font-heading font-semibold text-4xl sm:text-5xl text-white leading-tight mb-12"
+        style="text-wrap: pretty"
+      >
+        {blok.title}
+      </h1>
+
+      {
+        metaRows.length > 0 && (
+          <div class="bg-white rounded-t overflow-hidden">
+            {metaRows.map((row, i) => (
+              <div>
+                {i > 0 && <div class="h-px bg-blue-900/10 mx-6" />}
+                <div class="flex gap-4 px-6 py-4 text-sm leading-relaxed">
+                  <span class="font-semibold text-blue-900 w-28 shrink-0">
+                    {row.label}
+                  </span>
+                  <span class="text-gray-800">{row.value}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  {
+    blok.hero_image?.filename && (
+      <div class="bg-slate-200 px-4 sm:px-6 pb-8">
+        <div class="max-w-3xl mx-auto">
+          <img
+            src={`${blok.hero_image.filename}/m/768x0/filters:quality(80):format(webp)`}
+            srcset={`
+              ${blok.hero_image.filename}/m/768x0/filters:quality(80):format(webp) 768w,
+              ${blok.hero_image.filename}/m/1200x0/filters:quality(80):format(webp) 1200w,
+              ${blok.hero_image.filename}/m/1536x0/filters:quality(80):format(webp) 1536w
+            `}
+            sizes="(max-width: 640px) calc(100vw - 2rem), min(768px, calc(100vw - 3rem))"
+            width={blok.hero_image.width}
+            height={blok.hero_image.height}
+            alt={blok.hero_image.alt ?? blok.title}
+            class="w-full h-auto block"
+            loading="eager"
+            fetchpriority="high"
+          />
+          {blok.hero_image.title && (
+            <p class="text-xs text-blue-900 py-3 max-w-lg">
+              {blok.hero_image.title}
+            </p>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  <div class="bg-white px-4 sm:px-6 py-14 md:py-20">
+    <div class="max-w-3xl mx-auto">
+      {
+        blok.summary && (
+          <p
+            class="font-heading text-2xl sm:text-3xl text-blue-900 leading-snug mb-10 sm:mb-14"
+            style="text-wrap: pretty"
+          >
+            {blok.summary}
+          </p>
+        )
+      }
+
+      {bodyHtml && <div class="article-body" set:html={bodyHtml} />}
+
+      {
+        authorName && (
+          <div class="mt-14 pt-1">
+            <div class="h-0.5 bg-blue-700 mb-5" />
+            <div class="flex items-start gap-4">
+              {authorAvatar ? (
+                <img
+                  src={`${authorAvatar}/m/96x96/`}
+                  alt={authorName}
+                  class="w-16 h-16 rounded-full object-cover shrink-0"
+                />
+              ) : (
+                <div class="w-16 h-16 rounded-full bg-slate-200 shrink-0" />
+              )}
+              <div class="flex-1">
+                <div class="font-semibold text-blue-900 leading-snug">
+                  <span>Written by </span>
+                  {authorProfileUrl ? (
+                    <a href={authorProfileUrl} class="hover:underline">
+                      {authorName}
+                    </a>
+                  ) : (
+                    authorName
+                  )}
+                </div>
+                {authorOrganisation && (
+                  <div class="text-sm text-gray-500 mt-0.5">
+                    {authorOrganisation}
+                  </div>
+                )}
+                {authorRole && (
+                  <div class="text-sm text-gray-500 mt-0.5">{authorRole}</div>
+                )}
+              </div>
+              {authorLinkedin && (
+                <a
+                  href={authorLinkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center p-2.5 rounded-lg text-blue-900 hover:bg-gray-100 hover:text-blue-700 shrink-0"
+                  aria-label={`${authorName} on LinkedIn`}
+                >
+                  <Icon name="tabler:brand-linkedin" class="w-8 h-8" />
+                </a>
+              )}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</PageLayout>

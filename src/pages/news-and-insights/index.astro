@@ -1,0 +1,396 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import HeroText from "../../components/HeroText.astro";
+import { useStoryblokApi } from "@storyblok/astro";
+import { getStoryblokVersion } from "../../utils/storyblok";
+
+const storyblokApi = useStoryblokApi();
+const version = getStoryblokVersion(Astro.request);
+
+type Post = {
+  kind: "news" | "insight";
+  title: string;
+  summary: string;
+  image: string | null;
+  slug: string | null;
+  date: string | null;
+  author: string | null;
+};
+
+let articles: any[] = [];
+try {
+  const { data } = await storyblokApi.get("cdn/stories", {
+    version,
+    starts_with: "news-and-insights/",
+    filter_query: { component: { in: "article" } },
+    sort_by: "content.published_date:desc",
+    per_page: 50,
+    resolve_relations: "article.author",
+  });
+  articles = data.stories ?? [];
+} catch {
+  // leave empty
+}
+
+function storyToPost(story: any): Post {
+  const c = story.content;
+  const authorStory =
+    c.author && typeof c.author === "object" ? c.author : null;
+  const authorName: string | null =
+    authorStory?.content?.name ?? c.guest_author?.[0]?.name ?? null;
+  return {
+    kind: c.article_type === "news" ? "news" : "insight",
+    title: c.title ?? "",
+    summary: c.summary ?? "",
+    image: c.hero_image?.filename
+      ? `${c.hero_image.filename}/m/800x500/filters:quality(80):format(webp)`
+      : null,
+    slug: story.slug,
+    date: c.published_date
+      ? new Date(c.published_date).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      : null,
+    author: authorName,
+  };
+}
+
+const gridPosts: Post[] = articles.map(storyToPost);
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: "News & Insights",
+};
+---
+
+<PageLayout metadata={metadata}>
+  <HeroText
+    tagline="Latest News & Opinions"
+    title="News & Insights"
+    subtitle="Announcements from the network, and longer reads on the research, policy and practice of seaside heritage."
+  />
+
+  <!-- Posts grid -->
+  <section class="min-h-96" style="background-color:#F5F5F4">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+      {
+        gridPosts.length === 0 ? (
+          <p class="text-center text-gray-600 py-16">
+            No news or insights have been published yet. Check back soon.
+          </p>
+        ) : (
+          <>
+            {/* Pills + count */}
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 mb-7 border-b border-gray-300">
+              <div class="flex gap-2">
+                <button
+                  id="pill-all"
+                  type="button"
+                  class="ni-pill"
+                  data-active="true"
+                >
+                  All
+                </button>
+                <button id="pill-news" type="button" class="ni-pill">
+                  News
+                </button>
+                <button id="pill-insights" type="button" class="ni-pill">
+                  Insights
+                </button>
+              </div>
+              <p
+                id="ni-count"
+                class="text-sm text-gray-700"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {gridPosts.length} of {gridPosts.length} posts · Showing all
+                posts
+              </p>
+            </div>
+
+            {/* Grid */}
+            <ul
+              id="ni-grid"
+              class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              aria-label="Articles"
+            >
+              {gridPosts.map((post) => (
+                <li
+                  data-ni-card
+                  data-kind={post.kind}
+                  class="bg-white rounded overflow-hidden flex flex-col"
+                  style="border:1px solid rgba(12,5,109,.14)"
+                >
+                  {post.image ? (
+                    <img
+                      src={post.image}
+                      alt=""
+                      class="w-full h-44 object-cover block"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <div class="w-full h-44" style="background-color:#dce8f0" />
+                  )}
+                  <div class="p-5 pb-6 flex flex-col flex-1">
+                    <p class="text-accent font-semibold text-xs tracking-[.08em] uppercase mb-3">
+                      {post.kind === "news" ? "NEWS" : "INSIGHT"}
+                      {post.date && (
+                        <span class="text-gray-600 font-semibold ml-1">
+                          · {post.date}
+                        </span>
+                      )}
+                    </p>
+                    {post.slug ? (
+                      <a
+                        href={`/news-and-insights/${post.slug}/`}
+                        class="group"
+                      >
+                        <h2
+                          class="font-heading font-medium text-xl text-dark leading-snug mb-2 group-hover:underline decoration-1"
+                          style="text-wrap:pretty"
+                        >
+                          {post.title}
+                        </h2>
+                      </a>
+                    ) : (
+                      <h2
+                        class="font-heading font-medium text-xl text-dark leading-snug mb-2"
+                        style="text-wrap:pretty"
+                      >
+                        {post.title}
+                      </h2>
+                    )}
+                    <p class="text-sm text-gray-600 leading-relaxed flex-1 mb-4">
+                      {post.summary}
+                    </p>
+                    {post.slug ? (
+                      <a
+                        href={`/news-and-insights/${post.slug}/`}
+                        class="font-semibold text-sm text-blue-700 hover:underline"
+                      >
+                        Read more &rarr;
+                      </a>
+                    ) : (
+                      <span class="font-semibold text-sm text-blue-700">
+                        Read more &rarr;
+                      </span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <p id="ni-empty" class="hidden text-center text-gray-600 py-16">
+              No posts match this filter.
+            </p>
+
+            <div
+              id="ni-pagination"
+              class="flex items-center justify-center gap-2 mt-10"
+            />
+          </>
+        )
+      }
+    </div>
+  </section>
+</PageLayout>
+
+<style is:global>
+  .ni-pill {
+    height: 42px;
+    padding: 0 22px;
+    border-radius: 9999px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    border: 1px solid;
+    display: inline-flex;
+    align-items: center;
+    font-family: inherit;
+    transition:
+      background 0.15s,
+      color 0.15s,
+      border-color 0.15s;
+  }
+  .ni-pill[data-active="true"] {
+    background: var(--shn-color-primary);
+    border-color: var(--shn-color-primary);
+    color: #fff;
+  }
+  .ni-pill:not([data-active="true"]) {
+    background: transparent;
+    border-color: color-mix(in srgb, var(--shn-color-bg-page) 28%, transparent);
+    color: var(--shn-color-primary);
+  }
+  .ni-pill:not([data-active="true"]):hover {
+    background: color-mix(in srgb, var(--shn-color-primary) 8%, transparent);
+    border-color: var(--shn-color-primary);
+  }
+  @media (max-width: 640px) {
+    .ni-pill {
+      height: 40px;
+      padding: 0 18px;
+      font-size: 14px;
+    }
+  }
+
+  .ni-pg-btn {
+    height: 40px;
+    min-width: 40px;
+    padding: 0 12px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+  }
+  .ni-pg-btn[data-active] {
+    background: var(--shn-color-primary);
+    color: #fff;
+    border: none;
+  }
+  .ni-pg-btn:not([data-active]) {
+    background: transparent;
+    border: 1px solid
+      color-mix(in srgb, var(--shn-color-bg-page) 20%, transparent);
+    color: var(--shn-color-primary);
+  }
+  @media (max-width: 640px) {
+    .ni-pg-btn {
+      height: 44px;
+      min-width: 44px;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var PER_PAGE = 6;
+    var currentFilter = "all";
+    var currentPage = 1;
+
+    var allCards = Array.from(document.querySelectorAll("[data-ni-card]"));
+    var countEl = document.getElementById("ni-count");
+    var grid = document.getElementById("ni-grid");
+    var emptyEl = document.getElementById("ni-empty");
+    var pagination = document.getElementById("ni-pagination");
+    var totalAll = allCards.length;
+
+    var pillAll = document.getElementById("pill-all");
+    var pillNews = document.getElementById("pill-news");
+    var pillInsights = document.getElementById("pill-insights");
+
+    function setFilter(f) {
+      currentFilter = f;
+      currentPage = 1;
+      [
+        [pillAll, "all"],
+        [pillNews, "news"],
+        [pillInsights, "insight"],
+      ].forEach(function (pair) {
+        var btn = pair[0];
+        var key = pair[1];
+        if (btn) btn.dataset.active = key === f ? "true" : "false";
+      });
+      render();
+    }
+
+    if (pillAll)
+      pillAll.addEventListener("click", function () {
+        setFilter("all");
+      });
+    if (pillNews)
+      pillNews.addEventListener("click", function () {
+        setFilter("news");
+      });
+    if (pillInsights)
+      pillInsights.addEventListener("click", function () {
+        setFilter("insight");
+      });
+
+    function render() {
+      var matched = allCards.filter(function (card) {
+        return currentFilter === "all" || card.dataset.kind === currentFilter;
+      });
+
+      var totalPages = Math.ceil(matched.length / PER_PAGE);
+      if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+      var start = (currentPage - 1) * PER_PAGE;
+      var visible = matched.slice(start, start + PER_PAGE);
+
+      allCards.forEach(function (c) {
+        c.style.display = "none";
+      });
+      visible.forEach(function (c) {
+        c.style.display = "";
+      });
+
+      var label =
+        currentFilter === "all"
+          ? "Showing all posts"
+          : currentFilter === "news"
+            ? "News only"
+            : "Insights only";
+      if (countEl) {
+        countEl.textContent =
+          matched.length + " of " + totalAll + " posts · " + label;
+        countEl.classList.toggle("hidden", matched.length === 0);
+      }
+
+      if (emptyEl) emptyEl.classList.toggle("hidden", matched.length > 0);
+      if (grid) grid.classList.toggle("hidden", matched.length === 0);
+
+      renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+      if (!pagination) return;
+      if (totalPages <= 1) {
+        pagination.innerHTML = "";
+        return;
+      }
+      var html = "";
+      if (currentPage > 1) {
+        html +=
+          '<button type="button" class="ni-pg-btn" data-p="' +
+          (currentPage - 1) +
+          '">← Prev</button>';
+      }
+      for (var p = 1; p <= totalPages; p++) {
+        html +=
+          '<button type="button" class="ni-pg-btn"' +
+          (p === currentPage ? " data-active" : "") +
+          ' data-p="' +
+          p +
+          '">' +
+          p +
+          "</button>";
+      }
+      if (currentPage < totalPages) {
+        html +=
+          '<button type="button" class="ni-pg-btn" data-p="' +
+          (currentPage + 1) +
+          '">Next →</button>';
+      }
+      pagination.innerHTML = html;
+      pagination.querySelectorAll("[data-p]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          currentPage = parseInt(btn.dataset.p);
+          render();
+          if (grid) grid.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+    }
+
+    render();
+  })();
+</script>

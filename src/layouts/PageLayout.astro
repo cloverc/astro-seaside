@@ -138,6 +138,7 @@ const headerData = {
       href: "#",
       links: bucketHeaderLinks, // Dynamically loaded Bucket & Spade links
     },
+    { text: "News & Insights", href: "/news-and-insights/" },
     { text: "Contact", href: "/contact/" },
   ],
 };
@@ -172,6 +173,7 @@ const footerData = {
 <Layout metadata={metadata}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
+    <slot name="head" />
   </Fragment>
   {
     Astro.url.pathname === "/" && (
