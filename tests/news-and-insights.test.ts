@@ -219,4 +219,33 @@ test.describe("news and insights article page", () => {
 
     expect(results.violations).toEqual([]);
   });
+
+  test("pill filter still works after visiting an article and going back", async ({
+    page,
+  }) => {
+    const cardCount = await page.locator("[data-ni-card]").count();
+    test.skip(cardCount === 0, "No articles published to open");
+
+    await page
+      .locator("[data-ni-card]")
+      .first()
+      .getByRole("link", { name: /Read more/ })
+      .click();
+    await page.waitForURL(/\/news-and-insights\/.+/);
+    await page.getByRole("link", { name: /Back to News & Insights/ }).click();
+    await page.waitForURL(/\/news-and-insights\/?$/);
+
+    const insightCount = await page
+      .locator("[data-ni-card][data-kind='insight']")
+      .count();
+    test.skip(insightCount === 0, "No insight cards in dataset");
+
+    await page.locator("#pill-insights").click();
+    await expect(page.locator("#pill-insights")).toHaveAttribute(
+      "data-active",
+      "true",
+    );
+    const visible = page.locator("[data-ni-card]:visible");
+    expect(await visible.count()).toBeGreaterThan(0);
+  });
 });
