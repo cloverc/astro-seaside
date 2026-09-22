@@ -273,7 +273,7 @@ const metadata = {
 </style>
 
 <script is:inline>
-  (function () {
+  document.addEventListener("astro:page-load", function () {
     var PER_PAGE = 6;
     var currentFilter = "all";
     var currentPage = 1;
@@ -392,5 +392,5 @@ const metadata = {
     }
 
     render();
-  })();
+  });
 </script>
