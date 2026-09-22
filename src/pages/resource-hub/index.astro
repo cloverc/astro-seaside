@@ -7,6 +7,10 @@ import {
   fetchDatasourceEntries,
 } from "../../utils/storyblok";
 
+if (import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED !== "true") {
+  return Astro.redirect("/404");
+}
+
 const storyblokApi = useStoryblokApi();
 const version = getStoryblokVersion(Astro.request);
 
