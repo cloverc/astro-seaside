@@ -58,7 +58,7 @@ test.describe("news and insights page", () => {
     }
 
     await expect(page.locator("#ni-count")).toContainText(
-      `${Math.min(newsCount, 6)} of ${total} posts`,
+      `${Math.min(newsCount, 9)} of ${total} posts`,
     );
   });
 
@@ -84,7 +84,7 @@ test.describe("news and insights page", () => {
     }
 
     await expect(page.locator("#ni-count")).toContainText(
-      `${Math.min(insightCount, 6)} of ${total} posts`,
+      `${Math.min(insightCount, 9)} of ${total} posts`,
     );
   });
 
@@ -120,18 +120,18 @@ test.describe("news and insights page", () => {
       "true",
     );
     await expect(page.locator("#ni-count")).toContainText(
-      `${Math.min(total, 6)} of ${total} posts`,
+      `${Math.min(total, 9)} of ${total} posts`,
     );
   });
 
-  test("shows max 6 cards at once", async ({ page }) => {
+  test("shows max 9 cards at once", async ({ page }) => {
     const visible = page.locator("[data-ni-card]:visible");
-    expect(await visible.count()).toBeLessThanOrEqual(6);
+    expect(await visible.count()).toBeLessThanOrEqual(9);
   });
 
-  test("pagination appears when more than 6 cards", async ({ page }) => {
+  test("pagination appears when more than 9 cards", async ({ page }) => {
     const total = await page.locator("[data-ni-card]").count();
-    if (total > 6) {
+    if (total > 9) {
       await expect(page.locator("#ni-pagination")).toBeVisible();
     } else {
       await expect(page.locator("#ni-pagination")).not.toBeVisible();
