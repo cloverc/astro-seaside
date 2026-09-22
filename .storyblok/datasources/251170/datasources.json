@@ -1,0 +1,102 @@
+[
+  {
+    "id": 216419350656048,
+    "name": "resource_type",
+    "slug": "resource-type",
+    "dimensions": [],
+    "created_at": "2026-09-04T12:52:35.531Z",
+    "updated_at": "2026-09-04T12:52:35.531Z",
+    "entries": [
+      {
+        "id": 216419435592257,
+        "name": "Guide",
+        "value": "guide"
+      },
+      {
+        "id": 216419505625666,
+        "name": "Case Study",
+        "value": "case-study"
+      },
+      {
+        "id": 216419539913283,
+        "name": "Research",
+        "value": "research"
+      },
+      {
+        "id": 216419576482372,
+        "name": "Toolkit",
+        "value": "toolkit"
+      }
+    ]
+  },
+  {
+    "id": 215697696022775,
+    "name": "shared_topics",
+    "slug": "shared-topics",
+    "dimensions": [],
+    "created_at": "2026-09-02T11:56:10.317Z",
+    "updated_at": "2026-09-02T11:56:10.317Z",
+    "entries": [
+      {
+        "id": 215700489341195,
+        "name": "Architecture & design",
+        "value": "architecture-design"
+      },
+      {
+        "id": 215699671828688,
+        "name": "Arts & culture",
+        "value": "arts-culture"
+      },
+      {
+        "id": 215700613806348,
+        "name": "Entertainment & fun",
+        "value": "entertainment-fun"
+      },
+      {
+        "id": 215699746019537,
+        "name": "Funding & policy",
+        "value": "funding-policy"
+      },
+      {
+        "id": 215697867700172,
+        "name": "Restoration & regeneration",
+        "value": "restoration-regeneration"
+      },
+      {
+        "id": 215697786419146,
+        "name": "Seaside history",
+        "value": "seaside-history"
+      },
+      {
+        "id": 215699836233938,
+        "name": "Tourism & visitor economy",
+        "value": "tourism-visitor-economy"
+      }
+    ]
+  },
+  {
+    "id": 215701288653063,
+    "name": "intended_audience",
+    "slug": "intended-audience",
+    "dimensions": [],
+    "created_at": "2026-09-02T12:10:47.424Z",
+    "updated_at": "2026-09-02T12:10:47.424Z",
+    "entries": [
+      {
+        "id": 215701393758482,
+        "name": "General Public",
+        "value": "general-public"
+      },
+      {
+        "id": 215701475608851,
+        "name": "Heritage Professionals",
+        "value": "heritage-professionals"
+      },
+      {
+        "id": 215701561002262,
+        "name": "Academics & Researchers",
+        "value": "academics-researchers"
+      }
+    ]
+  }
+]

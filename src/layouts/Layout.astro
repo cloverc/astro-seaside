@@ -12,7 +12,10 @@ const description: string =
   metadata.description ||
   "Discover the rich heritage of seaside tourism and its unique architectural legacy with the Seaside Heritage Network.";
 
-const titleText = `${pageTitle} - ${siteTitle}`;
+const titleText =
+  pageTitle && pageTitle !== siteTitle
+    ? `${pageTitle} - ${siteTitle}`
+    : siteTitle;
 ---
 
 <!doctype html>
@@ -31,6 +34,13 @@ const titleText = `${pageTitle} - ${siteTitle}`;
     <link
       rel="preload"
       href="/fonts/inter-latin-400-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-500-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin

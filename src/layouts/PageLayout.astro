@@ -8,6 +8,9 @@ import { getStoryblokVersion } from "../utils/storyblok";
 
 const { metadata } = Astro.props;
 
+const resourceHubEnabled =
+  import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED === "true";
+
 const storyblokApi = useStoryblokApi();
 
 const version = getStoryblokVersion(Astro.request);
@@ -37,7 +40,6 @@ const schemaGraph = {
       url: siteUrl,
       description:
         "A charity raising awareness and understanding of the broad heritage associated with the UK seaside holiday.",
-      inLanguage: "en-GB",
       sameAs: [
         gc.instagram_url ?? "https://www.instagram.com/seaside_network/",
         gc.youtube_url ?? "https://www.youtube.com/@SeasideHeritageNetwork",
@@ -51,7 +53,7 @@ const schemaGraph = {
       "@id": `${siteUrl}#website`,
       url: siteUrl,
       name: orgName,
-      inLanguage: "en-GB",
+      inLanguage: "en-gb",
       publisher: { "@id": `${siteUrl}#organization` },
     },
   ],
@@ -117,14 +119,6 @@ const bucketHeaderLinks = bucketPageLinks.map(
 const headerData = {
   links: [
     {
-      text: "Events",
-      href: "#",
-      links: [
-        { text: "Upcoming Events", href: "/events/upcoming-events/" },
-        { text: "Past Events", href: "/events/past-events/" },
-      ],
-    },
-    {
       text: "About",
       href: "#",
       links: [
@@ -134,11 +128,22 @@ const headerData = {
       ],
     },
     {
+      text: "Events",
+      href: "#",
+      links: [
+        { text: "Upcoming Events", href: "/events/upcoming-events/" },
+        { text: "Past Events", href: "/events/past-events/" },
+      ],
+    },
+    ...(resourceHubEnabled
+      ? [{ text: "Resource Hub", href: "/resource-hub/" }]
+      : []),
+    { text: "News & Insights", href: "/news-and-insights/" },
+    {
       text: "Bucket & Spade List",
       href: "#",
       links: bucketHeaderLinks, // Dynamically loaded Bucket & Spade links
     },
-    { text: "News & Insights", href: "/news-and-insights/" },
     { text: "Contact", href: "/contact/" },
   ],
 };
@@ -172,7 +177,11 @@ const footerData = {
 
 <Layout metadata={metadata}>
   <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(schemaGraph)} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(schemaGraph)}
+    />
     <slot name="head" />
   </Fragment>
   {

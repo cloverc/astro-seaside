@@ -1,0 +1,657 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { useStoryblokApi, renderRichText } from "@storyblok/astro";
+import {
+  getStoryblokVersion,
+  fetchDatasourceEntries,
+} from "../../utils/storyblok";
+
+if (import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED !== "true") {
+  return Astro.redirect("/404");
+}
+
+const { slug } = Astro.params;
+
+const storyblokApi = useStoryblokApi();
+const version = getStoryblokVersion(Astro.request);
+
+let story: any;
+let resolvedRelations: any[] = [];
+try {
+  const { data } = await storyblokApi.get(`cdn/stories/resource-hub/${slug}`, {
+    version,
+    resolve_relations: "resource_item.author",
+  });
+  story = data.story;
+  resolvedRelations = data.rels ?? [];
+} catch {
+  return Astro.redirect("/resource-hub/");
+}
+
+const [dsAudience, dsTopics, dsResourceType] = await Promise.all([
+  fetchDatasourceEntries("intended-audience"),
+  fetchDatasourceEntries("shared-topics"),
+  fetchDatasourceEntries("resource-type"),
+]);
+
+function dsLabel(entries: any[], value: string): string {
+  const v = value.trim();
+  return entries.find((e) => e.value === v)?.name ?? v;
+}
+
+const blok = story.content;
+
+// --- Content blocks ---
+const contentBlocks: any[] = blok.content ?? [];
+
+function getFormatLabel(block: any): string {
+  if (!block) return "";
+  if (block.component === "content_video") return "Video";
+  if (block.component === "content_article") return "Article";
+  if (block.component === "content_file") {
+    const filename: string =
+      block.file?.filename ?? block.external_url?.url ?? "";
+    const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+    const extMap: Record<string, string> = {
+      pdf: "PDF",
+      doc: "Word",
+      docx: "Word",
+      xls: "Excel",
+      xlsx: "Excel",
+      ppt: "PowerPoint",
+      pptx: "PowerPoint",
+    };
+    return extMap[ext] ?? "File";
+  }
+  return "";
+}
+
+function getYouTubeId(url: string): string | null {
+  const m = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([A-Za-z0-9_-]{11})/,
+  );
+  return m?.[1] ?? null;
+}
+
+const formatLabel = contentBlocks
+  .map(getFormatLabel)
+  .filter(Boolean)
+  .join(" · ");
+
+const supplementaryBodyHtml: string | null = blok.body
+  ? (renderRichText(blok.body) ?? null)
+  : null;
+
+// --- Metadata ---
+const publishedDate = blok.published_date
+  ? new Date(blok.published_date).toLocaleDateString("en-GB", {
+      month: "long",
+      year: "numeric",
+    })
+  : null;
+
+const producedBy: string[] = blok.produced_by
+  ? blok.produced_by
+      .split("\n")
+      .map((s: string) => s.trim())
+      .filter(Boolean)
+  : [];
+
+// Author: SDK inlines resolved relation into blok.author as a story object
+const authorStory =
+  blok.author && typeof blok.author === "object" ? blok.author : null;
+const authorName: string | null =
+  authorStory?.content?.name ?? blok.guest_author ?? null;
+const authorProfileUrl: string | null = authorStory?.slug
+  ? `/team/#${authorStory.slug}`
+  : null;
+
+const topicKeys: string[] = blok.topics ?? [];
+const topics: string[] = topicKeys.map((v) => dsLabel(dsTopics, v));
+
+const audienceKeys: string[] = Array.isArray(blok.audience)
+  ? blok.audience
+  : blok.audience
+    ? [blok.audience]
+    : [];
+const audience: string[] = audienceKeys.map((v) => dsLabel(dsAudience, v));
+
+const resourceTypeLabel = blok.resource_type
+  ? dsLabel(dsResourceType, blok.resource_type)
+  : null;
+
+// --- CTA ---
+function ctaLabel(format: string): string {
+  if (format === "Video") return "Watch video";
+  if (format) return `Download ${format}`;
+  return "View resource";
+}
+
+// --- Related resources ---
+let related: any[] = [];
+try {
+  const { data: relatedData } = await storyblokApi.get("cdn/stories", {
+    version,
+    starts_with: "resource-hub/",
+    per_page: 100,
+  });
+  related = (relatedData.stories ?? [])
+    .filter((s: any) => {
+      if (s.slug === slug) return false;
+      const storyTopics: string[] = s.content.topics ?? [];
+      return storyTopics.some((t) => topicKeys.includes(t));
+    })
+    .slice(0, 3);
+} catch {
+  // no related
+}
+
+const audienceDotColors: Record<string, string> = {
+  "General Public": "bg-teal-600",
+  "Heritage Professionals": "bg-blue-600",
+  "Academics & Researchers": "bg-purple-700",
+};
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: `${blok.title} — Resource Hub`,
+};
+
+const siteUrl = Astro.site?.href ?? "https://seasideheritage.org.uk/";
+
+// Schema type follows content shape (does this resource carry a downloadable
+// file?), not resource_type — a "Guide" can be a PDF, a video, or plain text,
+// so resource_type alone doesn't tell us the right schema.org type.
+const documentBlock = contentBlocks.find(
+  (b) => b.component === "content_file" && b.file?.filename,
+);
+const documentExt =
+  documentBlock?.file?.filename?.split(".").pop()?.toLowerCase() ?? "";
+const DOCUMENT_MIME_TYPES: Record<string, string> = {
+  pdf: "application/pdf",
+  doc: "application/msword",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  xls: "application/vnd.ms-excel",
+  xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ppt: "application/vnd.ms-powerpoint",
+  pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+};
+
+// Secondary media (e.g. a video alongside the main PDF) — represented under
+// the document's associatedMedia rather than dropped, so nothing on the page
+// is invisible to structured data just because it isn't the "main" file.
+//
+// Typed as the generic MediaObject rather than VideoObject: Google's video
+// rich-result eligibility requires thumbnailUrl and uploadDate, and we have
+// no reliable source for an upload date (would need the YouTube Data API or
+// a new manual CMS field) — MediaObject describes the same thing accurately
+// without implying rich-result compliance we can't actually deliver.
+const videoBlocks = contentBlocks.filter(
+  (b) => b.component === "content_video" && b.video_url,
+);
+const associatedMedia = videoBlocks.map((b) => {
+  const youtubeId = getYouTubeId(b.video_url);
+  const transcriptText = b.transcript
+    ? (renderRichText(b.transcript) ?? "")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 500)
+    : "";
+  return {
+    "@type": "MediaObject",
+    name: b.title ?? blok.title,
+    contentUrl: b.video_url,
+    ...(youtubeId
+      ? {
+          thumbnailUrl: `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`,
+        }
+      : {}),
+    ...(transcriptText ? { description: transcriptText } : {}),
+  };
+});
+
+const pageUrl = `${siteUrl}resource-hub/${slug}/`;
+const resourceSchema: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": pageUrl,
+  url: pageUrl,
+  name: blok.title,
+  dateModified: new Date(story.published_at ?? story.updated_at).toISOString(),
+  inLanguage: "en-gb",
+  isPartOf: { "@type": "WebSite", "@id": `${siteUrl}#website` },
+  mainEntity: {
+    "@type": documentBlock ? "DigitalDocument" : "CreativeWork",
+    name: blok.title,
+    description: blok.description ?? undefined,
+    ...(blok.published_date || story.first_published_at
+      ? {
+          datePublished: new Date(
+            blok.published_date ?? story.first_published_at,
+          ).toISOString(),
+        }
+      : {}),
+    image: blok.featured_image?.filename
+      ? `${blok.featured_image.filename}/m/1200x630/filters:quality(80):format(jpeg)`
+      : undefined,
+    ...(documentBlock
+      ? {
+          encoding: {
+            "@type": "MediaObject",
+            contentUrl: documentBlock.file.filename,
+            ...(DOCUMENT_MIME_TYPES[documentExt]
+              ? { encodingFormat: DOCUMENT_MIME_TYPES[documentExt] }
+              : {}),
+          },
+        }
+      : {}),
+    ...(associatedMedia.length > 0 ? { associatedMedia } : {}),
+    author: authorName
+      ? {
+          "@type": "Person",
+          name: authorName,
+          ...(authorStory?.content?.profile_picture?.filename
+            ? { image: authorStory.content.profile_picture.filename }
+            : {}),
+          ...(authorStory?.slug
+            ? { url: `${siteUrl}team/#${authorStory.slug}` }
+            : {}),
+        }
+      : { "@type": "Organization", "@id": `${siteUrl}#organization` },
+    publisher: { "@type": "Organization", "@id": `${siteUrl}#organization` },
+  },
+};
+---
+
+<PageLayout metadata={metadata}>
+  <Fragment slot="head">
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(resourceSchema)}
+    />
+  </Fragment>
+  <!-- Hero -->
+  <div class="bg-page">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:pt-12 md:pb-16">
+      <a
+        href="/resource-hub/"
+        class="inline-block text-sm font-medium text-secondary mb-8 hover:underline"
+      >
+        ← Back to Resource Hub
+      </a>
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
+        <!-- Left -->
+        <div class="lg:col-span-3">
+          {
+            resourceTypeLabel && (
+              <p class="text-sm font-black uppercase tracking-widest text-secondary mb-4">
+                {resourceTypeLabel}
+                {formatLabel && <span> · {formatLabel}</span>}
+              </p>
+            )
+          }
+          <h1
+            class="text-4xl sm:text-5xl font-heading font-bold text-white mb-5 leading-tight"
+          >
+            {blok.title}
+          </h1>
+          <p class="text-lg text-white leading-relaxed mb-8 max-w-lg">
+            {blok.description}
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4">
+            {
+              contentBlocks.map((block) => {
+                const fmt = getFormatLabel(block);
+                if (block.component === "content_file") {
+                  const fileUrl: string | null =
+                    block.file?.filename || block.external_url?.url || null;
+                  if (!fileUrl) return null;
+                  return (
+                    <>
+                      <a
+                        href={fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn-primary inline-flex items-center gap-2"
+                      >
+                        <svg
+                          class="w-5 h-5 shrink-0"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                        {ctaLabel(fmt)}
+                      </a>
+                      {(block.file_size || block.file_note) && (
+                        <span class="text-sm text-white/70">
+                          {[block.file_size, block.file_note]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </span>
+                      )}
+                    </>
+                  );
+                }
+                if (block.component === "content_video") {
+                  return null;
+                }
+                return null;
+              })
+            }
+          </div>
+        </div>
+
+        <!-- Featured image -->
+        <div class="lg:col-span-2">
+          {
+            blok.featured_image?.filename ? (
+              <img
+                src={`${blok.featured_image.filename}/m/800x600/filters:quality(70):format(webp)`}
+                alt={blok.featured_image.alt ?? blok.title}
+                class="w-full rounded aspect-[4/3] object-cover"
+                width="800"
+                height="600"
+              />
+            ) : (
+              <div
+                class="w-full aspect-[4/3] rounded border border-white/20 flex flex-col items-center justify-center gap-3"
+                aria-hidden="true"
+              >
+                <svg
+                  class="w-12 h-12 text-white/30"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <span class="text-white/30 text-xs font-medium uppercase tracking-wider">
+                  No image
+                </span>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <section class="py-16 pb-24" style="background-color: #F9F9F8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Main content -->
+        <div class="lg:col-span-2 space-y-10">
+          {/* Supplementary body */}
+          {
+            supplementaryBodyHtml && (
+              <div
+                class="prose prose-headings:font-heading prose-headings:font-medium prose-headings:text-dark prose-h2:text-3xl prose-p:text-gray-700 prose-li:text-gray-700 prose-ul:list-disc prose-ul:list-outside prose-ul:pl-5 [&_li::marker]:text-gray-700 max-w-none"
+                set:html={supplementaryBodyHtml}
+              />
+            )
+          }
+
+          {/* Video blocks — after body copy */}
+          {
+            contentBlocks
+              .filter((b) => b.component === "content_video")
+              .map((block, i) => {
+                const videoUrl: string | null = block.video_url ?? null;
+                const youtubeId: string | null = videoUrl
+                  ? getYouTubeId(videoUrl)
+                  : null;
+                const transcriptHtml: string | null = block.transcript
+                  ? (renderRichText(block.transcript) ?? null)
+                  : null;
+                return (
+                  <>
+                    <div id={i === 0 ? "rh-video" : `rh-video-${i}`}>
+                      {youtubeId ? (
+                        <div class="aspect-video rounded overflow-hidden bg-black">
+                          <iframe
+                            src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
+                            title={block.title ?? blok.title}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                            class="w-full h-full"
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : videoUrl ? (
+                        <p class="text-sm text-gray-700">
+                          <a
+                            href={videoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="underline hover:text-dark"
+                          >
+                            Watch on external site →
+                          </a>
+                        </p>
+                      ) : null}
+                    </div>
+                    {transcriptHtml && (
+                      <>
+                        <hr class="border-gray-200" />
+                        <div
+                          class="prose prose-p:text-gray-700 prose-li:text-gray-700 max-w-none"
+                          set:html={transcriptHtml}
+                        />
+                      </>
+                    )}
+                  </>
+                );
+              })
+          }
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="lg:col-span-1">
+          <div
+            class="bg-white rounded border border-gray-400 p-6 space-y-5 lg:sticky lg:top-24"
+          >
+            <h2 class="text-xl font-heading font-medium text-dark">
+              About this resource
+            </h2>
+
+            {
+              producedBy.length > 0 && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    Produced by
+                  </p>
+                  {producedBy.map((org: string) => (
+                    <p class="text-sm text-gray-900">{org}</p>
+                  ))}
+                </div>
+              )
+            }
+
+            {
+              authorName && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    Author
+                  </p>
+                  <p class="text-sm text-gray-900">
+                    {authorProfileUrl ? (
+                      <a href={authorProfileUrl} class="hover:underline">
+                        {authorName}
+                      </a>
+                    ) : (
+                      authorName
+                    )}
+                  </p>
+                </div>
+              )
+            }
+
+            {
+              publishedDate && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    Published
+                  </p>
+                  <p class="text-sm text-gray-900">{publishedDate}</p>
+                </div>
+              )
+            }
+
+            {
+              audience.length > 0 && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
+                    Who it's for
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {audience.map((aud) => (
+                      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-200 text-dark">
+                        <span
+                          class={`w-2 h-2 rounded-full shrink-0 ${audienceDotColors[aud] ?? "bg-gray-400"}`}
+                          aria-hidden="true"
+                        />
+                        {aud}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )
+            }
+
+            {
+              topics.length > 0 && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                    Topics
+                  </p>
+                  <p class="text-sm text-gray-900">{topics.join(" · ")}</p>
+                </div>
+              )
+            }
+
+            {
+              contentBlocks
+                .filter((b) => b.component === "content_file")
+                .map((block) => {
+                  const fileUrl: string | null =
+                    block.file?.filename || block.external_url?.url || null;
+                  if (!fileUrl) return null;
+                  const fmt = getFormatLabel(block);
+                  return (
+                    <>
+                      <hr class="border-gray-200" />
+                      <div class="space-y-2">
+                        <a
+                          href={fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="btn-primary w-full justify-center gap-2"
+                        >
+                          <svg
+                            class="w-4 h-4 shrink-0"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                          {ctaLabel(fmt)}
+                        </a>
+                        {(block.file_size || block.file_note) && (
+                          <p class="text-xs text-gray-500 text-center">
+                            {[block.file_size, block.file_note]
+                              .filter(Boolean)
+                              .join(" · ")}
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  );
+                })
+            }
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- More like this -->
+  {
+    related.length > 0 && (
+      <section class="py-16" style="background-color: rgb(30 64 175)">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+          <h2 class="text-3xl font-heading font-bold text-white mb-8">
+            More like this
+          </h2>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {related.map((r) => {
+              const rc = r.content;
+              const relatedFormat = ((rc.content as any[]) ?? [])
+                .map(getFormatLabel)
+                .filter(Boolean)
+                .join(" · ");
+              const relatedTypeLabel = rc.resource_type
+                ? dsLabel(dsResourceType, rc.resource_type)
+                : "";
+              const relatedFirstType =
+                (rc.content as any[])?.[0]?.component ?? "";
+              const relatedCtaLabel =
+                relatedFirstType === "content_video" ? "Watch" : "Download";
+              return (
+                <li>
+                  <article class="bg-white rounded border border-gray-400 p-5 flex flex-col h-full">
+                    <p class="text-[0.65rem] font-semibold uppercase tracking-wider mb-2 text-gray-600">
+                      {[relatedTypeLabel, relatedFormat]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                    <a
+                      href={`/resource-hub/${r.slug}`}
+                      class="group flex-1 mb-3"
+                    >
+                      <h3 class="text-base font-heading font-bold text-dark leading-snug group-hover:underline decoration-1 mb-2">
+                        {rc.title}
+                      </h3>
+                      <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                        {rc.description}
+                      </p>
+                    </a>
+                    <a
+                      href={`/resource-hub/${r.slug}`}
+                      class="btn-primary text-white mt-auto self-start transform hover:-translate-y-0.5 hover:shadow-primary/30"
+                    >
+                      {relatedCtaLabel}
+                    </a>
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+</PageLayout>

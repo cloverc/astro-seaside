@@ -1,0 +1,767 @@
+---
+import HeroText from "../../components/HeroText.astro";
+import PageLayout from "../../layouts/PageLayout.astro";
+import { useStoryblokApi } from "@storyblok/astro";
+import {
+  getStoryblokVersion,
+  fetchDatasourceEntries,
+} from "../../utils/storyblok";
+
+if (import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED !== "true") {
+  return Astro.redirect("/404");
+}
+
+const storyblokApi = useStoryblokApi();
+const version = getStoryblokVersion(Astro.request);
+
+const [storiesResult, dsAudience, dsTopics, dsResourceType] = await Promise.all(
+  [
+    storyblokApi
+      .get("cdn/stories", {
+        version,
+        starts_with: "resource-hub/",
+        per_page: 100,
+      })
+      .catch(() => null),
+    fetchDatasourceEntries("intended-audience"),
+    fetchDatasourceEntries("shared-topics"),
+    fetchDatasourceEntries("resource-type"),
+  ],
+);
+
+const rawStories: any[] = storiesResult?.data?.stories ?? [];
+
+function dsLabel(entries: any[], value: string): string {
+  const v = value.trim();
+  return entries.find((e) => e.value === v)?.name ?? v;
+}
+
+const badgeColors: Record<string, string> = {
+  "General Public": "bg-teal-600",
+  "Heritage Professionals": "bg-blue-600",
+  "Academics & Researchers": "bg-purple-700",
+};
+
+function getFormatLabel(contentBlocks: any[]): string {
+  const extMap: Record<string, string> = {
+    pdf: "PDF",
+    doc: "Word",
+    docx: "Word",
+    xls: "Excel",
+    xlsx: "Excel",
+    ppt: "PowerPoint",
+    pptx: "PowerPoint",
+  };
+  const labels = (contentBlocks ?? [])
+    .map((block) => {
+      if (block.component === "content_video") return "Video";
+      if (block.component === "content_file") {
+        const filename: string =
+          block.file?.filename ?? block.external_url?.url ?? "";
+        const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+        return extMap[ext] ?? "File";
+      }
+      return null;
+    })
+    .filter(Boolean) as string[];
+  return [...new Set(labels)].join(" · ");
+}
+
+const resources = rawStories.map((story: any) => {
+  const c = story.content;
+  const audienceKeys: string[] = Array.isArray(c.audience)
+    ? c.audience
+    : c.audience
+      ? [c.audience]
+      : [];
+  const audienceLabels: string[] = audienceKeys.map((v) =>
+    dsLabel(dsAudience, v),
+  );
+  const topicLabels: string[] = (c.topics ?? []).map((v: string) =>
+    dsLabel(dsTopics, v),
+  );
+  const resourceTypeLabel = c.resource_type
+    ? dsLabel(dsResourceType, c.resource_type)
+    : "";
+  const format = getFormatLabel(c.content ?? []);
+  const thumbnail: string | null = c.featured_image?.filename
+    ? `${c.featured_image.filename}/m/300x400/filters:quality(70):format(webp)`
+    : null;
+  return {
+    slug: story.slug,
+    title: c.title ?? "",
+    format,
+    audiences: audienceLabels,
+    resourceType: resourceTypeLabel,
+    topics: topicLabels,
+    description: c.description ?? "",
+    thumbnail,
+  };
+});
+
+const AUDIENCES =
+  dsAudience.length > 0
+    ? dsAudience.map((e: any) => e.name)
+    : ["General Public", "Heritage Professionals", "Academics & Researchers"];
+
+// When the datasource is unavailable, derive topics from actual card data so
+// filter checkbox values always match the data-topics attributes on cards.
+const TOPICS =
+  dsTopics.length > 0
+    ? dsTopics.map((e: any) => e.name)
+    : Array.from(new Set(resources.flatMap((r) => r.topics))).sort();
+
+const RESOURCE_TYPES =
+  dsResourceType.length > 0
+    ? dsResourceType.map((e: any) => e.name)
+    : [
+        "Guides & Factsheets",
+        "Toolkits & Templates",
+        "Case Studies",
+        "Research & Reports",
+      ];
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: "Resource Hub",
+};
+
+function ctaLabel(_format: string) {
+  return "View resource";
+}
+---
+
+<PageLayout metadata={metadata}>
+  <HeroText
+    tagline="Resources"
+    title="The Resource Hub"
+    subtitle="Practical resources, research and commentary on seaside heritage: guides, best practice and downloadable material. Free to use and growing."
+  />
+
+  <!-- Browse area -->
+  <section class="min-h-96" style="background-color: #F9F9F8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Sidebar: search + filters -->
+        <aside
+          id="rh-sidebar-inner"
+          class="lg:col-span-1 bg-white rounded-lg border border-gray-400 p-5 space-y-5"
+          aria-label="Search and filter resources"
+        >
+          <!-- Search -->
+          <div class="relative">
+            <svg
+              class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600 pointer-events-none"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input
+              id="rh-search"
+              type="text"
+              placeholder="Search resources"
+              class="w-full pl-8 pr-8 py-2 border border-gray-400 rounded bg-white text-dark text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
+              aria-label="Search resources"
+            />
+            <button
+              id="rh-search-clear"
+              type="button"
+              class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
+              aria-label="Clear search"
+            >
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Mobile filter toggle -->
+          <button
+            id="rh-mobile-filter-toggle"
+            type="button"
+            class="lg:hidden w-full flex items-center justify-between text-sm font-semibold text-dark border-t border-gray-100 pt-4"
+            aria-expanded="false"
+            aria-controls="rh-filter-panel"
+          >
+            <span id="rh-mobile-toggle-label">Filter resources</span>
+            <svg
+              id="rh-mobile-chevron"
+              class="w-4 h-4 text-gray-600 transition-transform duration-200"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+
+          <!-- Filter panel (collapsible on mobile, always open on desktop) -->
+          <div id="rh-filter-panel" class="hidden lg:block space-y-1">
+            <!-- Filter header -->
+            <div class="pb-2">
+              <span
+                class="text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                >Filter by</span
+              >
+            </div>
+
+            <!-- Audience -->
+            <div class="border-b border-gray-200">
+              <button
+                type="button"
+                data-rh-group="audience"
+                class="rh-group-toggle w-full flex items-center justify-between py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                aria-expanded="true"
+              >
+                Audience
+                <svg
+                  class="rh-group-chevron w-3.5 h-3.5 text-gray-400 transition-transform duration-200 rotate-180"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <ul class="rh-group-panel space-y-0.5 pb-3">
+                {
+                  AUDIENCES.map((aud) => (
+                    <li>
+                      <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
+                        <input
+                          type="checkbox"
+                          value={aud}
+                          data-rh-filter="audience"
+                          class="w-4 h-4 rounded accent-blue-700 shrink-0"
+                        />
+                        <span
+                          class={`w-2 h-2 rounded-full shrink-0 ${badgeColors[aud] ?? "bg-gray-400"}`}
+                          aria-hidden="true"
+                        />
+                        {aud}
+                      </label>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            <!-- Topic -->
+            <div class="border-b border-gray-200">
+              <button
+                type="button"
+                data-rh-group="topic"
+                class="rh-group-toggle w-full flex items-center justify-between py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                aria-expanded="true"
+              >
+                Topic
+                <svg
+                  class="rh-group-chevron w-3.5 h-3.5 text-gray-400 transition-transform duration-200 rotate-180"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <ul class="rh-group-panel space-y-0.5 pb-3">
+                {
+                  TOPICS.map((topic) => (
+                    <li>
+                      <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
+                        <input
+                          type="checkbox"
+                          value={topic}
+                          data-rh-filter="topic"
+                          class="w-4 h-4 rounded accent-blue-700 shrink-0"
+                        />
+                        {topic}
+                      </label>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            <!-- Resource type -->
+            <div>
+              <button
+                type="button"
+                data-rh-group="resourceType"
+                class="rh-group-toggle w-full flex items-center justify-between py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                aria-expanded="true"
+              >
+                Resource type
+                <svg
+                  class="rh-group-chevron w-3.5 h-3.5 text-gray-400 transition-transform duration-200 rotate-180"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <ul class="rh-group-panel space-y-0.5 pb-3">
+                {
+                  RESOURCE_TYPES.map((rt) => (
+                    <li>
+                      <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
+                        <input
+                          type="checkbox"
+                          value={rt}
+                          data-rh-filter="resourceType"
+                          class="w-4 h-4 rounded accent-blue-700 shrink-0"
+                        />
+                        {rt}
+                      </label>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Results list -->
+        <div class="lg:col-span-2">
+          <!-- Active chips -->
+          <div
+            id="rh-chips"
+            class="hidden flex-wrap gap-2 mb-4"
+            aria-live="polite"
+          >
+          </div>
+
+          <p
+            id="rh-count"
+            class="text-sm text-gray-700 mb-5"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            Showing {resources.length} of {resources.length} resources
+          </p>
+
+          <ul id="rh-grid" class="space-y-6" aria-label="Resources">
+            {
+              resources.map((r) => (
+                <li
+                  data-rh-card
+                  data-audience={r.audiences.join("|")}
+                  data-resource-type={r.resourceType}
+                  data-topics={r.topics.join("|")}
+                  data-search-text={`${r.title} ${r.description}`.toLowerCase()}
+                  class="rounded bg-white p-6 border border-gray-400"
+                >
+                  <article class="flex flex-col sm:flex-row gap-6 items-start">
+                    <div class="flex-1 min-w-0">
+                      {(r.resourceType || r.format) && (
+                        <div class="flex flex-wrap gap-2 mb-5">
+                          {r.resourceType && (
+                            <span class="text-xs font-semibold uppercase tracking-wider bg-stone-100 text-gray-600 px-2.5 py-1 rounded-full">
+                              {r.resourceType}
+                            </span>
+                          )}
+                          {r.format && (
+                            <span class="text-xs font-semibold uppercase tracking-wider bg-stone-100 text-gray-600 px-2.5 py-1 rounded-full">
+                              {r.format}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      <a href={`/resource-hub/${r.slug}`} class="group">
+                        <h2 class="text-xl font-heading font-medium text-dark mb-2 leading-snug group-hover:underline decoration-1">
+                          {r.title}
+                        </h2>
+                      </a>
+                      <p class="text-gray-600 leading-relaxed mb-4">
+                        {r.description}
+                      </p>
+                      <a
+                        href={`/resource-hub/${r.slug}`}
+                        class="inline-block btn-primary text-sm mb-5"
+                      >
+                        {ctaLabel(r.format)}
+                      </a>
+                    </div>
+
+                    {r.thumbnail && (
+                      <a
+                        href={`/resource-hub/${r.slug}`}
+                        class="hidden sm:block shrink-0 sm:w-44 rounded overflow-hidden"
+                      >
+                        <img
+                          src={r.thumbnail}
+                          alt={r.title}
+                          class="w-full aspect-3/4 object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </a>
+                    )}
+                  </article>
+                </li>
+              ))
+            }
+          </ul>
+
+          <p id="rh-empty" class="hidden text-center text-gray-500 py-20">
+            No resources match your search. Try adjusting the filters.
+          </p>
+
+          <nav
+            id="rh-pagination"
+            aria-label="Resource pages"
+            class="mt-8 flex items-center justify-center gap-2"
+          >
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+</PageLayout>
+
+<script is:inline>
+  document.addEventListener("astro:page-load", function () {
+    var total = document.querySelectorAll("[data-rh-card]").length;
+    var searchInput = document.getElementById("rh-search");
+    var countEl = document.getElementById("rh-count");
+    var chipsEl = document.getElementById("rh-chips");
+    var emptyEl = document.getElementById("rh-empty");
+    var grid = document.getElementById("rh-grid");
+    var mobileToggle = document.getElementById("rh-mobile-filter-toggle");
+    var mobileToggleLabel = document.getElementById("rh-mobile-toggle-label");
+    var mobileChevron = document.getElementById("rh-mobile-chevron");
+    var filterPanel = document.getElementById("rh-filter-panel");
+    var searchClearBtn = document.getElementById("rh-search-clear");
+
+    var PER_PAGE = 6;
+    var currentPage = 1;
+    var state = {
+      q: "",
+      audience: new Set(),
+      topic: new Set(),
+      resourceType: new Set(),
+    };
+
+    // Mobile filter toggle
+    if (mobileToggle && filterPanel) {
+      mobileToggle.addEventListener("click", function () {
+        var isOpen = mobileToggle.getAttribute("aria-expanded") === "true";
+        mobileToggle.setAttribute("aria-expanded", isOpen ? "false" : "true");
+        filterPanel.classList.toggle("hidden", isOpen);
+        if (mobileChevron)
+          mobileChevron.style.transform = isOpen ? "" : "rotate(180deg)";
+      });
+    }
+
+    function updateMobileToggleLabel() {
+      if (!mobileToggleLabel) return;
+      var count =
+        state.audience.size + state.topic.size + state.resourceType.size;
+      mobileToggleLabel.textContent =
+        count > 0 ? "Filter resources (" + count + ")" : "Filter resources";
+    }
+
+    // Filter group toggles
+    document.querySelectorAll(".rh-group-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var panel = btn.nextElementSibling;
+        var chevron = btn.querySelector(".rh-group-chevron");
+        var isOpen = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", isOpen ? "false" : "true");
+        panel.classList.toggle("hidden", isOpen);
+        if (chevron) chevron.style.transform = isOpen ? "" : "rotate(180deg)";
+      });
+    });
+
+    // Checkbox changes
+    document.querySelectorAll("[data-rh-filter]").forEach(function (cb) {
+      cb.addEventListener("change", function () {
+        var key = cb.dataset.rhFilter;
+        if (cb.checked) state[key].add(cb.value);
+        else state[key].delete(cb.value);
+        currentPage = 1;
+        highlightCheckedRows();
+        applyFilters();
+        renderChips();
+        updateClearAllBtn();
+        updateMobileToggleLabel();
+      });
+    });
+
+    // Search
+    if (searchInput) {
+      searchInput.addEventListener("input", function () {
+        state.q = searchInput.value.toLowerCase().trim();
+        if (searchClearBtn)
+          searchClearBtn.classList.toggle("hidden", !searchInput.value);
+        currentPage = 1;
+        applyFilters();
+        renderChips();
+        updateClearAllBtn();
+      });
+    }
+
+    // Search clear button
+    if (searchClearBtn && searchInput) {
+      searchClearBtn.addEventListener("click", function () {
+        searchInput.value = "";
+        state.q = "";
+        searchClearBtn.classList.add("hidden");
+        applyFilters();
+        renderChips();
+        updateClearAllBtn();
+        searchInput.focus();
+      });
+    }
+
+    function clearAll() {
+      state.audience.clear();
+      state.topic.clear();
+      state.resourceType.clear();
+      state.q = "";
+      if (searchInput) searchInput.value = "";
+      if (searchClearBtn) searchClearBtn.classList.add("hidden");
+      currentPage = 1;
+      document.querySelectorAll("[data-rh-filter]").forEach(function (cb) {
+        cb.checked = false;
+      });
+      highlightCheckedRows();
+      applyFilters();
+      renderChips();
+      updateClearAllBtn();
+      updateMobileToggleLabel();
+    }
+
+    function highlightCheckedRows() {
+      document.querySelectorAll(".rh-option").forEach(function (label) {
+        var cb = label.querySelector("input[type='checkbox']");
+        label.style.background = cb && cb.checked ? "#eff6ff" : "";
+      });
+    }
+
+    function updateClearAllBtn() {}
+
+    function applyFilters() {
+      var allCards = Array.from(document.querySelectorAll("[data-rh-card]"));
+      var matched = allCards.filter(function (card) {
+        var cardAudiences = (card.dataset.audience || "").split("|");
+        var rt = card.dataset.resourceType;
+        var cardTopics = (card.dataset.topics || "").split("|");
+        var text = card.dataset.searchText || "";
+        var matchQ = !state.q || text.includes(state.q);
+        var matchAud =
+          state.audience.size === 0 ||
+          cardAudiences.some(function (a) {
+            return state.audience.has(a);
+          });
+        var matchTopic =
+          state.topic.size === 0 ||
+          cardTopics.some(function (t) {
+            return state.topic.has(t);
+          });
+        var matchRt =
+          state.resourceType.size === 0 || state.resourceType.has(rt);
+        return matchQ && matchAud && matchTopic && matchRt;
+      });
+
+      var totalPages = Math.ceil(matched.length / PER_PAGE);
+      if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+      var start = (currentPage - 1) * PER_PAGE;
+      var pageItems = matched.slice(start, start + PER_PAGE);
+
+      allCards.forEach(function (card) {
+        card.style.display = "none";
+      });
+      pageItems.forEach(function (card) {
+        card.style.display = "";
+      });
+
+      if (countEl) {
+        countEl.textContent =
+          "Showing " + matched.length + " of " + total + " resources";
+        countEl.classList.toggle("hidden", matched.length === 0);
+      }
+      if (emptyEl) emptyEl.classList.toggle("hidden", matched.length > 0);
+      if (grid) grid.classList.toggle("hidden", matched.length === 0);
+
+      renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+      var nav = document.getElementById("rh-pagination");
+      if (!nav) return;
+      if (totalPages <= 1) {
+        nav.classList.add("hidden");
+        nav.innerHTML = "";
+        return;
+      }
+      nav.classList.remove("hidden");
+
+      var btnBase =
+        "inline-flex items-center justify-center h-9 px-4 rounded border text-sm font-medium transition-colors ";
+      var btnActive = btnBase + "bg-accent text-white border-accent";
+      var btnNormal = btnBase + "border-gray-300 text-dark hover:bg-gray-100";
+      var btnDisabled =
+        btnBase + "border-gray-200 text-gray-300 cursor-default";
+
+      var html = "";
+      html +=
+        currentPage === 1
+          ? '<span class="' +
+            btnDisabled +
+            '" aria-disabled="true">&larr; Prev</span>'
+          : '<button type="button" data-page="' +
+            (currentPage - 1) +
+            '" class="' +
+            btnNormal +
+            '">&larr; Prev</button>';
+
+      for (var p = 1; p <= totalPages; p++) {
+        html +=
+          '<button type="button" data-page="' +
+          p +
+          '" class="' +
+          (p === currentPage ? btnActive : btnNormal) +
+          '" aria-current="' +
+          (p === currentPage ? "page" : "false") +
+          '">' +
+          p +
+          "</button>";
+      }
+
+      html +=
+        currentPage === totalPages
+          ? '<span class="' +
+            btnDisabled +
+            '" aria-disabled="true">Next &rarr;</span>'
+          : '<button type="button" data-page="' +
+            (currentPage + 1) +
+            '" class="' +
+            btnNormal +
+            '">Next &rarr;</button>';
+
+      nav.innerHTML = html;
+      nav.querySelectorAll("[data-page]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          currentPage = parseInt(btn.dataset.page);
+          applyFilters();
+          grid && grid.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+    }
+
+    function renderChips() {
+      if (!chipsEl) return;
+      var chips = [];
+      if (state.q) chips.push({ key: "search", value: state.q });
+      state.audience.forEach(function (v) {
+        chips.push({ key: "audience", value: v });
+      });
+      state.topic.forEach(function (v) {
+        chips.push({ key: "topic", value: v });
+      });
+      state.resourceType.forEach(function (v) {
+        chips.push({ key: "resourceType", value: v });
+      });
+
+      if (chips.length === 0) {
+        chipsEl.classList.add("hidden");
+        chipsEl.classList.remove("flex");
+        chipsEl.innerHTML = "";
+        return;
+      }
+
+      chipsEl.classList.remove("hidden");
+      chipsEl.classList.add("flex");
+
+      chipsEl.innerHTML =
+        chips
+          .map(function (chip) {
+            var label =
+              chip.key === "search" ? "“" + chip.value + "”" : chip.value;
+            return (
+              '<button type="button" data-chip-key="' +
+              chip.key +
+              '" data-chip-value="' +
+              chip.value +
+              '" class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-sm font-medium px-2.5 py-1 rounded hover:bg-blue-100 transition-colors">' +
+              label +
+              '<svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>' +
+              '<span class="sr-only">Remove ' +
+              label +
+              " filter</span></button>"
+            );
+          })
+          .join("") +
+        '<button type="button" id="rh-clear-all" class="text-sm font-medium text-blue-700 hover:underline ml-1">Clear filters</button>';
+
+      var clearBtn = chipsEl.querySelector("#rh-clear-all");
+      if (clearBtn) clearBtn.addEventListener("click", clearAll);
+
+      chipsEl.querySelectorAll("[data-chip-key]").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          var key = chip.dataset.chipKey;
+          var value = chip.dataset.chipValue;
+          if (key === "search") {
+            state.q = "";
+            if (searchInput) searchInput.value = "";
+            if (searchClearBtn) searchClearBtn.classList.add("hidden");
+          } else {
+            state[key].delete(value);
+            document
+              .querySelectorAll("[data-rh-filter='" + key + "']")
+              .forEach(function (cb) {
+                if (cb.value === value) cb.checked = false;
+              });
+            highlightCheckedRows();
+          }
+          currentPage = 1;
+          applyFilters();
+          renderChips();
+          updateClearAllBtn();
+          updateMobileToggleLabel();
+        });
+      });
+    }
+
+    applyFilters();
+  });
+</script>

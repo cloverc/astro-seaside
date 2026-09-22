@@ -18,26 +18,25 @@ const team = data ? data.stories : [];
 ---
 
 <section
-  class="mx-auto sm:px-6 lg:py-12 max-w-6xl px-6 pb-12 sm:pb-16"
+  class="mx-auto sm:px-6 lg:pb-12 max-w-6xl px-6 pb-12 sm:pb-16"
   {...storyblokEditable(blok)}
 >
   <HeroText tagline="About" title="Meet the Trustees" />
   <p class="mb-8 md:text-lg">The Seaside Heritage Network has 5 Trustees</p>
-  <div
-    class="grid mx-auto place-items-top gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3 max-w-6xl"
-  >
+  <ul class="space-y-8">
     {
       team?.length &&
         team.map((team_member: any, index: number) => {
-          team_member.content.slug = team_member.slug;
           return (
-            <TeamMember
-              member={team_member.content}
-              slug={team_member.slug}
-              isFirst={index === 0}
-            />
+            <li class="rounded bg-stone-100 p-6">
+              <TeamMember
+                member={team_member.content}
+                slug={team_member.slug}
+                isFirst={index === 0}
+              />
+            </li>
           );
         })
     }
-  </div>
+  </ul>
 </section>
