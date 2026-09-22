@@ -286,4 +286,20 @@ test.describe("resource hub page", () => {
     await expect(link).toHaveAttribute("aria-current", "page");
     await expect(link).toBeVisible();
   });
+
+  test("search still works after visiting a resource and going back", async ({
+    page,
+  }) => {
+    const firstCard = page.locator("[data-rh-card]").first();
+    const totalBefore = await page.locator("[data-rh-card]").count();
+    test.skip(totalBefore === 0, "No resource cards in dataset");
+
+    await firstCard.getByRole("heading", { level: 2 }).click();
+    await page.waitForURL(/\/resource-hub\/.+/);
+    await page.getByRole("link", { name: /Back to Resource Hub/ }).click();
+    await page.waitForURL(/\/resource-hub\/?$/);
+
+    await page.locator("#rh-search").fill("xyznotaresourcetitle");
+    await expect(page.locator("[data-rh-card]:visible")).toHaveCount(0);
+  });
 });

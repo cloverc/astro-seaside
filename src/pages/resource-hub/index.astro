@@ -454,7 +454,7 @@ function ctaLabel(_format: string) {
 </PageLayout>
 
 <script is:inline>
-  (function () {
+  document.addEventListener("astro:page-load", function () {
     var total = document.querySelectorAll("[data-rh-card]").length;
     var searchInput = document.getElementById("rh-search");
     var countEl = document.getElementById("rh-count");
@@ -759,5 +759,5 @@ function ctaLabel(_format: string) {
     }
 
     applyFilters();
-  })();
+  });
 </script>
