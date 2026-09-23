@@ -303,3 +303,19 @@ test.describe("resource hub page", () => {
     await expect(page.locator("[data-rh-card]:visible")).toHaveCount(0);
   });
 });
+
+test.describe("resource hub empty state", () => {
+  test("shows a message when no resources are published", async ({ page }) => {
+    await page.goto("/resource-hub/");
+    const cardCount = await page.locator("[data-rh-card]").count();
+    test.skip(
+      cardCount > 0,
+      "Resources are currently published — empty state not reachable",
+    );
+
+    await expect(
+      page.getByText("No resources have been published yet."),
+    ).toBeVisible();
+    await expect(page.locator("#rh-search")).toHaveCount(0);
+  });
+});
