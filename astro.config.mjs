@@ -39,6 +39,7 @@ export default defineConfig({
         topTenNominationsList: "storyblok/TopTenNominationsList",
         nominee: "storyblok/Nominee",
         voteCallout: "storyblok/VoteCallout",
+        resourceHubCallout: "storyblok/ResourceHubCallout",
 
         // Heroes
         hero: "storyblok/Heroes/Hero",
@@ -57,9 +58,13 @@ export default defineConfig({
           "circle-letter-b",
           "circle-letter-c",
           "circle-letter-d",
+          "arrow-right",
+          "building-carousel",
           "clock",
           "mail",
           "map-pin",
+          "search",
+          "tool",
           "number-1-small",
           "number-2-small",
           "number-3-small",

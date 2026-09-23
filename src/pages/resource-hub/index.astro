@@ -371,7 +371,7 @@ function ctaLabel(_format: string) {
                 id="rh-chips"
                 class="hidden flex-wrap gap-2 mb-4"
                 aria-live="polite"
-              ></div>
+              />
 
               <p
                 id="rh-count"
@@ -451,7 +451,7 @@ function ctaLabel(_format: string) {
                 id="rh-pagination"
                 aria-label="Resource pages"
                 class="mt-8 flex items-center justify-center gap-2"
-              ></nav>
+              />
             </div>
           </div>
         )
@@ -763,6 +763,28 @@ function ctaLabel(_format: string) {
           updateMobileToggleLabel();
         });
       });
+    }
+
+    // Pre-apply filters passed via URL query params (e.g. from the homepage
+    // callout linking to a specific audience)
+    var urlAudiences = new URLSearchParams(window.location.search).getAll(
+      "audience",
+    );
+    if (urlAudiences.length > 0) {
+      document
+        .querySelectorAll('[data-rh-filter="audience"]')
+        .forEach(function (cb) {
+          if (urlAudiences.indexOf(cb.value) !== -1) {
+            cb.checked = true;
+            state.audience.add(cb.value);
+          }
+        });
+    }
+    if (state.audience.size > 0) {
+      highlightCheckedRows();
+      renderChips();
+      updateClearAllBtn();
+      updateMobileToggleLabel();
     }
 
     applyFilters();
