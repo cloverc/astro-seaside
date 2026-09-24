@@ -1,5 +1,6 @@
 ---
 import PageLayout from "../../layouts/PageLayout.astro";
+import { Icon } from "astro-icon/components";
 import { useStoryblokApi, renderRichText } from "@storyblok/astro";
 import {
   getStoryblokVersion,
@@ -277,9 +278,10 @@ const resourceSchema: Record<string, unknown> = {
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:pt-12 md:pb-16">
       <a
         href="/resource-hub/"
-        class="inline-block text-sm font-medium text-secondary mb-8 hover:underline"
+        class="inline-flex items-center gap-2 text-sm font-medium text-secondary mb-8 hover:underline active:underline"
       >
-        ← Back to Resource Hub
+        <Icon name="tabler:arrow-left" class="w-4 h-4" aria-hidden="true" />
+        Back to Resource Hub
       </a>
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
         <!-- Left -->
@@ -440,9 +442,14 @@ const resourceSchema: Record<string, unknown> = {
                             href={videoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="underline hover:text-dark"
+                            class="inline-flex items-center gap-2 hover:underline active:underline hover:text-dark"
                           >
-                            Watch on external site →
+                            Watch on external site
+                            <Icon
+                              name="tabler:arrow-right"
+                              class="w-4 h-4"
+                              aria-hidden="true"
+                            />
                           </a>
                         </p>
                       ) : null}

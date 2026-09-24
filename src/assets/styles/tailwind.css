@@ -203,7 +203,7 @@ blockquote {
 .article-body {
   font-size: 1rem;
   line-height: 1.72;
-  color: #2a2a30;
+  color: var(--shn-color-text-dark);
 }
 
 .article-body img {

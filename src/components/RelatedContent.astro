@@ -21,6 +21,9 @@ interface Props {
   heading?: string;
   viewAll?: boolean;
   maxWidth?: string;
+  padding?: string;
+  outerPadding?: string;
+  cardMinWidth?: string;
 }
 
 const {
@@ -30,7 +33,12 @@ const {
   heading,
   viewAll = true,
   maxWidth = "max-w-7xl",
+  padding = "px-6",
+  outerPadding = "",
+  cardMinWidth = "300px",
 } = Astro.props;
+
+const innerClass = `${maxWidth} mx-auto ${padding}`;
 
 const contextDefaults: Record<
   Context,
@@ -73,36 +81,38 @@ const linkText =
 {
   items.length > 0 && (
     <section aria-labelledby="related-content-heading" class={sectionBg}>
-      <div class={`${maxWidth} mx-auto px-6 py-14 sm:py-16`}>
-        <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3 mb-7">
-          <h2
-            id="related-content-heading"
-            class={`font-heading font-semibold text-2xl md:text-3xl lg:text-4xl ${headingText}`}
-          >
-            {resolvedHeading}
-          </h2>
-          {viewAll && (
-            <a
-              href={defaults.viewAllHref}
-              class={`inline-flex items-center gap-2 font-semibold min-h-11 ${linkText}`}
+      <div class={`${outerPadding} py-14 sm:py-16`}>
+        <div class={innerClass}>
+          <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3 mb-7">
+            <h2
+              id="related-content-heading"
+              class={`font-heading font-semibold text-[2rem] md:text-3xl lg:text-4xl ${headingText}`}
             >
-              {defaults.viewAllLabel}
-              <Icon
-                name="tabler:arrow-right"
-                class="w-[18px] h-[18px]"
-                aria-hidden="true"
-              />
-            </a>
-          )}
-        </div>
+              {resolvedHeading}
+            </h2>
+            {viewAll && (
+              <a
+                href={defaults.viewAllHref}
+                class={`inline-flex items-center gap-2 font-semibold min-h-11 ${linkText}`}
+              >
+                {defaults.viewAllLabel}
+                <Icon
+                  name="tabler:arrow-right"
+                  class="w-[18px] h-[18px]"
+                  aria-hidden="true"
+                />
+              </a>
+            )}
+          </div>
 
-        <div
-          class="grid gap-6"
-          style="grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));"
-        >
-          {items.map((item) => (
-            <RelatedCard item={item} theme={theme} />
-          ))}
+          <div
+            class="grid gap-6"
+            style={`grid-template-columns: repeat(auto-fill, minmax(min(100%, ${cardMinWidth}), 1fr));`}
+          >
+            {items.map((item) => (
+              <RelatedCard item={item} theme={theme} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

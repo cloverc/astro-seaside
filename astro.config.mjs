@@ -54,6 +54,7 @@ export default defineConfig({
           "brand-instagram",
           "brand-linkedin",
           "brand-youtube",
+          "arrow-left",
           "arrow-right",
           "building-carousel",
           "chevron-down",
