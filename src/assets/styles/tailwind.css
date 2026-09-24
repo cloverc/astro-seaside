@@ -35,7 +35,8 @@
 footer,
 [href="#main-content"],
 [class~="bg-stone-100"],
-[class~="bg-stone-200"] {
+[class~="bg-stone-200"],
+[class~="bg-muted"] {
   --focus-ring-color: var(--shn-color-bg-page);
 }
 
@@ -122,6 +123,9 @@ footer,
 }
 @utility bg-card {
   background-color: var(--shn-color-bg-card);
+}
+@utility bg-muted {
+  background-color: var(--shn-color-bg-muted);
 }
 @utility bg-secondary {
   background-color: var(--shn-color-secondary);

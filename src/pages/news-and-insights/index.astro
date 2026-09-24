@@ -3,6 +3,7 @@ import PageLayout from "../../layouts/PageLayout.astro";
 import HeroText from "../../components/HeroText.astro";
 import { useStoryblokApi } from "@storyblok/astro";
 import { getStoryblokVersion } from "../../utils/storyblok";
+import { Icon } from "astro-icon/components";
 
 const storyblokApi = useStoryblokApi();
 const version = getStoryblokVersion(Astro.request);
@@ -128,7 +129,7 @@ const metadata = {
                     <img
                       src={post.image}
                       alt=""
-                      class="w-full h-44 object-cover block"
+                      class="w-full h-44 object-cover block outline outline-1 outline-black/10"
                       loading="lazy"
                       decoding="async"
                     />
@@ -136,12 +137,12 @@ const metadata = {
                     <div class="w-full h-44" style="background-color:#dce8f0" />
                   )}
                   <div class="p-5 pb-6 flex flex-col flex-1">
-                    <p class="text-accent font-semibold text-xs tracking-[.08em] uppercase mb-3">
-                      {post.kind === "news" ? "NEWS" : "INSIGHT"}
+                    <p class="flex items-center gap-2 text-xs font-bold uppercase tracking-wide mb-3">
+                      <span class="rounded px-2 py-1 bg-card text-white">
+                        {post.kind === "news" ? "News" : "Insight"}
+                      </span>
                       {post.date && (
-                        <span class="text-gray-600 font-semibold ml-1">
-                          · {post.date}
-                        </span>
+                        <span class="text-[#55555f]">{post.date}</span>
                       )}
                     </p>
                     {post.slug ? (
@@ -150,7 +151,7 @@ const metadata = {
                         class="group"
                       >
                         <h2
-                          class="font-heading font-medium text-xl text-dark leading-snug mb-2 group-hover:underline decoration-1"
+                          class="font-heading font-semibold text-[22px] leading-tight text-[var(--shn-color-bg-page)] mb-2 group-hover:underline decoration-1"
                           style="text-wrap:pretty"
                         >
                           {post.title}
@@ -158,25 +159,35 @@ const metadata = {
                       </a>
                     ) : (
                       <h2
-                        class="font-heading font-medium text-xl text-dark leading-snug mb-2"
+                        class="font-heading font-semibold text-[22px] leading-tight text-[var(--shn-color-bg-page)] mb-2"
                         style="text-wrap:pretty"
                       >
                         {post.title}
                       </h2>
                     )}
-                    <p class="text-sm text-gray-600 leading-relaxed flex-1 mb-4">
+                    <p class="text-[#2a2a30] leading-relaxed line-clamp-3 mb-4">
                       {post.summary}
                     </p>
                     {post.slug ? (
                       <a
                         href={`/news-and-insights/${post.slug}/`}
-                        class="font-semibold text-sm text-blue-700 hover:underline"
+                        class="mt-auto pt-2 self-start inline-flex items-center gap-2 font-semibold min-h-11 text-[var(--shn-color-primary)] hover:text-[var(--shn-color-bg-page)] hover:underline active:underline"
                       >
-                        Read more &rarr;
+                        Read more<span class="sr-only">: {post.title}</span>
+                        <Icon
+                          name="tabler:arrow-right"
+                          class="w-[18px] h-[18px]"
+                          aria-hidden="true"
+                        />
                       </a>
                     ) : (
-                      <span class="font-semibold text-sm text-blue-700">
-                        Read more &rarr;
+                      <span class="inline-flex items-center gap-2 font-semibold min-h-11 text-[var(--shn-color-primary)]">
+                        Read more
+                        <Icon
+                          name="tabler:arrow-right"
+                          class="w-[18px] h-[18px]"
+                          aria-hidden="true"
+                        />
                       </span>
                     )}
                   </div>

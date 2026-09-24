@@ -1,0 +1,55 @@
+---
+import { useStoryblokApi } from "@storyblok/astro";
+import RelatedContent from "../components/RelatedContent.astro";
+import { getStoryblokVersion } from "../utils/storyblok";
+import { kindFromStory } from "../utils/relatedContent";
+
+const { blok } = Astro.props;
+
+const storyblokApi = useStoryblokApi();
+const version = getStoryblokVersion(Astro.request);
+
+let articles: any[] = [];
+try {
+  const { data } = await storyblokApi.get("cdn/stories", {
+    version,
+    starts_with: "news-and-insights/",
+    filter_query: {
+      component: { in: "article" },
+    },
+    sort_by: "content.published_date:desc",
+    per_page: 3,
+  });
+  articles = data.stories ?? [];
+} catch {
+  // leave empty
+}
+
+const items = articles.map((story: any) => {
+  const c = story.content;
+  return {
+    kind: kindFromStory(story),
+    title: c.title ?? "",
+    summary: c.summary ?? "",
+    meta: c.published_date
+      ? new Date(c.published_date).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      : "",
+    href: `/news-and-insights/${story.slug}/`,
+    image: {
+      filename: c.hero_image?.filename ?? "",
+      alt: c.hero_image?.alt ?? "",
+    },
+  };
+});
+---
+
+<RelatedContent
+  context="latest-news"
+  theme="dark"
+  heading={blok.heading || undefined}
+  items={items}
+/>

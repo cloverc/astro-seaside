@@ -3,6 +3,8 @@ import PageLayout from "../../layouts/PageLayout.astro";
 import { Icon } from "astro-icon/components";
 import { useStoryblokApi, renderRichText } from "@storyblok/astro";
 import { getStoryblokVersion } from "../../utils/storyblok";
+import RelatedContent from "../../components/RelatedContent.astro";
+import { kindFromStory } from "../../utils/relatedContent";
 
 const { slug } = Astro.params;
 
@@ -26,6 +28,61 @@ try {
 
 const blok = story.content;
 const isNewsArticle = blok.article_type === "news";
+
+// Related reading — same topic, excluding this story, falling back to
+// latest others when no topic overlap exists.
+let relatedStories: any[] = [];
+try {
+  const topics: string[] = blok.topics ?? [];
+  if (topics.length > 0) {
+    const { data } = await storyblokApi.get("cdn/stories", {
+      version,
+      starts_with: "news-and-insights/",
+      filter_query: {
+        component: { in: "article" },
+        topics: { any_in_array: topics.join(",") },
+      },
+      excluding_ids: String(story.id),
+      sort_by: "content.published_date:desc",
+      per_page: 2,
+    });
+    relatedStories = data.stories ?? [];
+  }
+  if (relatedStories.length === 0) {
+    const { data } = await storyblokApi.get("cdn/stories", {
+      version,
+      starts_with: "news-and-insights/",
+      filter_query: { component: { in: "article" } },
+      excluding_ids: String(story.id),
+      sort_by: "content.published_date:desc",
+      per_page: 2,
+    });
+    relatedStories = data.stories ?? [];
+  }
+} catch {
+  // leave empty — RelatedContent hides itself with no items
+}
+
+const relatedItems = relatedStories.map((s: any) => {
+  const c = s.content;
+  return {
+    kind: kindFromStory(s),
+    title: c.title ?? "",
+    summary: c.summary ?? "",
+    meta: c.published_date
+      ? new Date(c.published_date).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
+      : "",
+    href: `/news-and-insights/${s.slug}/`,
+    image: {
+      filename: c.hero_image?.filename ?? "",
+      alt: c.hero_image?.alt ?? "",
+    },
+  };
+});
 
 // Author — SDK inlines resolved relation into blok.author as a story object
 const authorStory =
@@ -299,4 +356,12 @@ const articleSchema: Record<string, unknown> = {
       }
     </div>
   </div>
+
+  <RelatedContent
+    context="article"
+    theme="light"
+    items={relatedItems}
+    viewAll={false}
+    maxWidth="max-w-3xl"
+  />
 </PageLayout>
