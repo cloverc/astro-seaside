@@ -1,0 +1,98 @@
+---
+import { Icon } from "astro-icon/components";
+import type { RelatedContentKind } from "../utils/relatedContent";
+
+interface RelatedItem {
+  kind: RelatedContentKind;
+  title: string;
+  summary: string;
+  meta: string;
+  href: string;
+  image: { filename: string; alt: string };
+}
+
+interface Props {
+  item: RelatedItem;
+  theme: "dark" | "light";
+}
+
+const { item, theme } = Astro.props;
+
+const badgeLabel: Record<RelatedContentKind, string> = {
+  news: "News",
+  insight: "Insight",
+  resource: "Resource",
+  event: "Event",
+};
+
+const ctaText: Record<RelatedContentKind, string> = {
+  news: "Read more",
+  insight: "Read more",
+  resource: "View resource",
+  event: "See event",
+};
+
+const cardBg =
+  theme === "dark"
+    ? "bg-card"
+    : "bg-white border border-[var(--shn-color-bg-page)]/15";
+const badgeClass =
+  theme === "dark" ? "bg-page text-white" : "bg-card text-white";
+const metaText = theme === "dark" ? "text-white/85" : "text-[#55555f]";
+const titleText =
+  theme === "dark" ? "text-white" : "text-[var(--shn-color-bg-page)]";
+const summaryText = theme === "dark" ? "text-white/90" : "text-dark";
+const linkText =
+  theme === "dark"
+    ? "text-white hover:text-secondary hover:underline active:underline"
+    : "text-[var(--shn-color-primary)] hover:text-[var(--shn-color-bg-page)] hover:underline active:underline";
+---
+
+<article class={`rounded overflow-hidden flex flex-col ${cardBg}`}>
+  <img
+    class="h-56 w-full object-cover outline outline-1 outline-black/10"
+    src={`${item.image.filename}/m/400x224/filters:quality(70):format(webp)`}
+    srcset={`
+      ${item.image.filename}/m/400x224/filters:quality(70):format(webp) 400w,
+      ${item.image.filename}/m/500x281/filters:quality(70):format(webp) 500w,
+      ${item.image.filename}/m/800x450/filters:quality(70):format(webp) 800w
+    `}
+    sizes="auto, (max-width: 767px) 100vw, (max-width: 1023px) 50vw, 400px"
+    width="400"
+    height="224"
+    loading="lazy"
+    decoding="async"
+    alt=""
+  />
+  <div class="p-6 flex flex-col gap-3 flex-1">
+    <div
+      class={`flex items-center gap-2 text-xs font-bold uppercase tracking-wide ${metaText}`}
+    >
+      <span class={`rounded px-2 py-1 ${badgeClass}`}
+        >{badgeLabel[item.kind]}</span
+      >
+      <span>{item.meta}</span>
+    </div>
+    <a href={item.href} class="group">
+      <h3
+        class={`font-heading font-semibold text-[22px] leading-tight [text-wrap:pretty] group-hover:underline decoration-1 ${titleText}`}
+      >
+        {item.title}
+      </h3>
+    </a>
+    <p class={`leading-relaxed line-clamp-2 ${summaryText}`}>
+      {item.summary}
+    </p>
+    <a
+      href={item.href}
+      class={`mt-auto pt-2 self-start inline-flex items-center gap-2 font-semibold min-h-11 ${linkText}`}
+    >
+      {ctaText[item.kind]}<span class="sr-only">: {item.title}</span>
+      <Icon
+        name="tabler:arrow-right"
+        class="w-[18px] h-[18px]"
+        aria-hidden="true"
+      />
+    </a>
+  </div>
+</article>

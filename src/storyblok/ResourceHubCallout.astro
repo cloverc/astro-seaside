@@ -4,6 +4,8 @@ import { Icon } from "astro-icon/components";
 import Link from "../components/Link.astro";
 
 const { blok } = Astro.props;
+const resourceHubEnabled =
+  import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED === "true";
 
 function audienceLink(name: string): string {
   return `/resource-hub/?audience=${encodeURIComponent(name)}`;
@@ -34,50 +36,46 @@ const columns = [
 ];
 ---
 
-<section
-  {...storyblokEditable(blok)}
-  id="resource-hub-callout"
-  style="background-color: #F5F5F4"
->
-  <div class="max-w-7xl mx-auto px-6 py-16">
-    <h2
-      class="text-2xl md:text-3xl lg:text-4xl font-heading font-semibold text-dark mb-4"
+{
+  resourceHubEnabled && (
+    <section
+      {...storyblokEditable(blok)}
+      id="resource-hub-callout"
+      style="background-color: #F5F5F4"
     >
-      {blok.heading}
-    </h2>
-    <p class="text-dark mb-10 lg:text-lg lg:whitespace-nowrap">
-      {blok.subtitle}
-    </p>
+      <div class="max-w-7xl mx-auto px-6 lg:px-28 py-16">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-heading font-semibold text-[var(--shn-color-bg-page)] mb-4">
+          {blok.heading}
+        </h2>
+        <p class="text-dark mb-10 lg:truncate">{blok.subtitle}</p>
 
-    <div
-      class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-300 gap-8 lg:gap-0 lg:mx-6 mb-10"
-    >
-      {
-        columns.map((col) => (
-          <div class="flex flex-col lg:px-8 first:lg:pl-0 last:lg:pr-0 pt-8 max-lg:pb-8 max-lg:first:pt-0 lg:py-6">
-            <Icon
-              name={col.icon}
-              class="w-16 h-16 text-blue-900 mb-4"
-              aria-hidden="true"
-            />
-            <p class="text-dark leading-relaxed mb-4">{col.text}</p>
-            <a
-              href={col.href}
-              data-audience-link={col.audience}
-              class="font-semibold text-blue-900 hover:underline mt-auto inline-flex items-center gap-1.5"
-            >
-              {col.linkLabel}
+        <div class="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-gray-300 gap-8 lg:gap-0 mb-10">
+          {columns.map((col) => (
+            <div class="flex flex-col lg:px-8 first:lg:pl-0 last:lg:pr-0 pt-8 max-lg:pb-8 max-lg:first:pt-0 lg:py-6">
               <Icon
-                name="tabler:arrow-right"
-                class="w-4 h-4"
+                name={col.icon}
+                class="w-16 h-16 text-blue-900 mb-4"
                 aria-hidden="true"
               />
-            </a>
-          </div>
-        ))
-      }
-    </div>
+              <p class="text-dark leading-relaxed mb-4">{col.text}</p>
+              <a
+                href={col.href}
+                data-audience-link={col.audience}
+                class="font-semibold text-blue-900 hover:underline mt-auto inline-flex items-center gap-1.5 min-h-11"
+              >
+                {col.linkLabel}
+                <Icon
+                  name="tabler:arrow-right"
+                  class="w-4 h-4"
+                  aria-hidden="true"
+                />
+              </a>
+            </div>
+          ))}
+        </div>
 
-    <Link href="/resource-hub/">{blok.cta_label}</Link>
-  </div>
-</section>
+        <Link href="/resource-hub/">{blok.cta_label}</Link>
+      </div>
+    </section>
+  )
+}

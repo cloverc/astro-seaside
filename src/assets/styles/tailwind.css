@@ -35,7 +35,8 @@
 footer,
 [href="#main-content"],
 [class~="bg-stone-100"],
-[class~="bg-stone-200"] {
+[class~="bg-stone-200"],
+[class~="bg-muted"] {
   --focus-ring-color: var(--shn-color-bg-page);
 }
 
@@ -123,6 +124,9 @@ footer,
 @utility bg-card {
   background-color: var(--shn-color-bg-card);
 }
+@utility bg-muted {
+  background-color: var(--shn-color-bg-muted);
+}
 @utility bg-secondary {
   background-color: var(--shn-color-secondary);
 }
@@ -199,7 +203,7 @@ blockquote {
 .article-body {
   font-size: 1rem;
   line-height: 1.72;
-  color: #2a2a30;
+  color: var(--shn-color-text-dark);
 }
 
 .article-body img {

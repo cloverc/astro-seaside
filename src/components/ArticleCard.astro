@@ -3,7 +3,7 @@ import Link from "../components/Link.astro";
 const { event, slug } = Astro.props;
 ---
 
-<article class="column bg-card rounded">
+<article class="column bg-card rounded flex flex-col h-full w-full">
   <img
     class="object-cover w-full h-56 mb-2 rounded-t shadow-lg bg-gray-400 outline outline-1 outline-black/10"
     src={`${event.image.filename}/m/400x224/filters:quality(70):format(webp)`}
@@ -19,7 +19,7 @@ const { event, slug } = Astro.props;
     decoding="async"
     alt={event.image.alt}
   />
-  <div class="p-6">
+  <div class="p-6 flex flex-col flex-1">
     <h3 class="text-xl md:text-2xl font-heading font-semibold">
       {event.title}
     </h3>
