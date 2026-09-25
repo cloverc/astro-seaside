@@ -6,6 +6,7 @@ import {
   getStoryblokVersion,
   fetchDatasourceEntries,
 } from "../../utils/storyblok";
+import { resourceTypeDotColor } from "../../utils/resourceType";
 
 if (import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED !== "true") {
   return Astro.redirect("/404");
@@ -35,12 +36,6 @@ function dsLabel(entries: any[], value: string): string {
   const v = value.trim();
   return entries.find((e) => e.value === v)?.name ?? v;
 }
-
-const badgeColors: Record<string, string> = {
-  "General Public": "bg-teal-600",
-  "Heritage Professionals": "bg-blue-600",
-  "Academics & Researchers": "bg-purple-700",
-};
 
 function getFormatLabel(contentBlocks: any[]): string {
   const extMap: Record<string, string> = {
@@ -269,10 +264,6 @@ function ctaLabel(_format: string) {
                             data-rh-filter="audience"
                             class="w-4 h-4 rounded accent-blue-700 shrink-0"
                           />
-                          <span
-                            class={`w-2 h-2 rounded-full shrink-0 ${badgeColors[aud] ?? "bg-gray-400"}`}
-                            aria-hidden="true"
-                          />
                           {aud}
                         </label>
                       </li>
@@ -355,6 +346,10 @@ function ctaLabel(_format: string) {
                             data-rh-filter="resourceType"
                             class="w-4 h-4 rounded accent-blue-700 shrink-0"
                           />
+                          <span
+                            class={`w-2 h-2 rounded-full shrink-0 ${resourceTypeDotColor(rt)}`}
+                            aria-hidden="true"
+                          />
                           {rt}
                         </label>
                       </li>
@@ -397,7 +392,11 @@ function ctaLabel(_format: string) {
                         {(r.resourceType || r.format) && (
                           <div class="flex flex-wrap gap-2 mb-5">
                             {r.resourceType && (
-                              <span class="text-xs font-semibold uppercase tracking-wider bg-stone-100 text-gray-600 px-2.5 py-1 rounded-full">
+                              <span class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider bg-stone-100 text-gray-600 px-2.5 py-1 rounded-full">
+                                <span
+                                  class={`w-1.5 h-1.5 rounded-full shrink-0 ${resourceTypeDotColor(r.resourceType)}`}
+                                  aria-hidden="true"
+                                />
                                 {r.resourceType}
                               </span>
                             )}
