@@ -9,28 +9,35 @@ const { blok } = Astro.props;
 const storyblokApi = useStoryblokApi();
 const version = getStoryblokVersion(Astro.request);
 
-let articles: any[] = [];
+// Resource items 404 until Resource Hub ships, so only mix them into
+// What's New once the flag that gates their pages is actually on.
+const resourceHubEnabled =
+  import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED === "true";
+const components = resourceHubEnabled ? "article,resource_item" : "article";
+
+let stories: any[] = [];
 try {
   const { data } = await storyblokApi.get("cdn/stories", {
     version,
-    starts_with: "news-and-insights/",
     filter_query: {
-      component: { in: "article" },
+      component: { in: components },
     },
     sort_by: "content.published_date:desc",
     per_page: 3,
   });
-  articles = data.stories ?? [];
+  stories = data.stories ?? [];
 } catch {
   // leave empty
 }
 
-const items = articles.map((story: any) => {
+const items = stories.map((story: any) => {
   const c = story.content;
+  const kind = kindFromStory(story);
+  const isResource = kind === "resource";
   return {
-    kind: kindFromStory(story),
+    kind,
     title: c.title ?? "",
-    summary: c.summary ?? "",
+    summary: (isResource ? c.description : c.summary) ?? "",
     meta: c.published_date
       ? new Date(c.published_date).toLocaleDateString("en-GB", {
           day: "numeric",
@@ -38,10 +45,12 @@ const items = articles.map((story: any) => {
           year: "numeric",
         })
       : "",
-    href: `/news-and-insights/${story.slug}/`,
+    href: isResource
+      ? `/resource-hub/${story.slug}`
+      : `/news-and-insights/${story.slug}/`,
     image: {
-      filename: c.hero_image?.filename ?? "",
-      alt: c.hero_image?.alt ?? "",
+      filename: (isResource ? c.featured_image : c.hero_image)?.filename ?? "",
+      alt: (isResource ? c.featured_image : c.hero_image)?.alt ?? "",
     },
   };
 });
@@ -50,6 +59,6 @@ const items = articles.map((story: any) => {
 <RelatedContent
   context="latest-news"
   theme="dark"
-  heading={blok.heading || undefined}
+  heading={blok.heading || "What's New"}
   items={items}
 />
