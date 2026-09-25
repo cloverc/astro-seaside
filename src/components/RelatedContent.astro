@@ -10,6 +10,8 @@ interface RelatedItem {
   meta: string;
   href: string;
   image: { filename: string; alt: string };
+  badgeColor?: string;
+  badgeLabel?: string;
 }
 
 type Context = "article" | "resource" | "event" | "latest-news";

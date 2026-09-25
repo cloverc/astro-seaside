@@ -8,6 +8,7 @@ import {
 } from "../../utils/storyblok";
 import RelatedContent from "../../components/RelatedContent.astro";
 import { kindFromStory } from "../../utils/relatedContent";
+import { resourceTypeDotColor } from "../../utils/resourceType";
 
 if (import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED !== "true") {
   return Astro.redirect("/404");
@@ -171,20 +172,16 @@ const relatedItems = related.map((s: any) => {
     kind: kindFromStory(s),
     title: rc.title ?? "",
     summary: rc.description ?? "",
-    meta: [relatedTypeLabel, relatedFormat].filter(Boolean).join(" · "),
+    meta: relatedFormat,
     href: `/resource-hub/${s.slug}`,
     image: {
       filename: rc.featured_image?.filename ?? "",
       alt: rc.featured_image?.alt ?? "",
     },
+    badgeColor: resourceTypeDotColor(relatedTypeLabel),
+    badgeLabel: relatedTypeLabel || undefined,
   };
 });
-
-const audienceDotColors: Record<string, string> = {
-  "General Public": "bg-teal-600",
-  "Heritage Professionals": "bg-blue-600",
-  "Academics & Researchers": "bg-purple-700",
-};
 
 const metadata = {
   siteTitle: "Seaside Heritage Network",
@@ -555,6 +552,23 @@ const resourceSchema: Record<string, unknown> = {
             }
 
             {
+              resourceTypeLabel && (
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
+                    Resource type
+                  </p>
+                  <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-200 text-dark">
+                    <span
+                      class={`w-2 h-2 rounded-full shrink-0 ${resourceTypeDotColor(resourceTypeLabel)}`}
+                      aria-hidden="true"
+                    />
+                    {resourceTypeLabel}
+                  </span>
+                </div>
+              )
+            }
+
+            {
               audience.length > 0 && (
                 <div>
                   <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
@@ -562,11 +576,7 @@ const resourceSchema: Record<string, unknown> = {
                   </p>
                   <div class="flex flex-wrap gap-2">
                     {audience.map((aud) => (
-                      <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-200 text-dark">
-                        <span
-                          class={`w-2 h-2 rounded-full shrink-0 ${audienceDotColors[aud] ?? "bg-gray-400"}`}
-                          aria-hidden="true"
-                        />
+                      <span class="px-3 py-1.5 rounded-lg text-sm font-medium bg-gray-200 text-dark">
                         {aud}
                       </span>
                     ))}

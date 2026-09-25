@@ -9,6 +9,8 @@ interface RelatedItem {
   meta: string;
   href: string;
   image: { filename: string; alt: string };
+  badgeColor?: string;
+  badgeLabel?: string;
 }
 
 interface Props {
@@ -18,7 +20,7 @@ interface Props {
 
 const { item, theme } = Astro.props;
 
-const badgeLabel: Record<RelatedContentKind, string> = {
+const badgeLabelMap: Record<RelatedContentKind, string> = {
   news: "News",
   insight: "Insight",
   resource: "Resource",
@@ -36,8 +38,8 @@ const cardBg =
   theme === "dark"
     ? "bg-card"
     : "bg-white border border-[var(--shn-color-bg-page)]/15";
-const badgeClass =
-  theme === "dark" ? "bg-page text-white" : "bg-card text-white";
+const badgeBg = item.badgeColor ?? (theme === "dark" ? "bg-page" : "bg-card");
+const badgeClass = `${badgeBg} text-white`;
 const metaText = theme === "dark" ? "text-white/85" : "text-[#55555f]";
 const titleText =
   theme === "dark" ? "text-white" : "text-[var(--shn-color-bg-page)]";
@@ -69,7 +71,7 @@ const linkText =
       class={`flex items-center gap-2 text-xs font-bold uppercase tracking-wide ${metaText}`}
     >
       <span class={`rounded px-2 py-1 ${badgeClass}`}
-        >{badgeLabel[item.kind]}</span
+        >{item.badgeLabel ?? badgeLabelMap[item.kind]}</span
       >
       <span>{item.meta}</span>
     </div>
