@@ -6,6 +6,8 @@ import {
   getStoryblokVersion,
   fetchDatasourceEntries,
 } from "../../utils/storyblok";
+import RelatedContent from "../../components/RelatedContent.astro";
+import { kindFromStory } from "../../utils/relatedContent";
 
 if (import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED !== "true") {
   return Astro.redirect("/404");
@@ -129,6 +131,8 @@ function ctaLabel(format: string): string {
 }
 
 // --- Related resources ---
+// Same topic, excluding this story, falling back to latest others when no
+// topic overlap exists (mirrors news-and-insights/[slug].astro).
 let related: any[] = [];
 try {
   const { data: relatedData } = await storyblokApi.get("cdn/stories", {
@@ -136,16 +140,45 @@ try {
     starts_with: "resource-hub/",
     per_page: 100,
   });
-  related = (relatedData.stories ?? [])
-    .filter((s: any) => {
-      if (s.slug === slug) return false;
-      const storyTopics: string[] = s.content.topics ?? [];
-      return storyTopics.some((t) => topicKeys.includes(t));
-    })
+  const otherStories = (relatedData.stories ?? []).filter(
+    (s: any) => s.slug !== slug,
+  );
+  const topicMatches = otherStories.filter((s: any) => {
+    const storyTopics: string[] = s.content.topics ?? [];
+    return storyTopics.some((t) => topicKeys.includes(t));
+  });
+  related = (topicMatches.length > 0 ? topicMatches : otherStories)
+    .sort(
+      (a: any, b: any) =>
+        new Date(b.content.published_date ?? b.first_published_at).getTime() -
+        new Date(a.content.published_date ?? a.first_published_at).getTime(),
+    )
     .slice(0, 3);
 } catch {
   // no related
 }
+
+const relatedItems = related.map((s: any) => {
+  const rc = s.content;
+  const relatedFormat = ((rc.content as any[]) ?? [])
+    .map(getFormatLabel)
+    .filter(Boolean)
+    .join(" · ");
+  const relatedTypeLabel = rc.resource_type
+    ? dsLabel(dsResourceType, rc.resource_type)
+    : "";
+  return {
+    kind: kindFromStory(s),
+    title: rc.title ?? "",
+    summary: rc.description ?? "",
+    meta: [relatedTypeLabel, relatedFormat].filter(Boolean).join(" · "),
+    href: `/resource-hub/${s.slug}`,
+    image: {
+      filename: rc.featured_image?.filename ?? "",
+      alt: rc.featured_image?.alt ?? "",
+    },
+  };
+});
 
 const audienceDotColors: Record<string, string> = {
   "General Public": "bg-teal-600",
@@ -605,60 +638,11 @@ const resourceSchema: Record<string, unknown> = {
     </div>
   </section>
 
-  <!-- More like this -->
-  {
-    related.length > 0 && (
-      <section class="py-16" style="background-color: rgb(30 64 175)">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6">
-          <h2 class="text-3xl font-heading font-bold text-white mb-8">
-            More like this
-          </h2>
-          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {related.map((r) => {
-              const rc = r.content;
-              const relatedFormat = ((rc.content as any[]) ?? [])
-                .map(getFormatLabel)
-                .filter(Boolean)
-                .join(" · ");
-              const relatedTypeLabel = rc.resource_type
-                ? dsLabel(dsResourceType, rc.resource_type)
-                : "";
-              const relatedFirstType =
-                (rc.content as any[])?.[0]?.component ?? "";
-              const relatedCtaLabel =
-                relatedFirstType === "content_video" ? "Watch" : "Download";
-              return (
-                <li>
-                  <article class="bg-white rounded border border-gray-400 p-5 flex flex-col h-full">
-                    <p class="text-[0.65rem] font-semibold uppercase tracking-wider mb-2 text-gray-600">
-                      {[relatedTypeLabel, relatedFormat]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </p>
-                    <a
-                      href={`/resource-hub/${r.slug}`}
-                      class="group flex-1 mb-3"
-                    >
-                      <h3 class="text-base font-heading font-bold text-dark leading-snug group-hover:underline decoration-1 mb-2">
-                        {rc.title}
-                      </h3>
-                      <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                        {rc.description}
-                      </p>
-                    </a>
-                    <a
-                      href={`/resource-hub/${r.slug}`}
-                      class="btn-primary text-white mt-auto self-start transform hover:-translate-y-0.5 hover:shadow-primary/30"
-                    >
-                      {relatedCtaLabel}
-                    </a>
-                  </article>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </section>
-    )
-  }
+  <RelatedContent
+    context="resource"
+    theme="light"
+    items={relatedItems}
+    maxWidth="max-w-6xl"
+    padding="px-4 sm:px-6"
+  />
 </PageLayout>
