@@ -1,0 +1,260 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import HeroText from "../components/HeroText.astro";
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: "Privacy Policy",
+  description:
+    "How the Seaside Heritage Network collects, uses and looks after your personal information.",
+};
+
+const lastUpdated = "2026-09-26";
+const lastUpdatedLabel = "26 September 2026";
+
+const proseClass =
+  "prose prose-headings:font-heading prose-headings:font-medium prose-h2:text-3xl prose-h2:text-[var(--shn-color-bg-page)] prose-h2:scroll-mt-24 prose-p:text-gray-700 prose-li:text-gray-700 prose-ul:list-disc prose-ul:list-outside prose-ul:pl-5 [&_li::marker]:text-gray-700 prose-a:text-[var(--shn-color-primary)] prose-a:underline-offset-2 hover:prose-a:text-accent max-w-3xl";
+---
+
+<PageLayout metadata={metadata}>
+  <HeroText
+    title="Privacy Policy"
+    subtitle="How the Seaside Heritage Network collects, uses and looks after your personal information."
+  />
+
+  <section class="bg-stone-100 text-dark">
+    <div
+      class="mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:flex lg:justify-center"
+    >
+      <article class={proseClass}>
+        <h2 id="who-we-are">Who we are</h2>
+        <p>
+          The Seaside Heritage Network is a charity (registered as a Foundation
+          CIO with the Charity Commission for England and Wales, charity number
+          1216037) that raises awareness and understanding of the heritage
+          associated with the UK seaside holiday.
+        </p>
+        <p>
+          For the purposes of data protection law, the Seaside Heritage Network
+          is the "data controller" of the personal information described in this
+          policy. If you have any questions about this policy or how we handle
+          your data, you can contact us using the details at the bottom of this
+          page.
+        </p>
+
+        <h2 id="what-we-collect">What we collect</h2>
+        <p>
+          We collect very little personal information, and only when you choose
+          to give it to us:
+        </p>
+        <ul>
+          <li>
+            <strong>Newsletter sign-up:</strong> if you subscribe to our newsletter,
+            we collect your email address (and name, if you give it) through Brevo,
+            the email platform we use to send it.
+          </li>
+          <li>
+            <strong>Event bookings:</strong> bookings for our events are handled by
+            TicketSource, which collects your name, email address and booking details.
+            If you choose to join our mailing list when booking, we add your email
+            address to our newsletter in Brevo.
+          </li>
+          <li>
+            <strong>Getting in touch:</strong> if you email us, we'll see your email
+            address and whatever you choose to tell us in your message.
+          </li>
+          <li>
+            <strong>Website visits:</strong> our website host keeps standard server
+            logs, which include your IP address, to keep the site secure and working
+            properly. See "Cookies and analytics" below for how we measure visits.
+          </li>
+        </ul>
+        <p>
+          We don't ask visitors to create an account, and there's nowhere on the
+          site to leave public comments.
+        </p>
+
+        <h2 id="lawful-basis">Lawful basis</h2>
+        <p>
+          Under UK data protection law, we rely on the following grounds to use
+          your information:
+        </p>
+        <ul>
+          <li>
+            <strong>Consent</strong> – for sending you our newsletter, including if
+            you opt in when booking an event. You can withdraw this at any time by
+            unsubscribing.
+          </li>
+          <li>
+            <strong>Contract</strong> – for processing your event booking.
+          </li>
+          <li>
+            <strong>Legitimate interests</strong> – for replying to enquiries you
+            send us, and for keeping the website running securely.
+          </li>
+        </ul>
+
+        <h2 id="cookies-and-analytics">Cookies and analytics</h2>
+        <p>Our website doesn't set any cookies of its own.</p>
+        <p>
+          We use <a href="https://plausible.io/" rel="noopener noreferrer"
+            >Plausible Analytics</a
+          >, a privacy-friendly analytics tool, to understand how people use our
+          site. Plausible doesn't use cookies and doesn't store any personal
+          information – it only records anonymous, aggregated statistics such as
+          page views, how people found the site, and which country they're
+          visiting from. No individual visitor can be identified from this data.
+          You can read more in{" "}
+          <a href="https://plausible.io/data-policy" rel="noopener noreferrer"
+            >Plausible's data policy</a
+          >.
+        </p>
+        <p>
+          Video content from YouTube on our Resource Hub is shown as a static
+          thumbnail – nothing is loaded from YouTube until you press play. Once
+          you do, the video loads in "privacy-enhanced mode" (via
+          youtube-nocookie.com), which reduces, but doesn't fully eliminate, the
+          cookies Google may set. You can read more in{" "}
+          <a
+            href="https://policies.google.com/privacy"
+            rel="noopener noreferrer">Google's privacy policy</a
+          >.
+        </p>
+        <p>
+          If we ever add anything else that sets cookies, we'll update this page
+          and ask for your consent first.
+        </p>
+
+        <h2 id="who-we-share-with">Who we share it with</h2>
+        <p>
+          We don't sell or rent your personal information. We only share it with
+          the organisations that help us run the services below:
+        </p>
+        <dl class="not-prose text-gray-700">
+          <div
+            class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
+          >
+            <dt class="font-semibold text-(--shn-color-bg-page)">Brevo</dt>
+            <dd>Sends our email newsletter to subscribers.</dd>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
+          >
+            <dt class="font-semibold text-(--shn-color-bg-page)">
+              TicketSource
+            </dt>
+            <dd>Handles event bookings.</dd>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
+          >
+            <dt class="font-semibold text-(--shn-color-bg-page)">Netlify</dt>
+            <dd>Hosts our website.</dd>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
+          >
+            <dt class="font-semibold text-(--shn-color-bg-page)">123 Reg</dt>
+            <dd>Hosts our email.</dd>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
+          >
+            <dt class="font-semibold text-(--shn-color-bg-page)">Plausible</dt>
+            <dd>Provides anonymous, cookie-free website analytics.</dd>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
+          >
+            <dt class="font-semibold text-(--shn-color-bg-page)">
+              YouTube (Google)
+            </dt>
+            <dd>Hosts our videos, only when you choose to play one.</dd>
+          </div>
+        </dl>
+        <p>
+          We may also need to share information if required to do so by law.
+        </p>
+
+        <h2 id="international-transfers">International transfers</h2>
+        <p>
+          Some of the services we use are based, or store data, outside the UK.
+          Where this happens, we rely on providers that protect your information
+          to UK standards, for example through the UK's adequacy regulations or
+          the UK International Data Transfer Agreement.
+        </p>
+
+        <h2 id="how-long-we-keep-it">How long we keep it</h2>
+        <ul>
+          <li>
+            <strong>Newsletter:</strong> we keep your details in Brevo for as long
+            as you stay subscribed. If you unsubscribe, your email address is kept
+            on a suppression list so we don't email you again by mistake.
+          </li>
+          <li>
+            <strong>Event bookings:</strong> TicketSource keeps booking records under{
+              " "
+            }
+            <a
+              href="https://www.ticketsource.com/kb/terms-of-use/customer-data-privacy-policy"
+              rel="noopener noreferrer">its own privacy policy</a
+            >.{" "}
+            <mark class="bg-pink-100 text-accent px-1 rounded not-prose">
+              [Confirm how long SHN keeps attendee lists after an event.]
+            </mark>
+          </li>
+          <li>
+            <strong>Enquiries:</strong> we keep emails only for as long as needed
+            to deal with your enquiry and any necessary follow-up.
+          </li>
+        </ul>
+
+        <h2 id="your-rights">Your rights</h2>
+        <p>Under UK data protection law, you have the right to:</p>
+        <ul>
+          <li>
+            ask us what personal information we hold about you, and get a copy
+            of it
+          </li>
+          <li>ask us to correct information that's inaccurate or incomplete</li>
+          <li>ask us to delete your information</li>
+          <li>ask us to restrict how we use your information</li>
+          <li>object to us using your information</li>
+          <li>withdraw your consent at any time, where we rely on consent</li>
+          <li>
+            ask for your information to be moved to another organisation, where
+            technically possible
+          </li>
+        </ul>
+        <p>
+          To exercise any of these rights, contact us using the details below.
+          If you're not happy with how we've handled your information, you also
+          have the right to complain to the{" "}
+          <a
+            href="https://ico.org.uk/make-a-complaint/"
+            rel="noopener noreferrer">Information Commissioner's Office (ICO)</a
+          >, the UK's data protection regulator.
+        </p>
+
+        <h2 id="changes">Changes to this policy</h2>
+        <p>
+          We review this policy regularly. When we change it, we'll update the
+          date below.
+        </p>
+        <p>
+          This policy was last updated on{" "}
+          <time datetime={lastUpdated}>{lastUpdatedLabel}</time>.
+        </p>
+
+        <h2 id="contact">How to contact us</h2>
+        <p>
+          If you have any questions about this policy or how we use your
+          information, email us at{" "}
+          <a href="mailto:info@seasideheritage.org.uk">
+            info@seasideheritage.org.uk
+          </a>.
+        </p>
+      </article>
+    </div>
+  </section>
+</PageLayout>
