@@ -9,6 +9,7 @@ import {
 import RelatedContent from "../../components/RelatedContent.astro";
 import { kindFromStory } from "../../utils/relatedContent";
 import { resourceTypeDotColor } from "../../utils/resourceType";
+import ResourceVideo from "../../components/ResourceVideo.astro";
 
 if (import.meta.env.PUBLIC_RESOURCE_HUB_ENABLED !== "true") {
   return Astro.redirect("/404");
@@ -456,16 +457,11 @@ const resourceSchema: Record<string, unknown> = {
                   <>
                     <div id={i === 0 ? "rh-video" : `rh-video-${i}`}>
                       {youtubeId ? (
-                        <div class="aspect-video rounded overflow-hidden bg-black">
-                          <iframe
-                            src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
-                            title={block.title ?? blok.title}
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowfullscreen
-                            class="w-full h-full"
-                            loading="lazy"
-                          />
-                        </div>
+                        <ResourceVideo
+                          youtubeId={youtubeId}
+                          title={block.title ?? blok.title}
+                          caption={block.title}
+                        />
                       ) : videoUrl ? (
                         <p class="text-sm text-gray-700">
                           <a

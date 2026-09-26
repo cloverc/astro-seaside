@@ -1,0 +1,76 @@
+---
+interface Props {
+  youtubeId: string;
+  title: string;
+  caption?: string;
+}
+
+const { youtubeId, title, caption } = Astro.props;
+---
+
+<figure class="aspect-video rounded overflow-hidden bg-black relative m-0">
+  <img
+    src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
+    alt=""
+    class="absolute inset-0 w-full h-full object-cover"
+    loading="lazy"
+    width="480"
+    height="360"
+  />
+  <div
+    class="absolute inset-x-4 bottom-4 mx-auto flex max-w-xs flex-col items-center gap-2 rounded-lg bg-black/80 px-4 py-3 text-center"
+  >
+    <button
+      type="button"
+      class="video-facade-play inline-flex items-center gap-2 rounded-full bg-white/90 hover:bg-white px-4 py-2 font-semibold text-black transition-colors cursor-pointer"
+      data-youtube-id={youtubeId}
+      aria-label={`Play video: ${title} (loads from YouTube)`}
+    >
+      <svg
+        class="w-4 h-4"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path d="M8 5v14l11-7z"></path>
+      </svg>
+      Play video
+    </button>
+    {caption && <p class="text-sm font-medium text-white">{caption}</p>}
+    <p class="text-xs text-white/80 leading-relaxed">
+      This video is hosted on YouTube. Playing it loads content from YouTube,
+      which may set cookies.{" "}
+      <a href="/privacy-policy/" class="text-white underline hover:no-underline"
+        >Privacy policy</a
+      >
+    </p>
+  </div>
+</figure>
+
+<script>
+  function initVideoFacades() {
+    document
+      .querySelectorAll<HTMLButtonElement>(
+        ".video-facade-play:not([data-bound])",
+      )
+      .forEach((button) => {
+        button.dataset.bound = "true";
+        button.addEventListener("click", () => {
+          const id = button.dataset.youtubeId;
+          const iframe = document.createElement("iframe");
+          iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+          iframe.title = button.getAttribute("aria-label") ?? "YouTube video";
+          iframe.allow =
+            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+          iframe.allowFullscreen = true;
+          iframe.className = "absolute inset-0 w-full h-full";
+          const figure = button.closest("figure");
+          figure?.replaceChildren(iframe);
+          iframe.focus();
+        });
+      });
+  }
+
+  initVideoFacades();
+  document.addEventListener("astro:page-load", initVideoFacades);
+</script>
