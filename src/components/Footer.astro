@@ -83,10 +83,15 @@ const { socialLinks = [], links = [], footNote = "" } = Astro.props;
 
   <!-- Copyright band -->
   <div class="bg-gray-100 border-t border-gray-200">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-4">
+    <div
+      class="mx-auto max-w-7xl px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-2"
+    >
       <p class="text-xs text-gray-600">
         <Fragment set:html={footNote} />
       </p>
+      <a href="/privacy-policy/" class="text-xs underline hover:decoration-2"
+        >Privacy policy</a
+      >
     </div>
   </div>
 </footer>
