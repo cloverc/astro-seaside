@@ -167,7 +167,9 @@ test.describe("resource hub page", () => {
       .getAttribute("data-resource-type");
     test.skip(!resourceType, "First card has no resource type set");
 
-    await page.getByRole("checkbox", { name: resourceType! }).check();
+    await page
+      .getByRole("checkbox", { name: resourceType!, exact: true })
+      .check();
 
     const visible = page.locator("[data-rh-card]:visible");
     expect(await visible.count()).toBeGreaterThan(0);
@@ -190,8 +192,10 @@ test.describe("resource hub page", () => {
       "First card missing audience or resource type",
     );
 
-    await page.getByRole("checkbox", { name: audience }).check();
-    await page.getByRole("checkbox", { name: resourceType! }).check();
+    await page.getByRole("checkbox", { name: audience, exact: true }).check();
+    await page
+      .getByRole("checkbox", { name: resourceType!, exact: true })
+      .check();
 
     for (const card of await page.locator("[data-rh-card]:visible").all()) {
       const aud = (await card.getAttribute("data-audience")) ?? "";
