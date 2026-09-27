@@ -54,9 +54,10 @@ function getFormatLabel(block: any): string {
   if (block.component === "content_video") return "Video";
   if (block.component === "content_article") return "Article";
   if (block.component === "content_file") {
-    const filename: string =
-      block.file?.filename ?? block.external_url?.url ?? "";
-    const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+    if (!block.file?.filename) {
+      return block.external_url?.url ? "Link" : "File";
+    }
+    const ext = block.file.filename.split(".").pop()?.toLowerCase() ?? "";
     const extMap: Record<string, string> = {
       pdf: "PDF",
       doc: "Word",
@@ -128,6 +129,7 @@ const resourceTypeLabel = blok.resource_type
 // --- CTA ---
 function ctaLabel(format: string): string {
   if (format === "Video") return "Watch video";
+  if (format === "Link") return "View resource";
   if (format) return `Download ${format}`;
   return "View resource";
 }
