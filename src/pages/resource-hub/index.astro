@@ -51,9 +51,10 @@ function getFormatLabel(contentBlocks: any[]): string {
     .map((block) => {
       if (block.component === "content_video") return "Video";
       if (block.component === "content_file") {
-        const filename: string =
-          block.file?.filename ?? block.external_url?.url ?? "";
-        const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+        if (!block.file?.filename) {
+          return block.external_url?.url ? "Link" : "File";
+        }
+        const ext = block.file.filename.split(".").pop()?.toLowerCase() ?? "";
         return extMap[ext] ?? "File";
       }
       return null;
