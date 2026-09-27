@@ -46,7 +46,7 @@ function dsLabel(entries: any[], value: string): string {
 const blok = story.content;
 
 // --- Content blocks ---
-const contentBlocks: any[] = blok.content ?? [];
+const contentBlocks: any[] = Array.isArray(blok.content) ? blok.content : [];
 
 function getFormatLabel(block: any): string {
   if (!block) return "";
@@ -151,8 +151,8 @@ try {
   related = (topicMatches.length > 0 ? topicMatches : otherStories)
     .sort(
       (a: any, b: any) =>
-        new Date(b.content.published_date ?? b.first_published_at).getTime() -
-        new Date(a.content.published_date ?? a.first_published_at).getTime(),
+        new Date(b.content.published_date || b.first_published_at).getTime() -
+        new Date(a.content.published_date || a.first_published_at).getTime(),
     )
     .slice(0, 3);
 } catch {
@@ -161,7 +161,7 @@ try {
 
 const relatedItems = related.map((s: any) => {
   const rc = s.content;
-  const relatedFormat = ((rc.content as any[]) ?? [])
+  const relatedFormat = (Array.isArray(rc.content) ? rc.content : [])
     .map(getFormatLabel)
     .filter(Boolean)
     .join(" · ");
@@ -259,7 +259,7 @@ const resourceSchema: Record<string, unknown> = {
     ...(blok.published_date || story.first_published_at
       ? {
           datePublished: new Date(
-            blok.published_date ?? story.first_published_at,
+            blok.published_date || story.first_published_at,
           ).toISOString(),
         }
       : {}),

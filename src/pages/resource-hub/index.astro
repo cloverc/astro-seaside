@@ -78,7 +78,7 @@ const resources = rawStories.map((story: any) => {
   const resourceTypeLabel = c.resource_type
     ? dsLabel(dsResourceType, c.resource_type)
     : "";
-  const format = getFormatLabel(c.content ?? []);
+  const format = getFormatLabel(Array.isArray(c.content) ? c.content : []);
   const thumbnail: string | null = c.featured_image?.filename
     ? `${c.featured_image.filename}/m/300x400/filters:quality(70):format(webp)`
     : null;
