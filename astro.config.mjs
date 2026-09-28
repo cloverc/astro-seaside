@@ -24,6 +24,13 @@ export default defineConfig({
     storyblok({
       accessToken: env.STORYBLOK_TOKEN,
       bridge: process.env.CONTEXT !== "production",
+      // This site renders every page per-request (no static generation), so
+      // the SDK's own in-memory response cache buys nothing and actively
+      // hurts: on a warm serverless function it can keep serving a story's
+      // published content from before it was last edited indefinitely,
+      // since cache invalidation only fires on requests that already miss
+      // the cache. Storyblok's CDN edge is already the cache we want here.
+      apiOptions: { cache: { type: "none" } },
       components: {
         // Content types
         page: "storyblok/Page",
