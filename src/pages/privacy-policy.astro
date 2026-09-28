@@ -9,8 +9,8 @@ const metadata = {
     "How the Seaside Heritage Network collects, uses and looks after your personal information.",
 };
 
-const lastUpdated = "2026-09-27";
-const lastUpdatedLabel = "27 September 2026";
+const lastUpdated = "2026-09-28";
+const lastUpdatedLabel = "28 September 2026";
 
 const proseClass =
   "prose prose-headings:font-heading prose-headings:font-medium prose-h2:text-3xl prose-h2:text-[var(--shn-color-bg-page)] prose-h2:scroll-mt-24 prose-p:text-gray-700 prose-li:text-gray-700 prose-ul:list-disc prose-ul:list-outside prose-ul:pl-5 [&_li::marker]:text-gray-700 prose-a:text-[var(--shn-color-primary)] prose-a:underline-offset-2 hover:prose-a:text-accent max-w-3xl";
@@ -57,7 +57,22 @@ const proseClass =
             <strong>Event bookings:</strong> bookings for our events are handled by
             TicketSource, which collects your name, email address and booking details.
             If you choose to join our mailing list when booking, we add your email
-            address to our newsletter in Brevo.
+            address to our newsletter in Brevo. For in-person events, we also keep
+            a register of attendees.
+          </li>
+          <li>
+            <strong>Bucket &amp; Spade List:</strong> nominations are anonymous and
+            don't collect any personal information. When you vote, we collect your
+            name and email address through Microsoft Forms, so we can make sure each
+            person votes only once. If you choose to join our mailing list when voting,
+            we add your email address to our newsletter in Brevo.
+          </li>
+          <li>
+            <strong>Photos and recordings at our events:</strong> we take photos and
+            video at our events, and record our online seminars. These may appear
+            on our website, YouTube channel, highlights videos and Resource Hub. If
+            you appear in them, they include your image and, for online seminars,
+            your name as shown on screen and anything you say.
           </li>
           <li>
             <strong>Getting in touch:</strong> if you email us, we'll see your email
@@ -82,17 +97,34 @@ const proseClass =
         <ul>
           <li>
             <strong>Consent</strong> – for sending you our newsletter, including if
-            you opt in when booking an event. You can withdraw this at any time by
-            unsubscribing.
+            you opt in when booking an event or voting in the Bucket &amp; Spade List.
+            You can withdraw this at any time by unsubscribing.
           </li>
           <li>
             <strong>Contract</strong> – for processing your event booking.
           </li>
           <li>
-            <strong>Legitimate interests</strong> – for replying to enquiries you
-            send us, and for keeping the website running securely.
+            <strong>Legitimate interests</strong> – for replying to enquiries, keeping
+            the website running securely, running the Bucket &amp; Spade List vote
+            fairly, and recording and sharing our events to promote our work and share
+            seaside heritage.
           </li>
         </ul>
+
+        <h2 id="photos-and-recordings">Photos and recordings at our events</h2>
+        <p>
+          We'll always let you know when an event is being photographed or
+          recorded. At online seminars, you can keep your camera off and change
+          your display name if you'd prefer not to appear. At in-person events,
+          let one of our team know if you'd rather not be photographed.
+        </p>
+        <p>
+          If you appear in a photo or video we've published and would like it
+          removed, email us at{" "}
+          <a href="mailto:info@seasideheritage.org.uk">
+            info@seasideheritage.org.uk
+          </a> and we'll take it down or edit it where we can.
+        </p>
 
         <h2 id="cookies-and-analytics">Cookies and analytics</h2>
         <p>Our website doesn't set any cookies of its own.</p>
@@ -110,11 +142,11 @@ const proseClass =
           >.
         </p>
         <p>
-          Video content from YouTube on our Resource Hub is shown as a static
-          thumbnail – nothing is loaded from YouTube until you press play. Once
-          you do, the video loads in "privacy-enhanced mode" (via
-          youtube-nocookie.com), which reduces, but doesn't fully eliminate, the
-          cookies Google may set. You can read more in{" "}
+          Videos from YouTube on our website are shown as a static thumbnail –
+          nothing is loaded from YouTube until you press play. Once you do, the
+          video loads in "privacy-enhanced mode" (via youtube-nocookie.com),
+          which reduces, but doesn't fully eliminate, the cookies Google may
+          set. You can read more in{" "}
           <a
             href="https://policies.google.com/privacy"
             rel="noopener noreferrer">Google's privacy policy</a
@@ -144,6 +176,12 @@ const proseClass =
               TicketSource
             </dt>
             <dd>Handles event bookings.</dd>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
+          >
+            <dt class="font-semibold text-(--shn-color-bg-page)">Microsoft</dt>
+            <dd>Hosts our Bucket &amp; Spade List voting forms.</dd>
           </div>
           <div
             class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
@@ -202,6 +240,15 @@ const proseClass =
             and then destroyed.
           </li>
           <li>
+            <strong>Bucket &amp; Spade List voting:</strong> we delete voting responses
+            once the winners have been announced.
+          </li>
+          <li>
+            <strong>Photos and recordings:</strong> published photos and videos form
+            part of our archive and may be kept indefinitely, unless you ask us to
+            remove them.
+          </li>
+          <li>
             <strong>Enquiries:</strong> we keep emails only for as long as needed
             to deal with your enquiry and any necessary follow-up.
           </li>
@@ -217,7 +264,10 @@ const proseClass =
           <li>ask us to correct information that's inaccurate or incomplete</li>
           <li>ask us to delete your information</li>
           <li>ask us to restrict how we use your information</li>
-          <li>object to us using your information</li>
+          <li>
+            object to us using your information, including appearing in our
+            photos and recordings
+          </li>
           <li>withdraw your consent at any time, where we rely on consent</li>
           <li>
             ask for your information to be moved to another organisation, where
