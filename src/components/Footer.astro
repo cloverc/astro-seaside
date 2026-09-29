@@ -89,9 +89,14 @@ const { socialLinks = [], links = [], footNote = "" } = Astro.props;
       <p class="text-xs text-gray-600">
         <Fragment set:html={footNote} />
       </p>
-      <a href="/privacy-policy/" class="text-xs underline hover:decoration-2"
-        >Privacy policy</a
-      >
+      <div class="flex items-center gap-4">
+        <a href="/privacy-policy/" class="text-xs underline hover:decoration-2"
+          >Privacy policy</a
+        >
+        <a href="/accessibility/" class="text-xs underline hover:decoration-2">
+          Accessibility statement
+        </a>
+      </div>
     </div>
   </div>
 </footer>

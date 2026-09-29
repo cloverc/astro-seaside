@@ -1,0 +1,171 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import HeroText from "../components/HeroText.astro";
+
+const metadata = {
+  siteTitle: "Seaside Heritage Network",
+  pageTitle: "Accessibility Statement",
+  description:
+    "How accessible the Seaside Heritage Network website is, and how to get help if you have trouble using it.",
+};
+
+const proseClass =
+  "prose prose-headings:font-heading prose-headings:font-medium prose-h2:text-3xl prose-h2:text-[var(--shn-color-bg-page)] prose-h2:scroll-mt-24 prose-p:text-gray-700 prose-li:text-gray-700 prose-ul:list-disc prose-ul:list-outside prose-ul:pl-5 [&_li::marker]:text-gray-700 prose-a:text-[var(--shn-color-primary)] prose-a:underline-offset-2 hover:prose-a:text-accent max-w-3xl";
+---
+
+<PageLayout metadata={metadata}>
+  <HeroText
+    title="Accessibility Statement"
+    subtitle="How accessible the Seaside Heritage Network website is, and how to get help if you have trouble using it."
+  />
+
+  <section class="bg-stone-100 text-dark">
+    <div
+      class="mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:flex lg:justify-center"
+    >
+      <article class={proseClass}>
+        <p>
+          We want everyone to be able to use the Seaside Heritage Network
+          website, whatever their needs. This statement explains how accessible
+          the site is, where we know it falls short, and how to get help.
+        </p>
+
+        <h2 id="our-aim">Our aim</h2>
+        <p>
+          We aim to meet the{" "}
+          <a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer"
+            >Web Content Accessibility Guidelines (WCAG) 2.2</a
+          >{" "}
+          at level AA. We're a small, volunteer-run charity, and while we've worked
+          hard on accessibility, we know some parts of the site don't fully meet this
+          standard yet. These are listed below.
+        </p>
+
+        <h2 id="what-weve-done">What we've done</h2>
+        <p>You should be able to:</p>
+        <ul>
+          <li>
+            navigate the whole site using only a keyboard, with a clear visible
+            focus showing where you are
+          </li>
+          <li>
+            use a "skip to main content" link to jump past the menu on every
+            page
+          </li>
+          <li>
+            navigate using a screen reader, with pages organised into clear
+            regions and headings in a logical order
+          </li>
+          <li>
+            zoom in up to 400% without content being cut off, and use the site
+            on a phone or tablet
+          </li>
+          <li>
+            understand images through text descriptions, with decorative images
+            hidden from screen readers
+          </li>
+          <li>
+            filter and search the Resource Hub using a keyboard or screen reader
+          </li>
+          <li>
+            play videos using a proper labelled play button, with a written
+            summary of each resource on the page itself
+          </li>
+        </ul>
+        <p>
+          We also run automated accessibility tests on the site as part of our
+          regular development work.
+        </p>
+
+        <h2 id="known-issues">Known issues</h2>
+        <p>We know some parts of the site aren't fully accessible:</p>
+        <ul>
+          <li>
+            <strong>Some PDFs aren't fully accessible.</strong> A few older documents,
+            such as our commissioned walking trail guides, weren't created to work
+            well with screen readers. The key information from each one is summarised
+            on its resource page, and we can provide the content in another format
+            on request.
+          </li>
+          <li>
+            <strong>Walking trail videos don't have audio description.</strong>
+            These short videos are set to music, with no narration, and are there
+            to give a flavour of the trail. All the important information is in the
+            text on the same page.
+          </li>
+          <li>
+            <strong
+              >Captions on our recorded seminars are generated automatically by
+              YouTube</strong
+            > and may contain mistakes.
+          </li>
+          <li>
+            <strong
+              >Some services we link to are run by other organisations.</strong
+            > Event booking (TicketSource), our newsletter sign-up (Brevo) and Bucket
+            &amp; Spade List voting (Microsoft Forms) aren't under our control, and
+            their accessibility may vary.
+          </li>
+        </ul>
+
+        <h2 id="reporting-a-problem">
+          Asking for another format or reporting a problem
+        </h2>
+        <p>
+          If you need any content in a different format, such as accessible PDF,
+          large print or plain text, or if you find something on the site that's
+          difficult to use, please email us at{" "}
+          <a href="mailto:info@seasideheritage.org.uk">
+            info@seasideheritage.org.uk
+          </a>.
+        </p>
+        <p>
+          Please tell us the page or document you're having trouble with, and
+          what would help. We'll aim to reply within{" "}
+          <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
+            >[5 working days]</mark
+          >.
+        </p>
+        <p>
+          We're a small volunteer team, so we can't always fix things straight
+          away, but we'll always look at what we can do.
+        </p>
+
+        <h2 id="how-we-tested">How we tested this site</h2>
+        <p>
+          This site was last tested on{" "}
+          <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
+            >[date]</mark
+          >. We tested it using:
+        </p>
+        <ul>
+          <li>
+            automated accessibility testing (axe) across our main types of page
+          </li>
+          <li>keyboard-only navigation</li>
+          <li>
+            the VoiceOver screen reader on{" "}
+            <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
+              >[Mac/iPhone]</mark
+            >
+          </li>
+        </ul>
+
+        <h2 id="keeping-up-to-date">Keeping this statement up to date</h2>
+        <p>
+          We'll review this statement at least once a year, and whenever we add
+          significant new features to the site.
+        </p>
+        <p>
+          This statement was prepared on{" "}
+          <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
+            >[date]</mark
+          >. It was last reviewed on{" "}
+          <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
+            >[date]</mark
+          >.
+        </p>
+      </article>
+    </div>
+  </section>
+</PageLayout>
