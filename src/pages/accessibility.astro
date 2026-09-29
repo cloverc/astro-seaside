@@ -9,6 +9,9 @@ const metadata = {
     "How accessible the Seaside Heritage Network website is, and how to get help if you have trouble using it.",
 };
 
+const prepared = "2026-09-29";
+const preparedLabel = "29 September 2026";
+
 const proseClass =
   "prose prose-headings:font-heading prose-headings:font-medium prose-h2:text-3xl prose-h2:text-[var(--shn-color-bg-page)] prose-h2:scroll-mt-24 prose-p:text-gray-700 prose-li:text-gray-700 prose-ul:list-disc prose-ul:list-outside prose-ul:pl-5 [&_li::marker]:text-gray-700 prose-a:text-[var(--shn-color-primary)] prose-a:underline-offset-2 hover:prose-a:text-accent max-w-3xl";
 ---
@@ -53,8 +56,8 @@ const proseClass =
             page
           </li>
           <li>
-            navigate using a screen reader, with pages organised into clear
-            regions and headings in a logical order
+            listen to most of the website using a screen reader, with pages
+            organised into clear regions and headings in a logical order
           </li>
           <li>
             zoom in up to 400% without content being cut off, and use the site
@@ -158,9 +161,8 @@ const proseClass =
         </p>
         <p>
           This statement was prepared on{" "}
-          <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
-            >[date]</mark
-          >. It was last reviewed on{" "}
+          <time datetime={prepared}>{preparedLabel}</time>. It was last reviewed
+          on{" "}
           <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
             >[date]</mark
           >.
