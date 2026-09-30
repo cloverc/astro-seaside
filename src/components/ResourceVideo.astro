@@ -22,7 +22,7 @@ const { youtubeId, title, caption } = Astro.props;
   >
     <button
       type="button"
-      class="video-facade-play inline-flex items-center gap-2 rounded-full bg-white/90 hover:bg-white px-4 py-2 font-semibold text-black transition-colors cursor-pointer"
+      class="video-facade-play inline-flex items-center gap-2 rounded-full bg-white/90 hover:bg-white px-4 py-2 font-semibold text-black transition-[color] cursor-pointer"
       data-youtube-id={youtubeId}
       aria-label={`Play video: ${title} (loads from YouTube)`}
     >
@@ -40,7 +40,13 @@ const { youtubeId, title, caption } = Astro.props;
     <p class="text-xs text-white/80 leading-relaxed">
       This video is hosted on YouTube. Playing it loads content from YouTube,
       which may set cookies.{" "}
-      <a href="/privacy-policy/" class="text-white underline hover:no-underline"
+      {
+        /* Forced white: light sections switch the site's default focus ring
+          to dark navy, which would be invisible against this overlay. */
+      }
+      <a
+        href="/privacy-policy/"
+        class="text-white underline hover:no-underline [--focus-ring-color:rgb(255_255_255)]"
         >Privacy policy</a
       >
     </p>
