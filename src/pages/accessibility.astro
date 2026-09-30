@@ -56,8 +56,8 @@ const proseClass =
             page
           </li>
           <li>
-            listen to most of the website using a screen reader, with pages
-            organised into clear regions and headings in a logical order
+            use most of the website with a screen reader, with pages organised
+            into clear regions and headings in a logical order
           </li>
           <li>
             zoom in up to 400% without content being cut off, and use the site
@@ -71,7 +71,7 @@ const proseClass =
             filter and search the Resource Hub using a keyboard or screen reader
           </li>
           <li>
-            play videos using a proper labelled play button, with a written
+            play videos using a clearly labelled play button, with a written
             summary of each resource on the page itself
           </li>
         </ul>
@@ -91,7 +91,9 @@ const proseClass =
             on request.
           </li>
           <li>
-            <strong>Walking trail videos don't have audio description.</strong>
+            <strong>Walking trail videos don't have audio description.</strong>{
+              " "
+            }
             These short videos are set to music, with no narration, and are there
             to give a flavour of the trail. All the important information is in the
             text on the same page.
@@ -124,10 +126,7 @@ const proseClass =
         </p>
         <p>
           Please tell us the page or document you're having trouble with, and
-          what would help. We'll aim to reply within{" "}
-          <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
-            >[5 working days]</mark
-          >.
+          what would help. We'll aim to reply within 5 working days.
         </p>
         <p>
           We're a small volunteer team, so we can't always fix things straight
@@ -136,22 +135,14 @@ const proseClass =
 
         <h2 id="how-we-tested">How we tested this site</h2>
         <p>
-          This site was last tested on{" "}
-          <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
-            >[date]</mark
-          >. We tested it using:
+          This site was last tested on 30 September 2026. We tested it using:
         </p>
         <ul>
           <li>
             automated accessibility testing (axe) across our main types of page
           </li>
           <li>keyboard-only navigation</li>
-          <li>
-            the VoiceOver screen reader on{" "}
-            <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
-              >[Mac/iPhone]</mark
-            >
-          </li>
+          <li>the VoiceOver screen reader on Mac</li>
         </ul>
 
         <h2 id="keeping-up-to-date">Keeping this statement up to date</h2>
@@ -161,11 +152,7 @@ const proseClass =
         </p>
         <p>
           This statement was prepared on{" "}
-          <time datetime={prepared}>{preparedLabel}</time>. It was last reviewed
-          on{" "}
-          <mark class="bg-pink-100 text-pink-700 px-1 rounded not-prose"
-            >[date]</mark
-          >.
+          <time datetime={prepared}>{preparedLabel}</time>.
         </p>
       </article>
     </div>
