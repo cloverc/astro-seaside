@@ -75,13 +75,13 @@ const linkText =
       >
       <span>{item.meta}</span>
     </div>
-    <a href={item.href} class="group">
-      <h3
-        class={`font-heading font-semibold text-[22px] leading-tight [text-wrap:pretty] group-hover:underline decoration-1 ${titleText}`}
-      >
+    <h3
+      class={`group font-heading font-semibold text-[22px] leading-tight [text-wrap:pretty] ${titleText}`}
+    >
+      <a href={item.href} class="group-hover:underline decoration-1">
         {item.title}
-      </h3>
-    </a>
+      </a>
+    </h3>
     <p
       class={`leading-relaxed line-clamp-2 min-[1500px]:text-sm ${summaryText}`}
     >

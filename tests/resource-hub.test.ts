@@ -7,6 +7,13 @@ async function openFilters(page: Page) {
   }
 }
 
+async function expandGroup(page: Page, groupName: string) {
+  const toggle = page.getByRole("button", { name: groupName, exact: true });
+  if ((await toggle.getAttribute("aria-expanded")) === "false") {
+    await toggle.click();
+  }
+}
+
 test.describe("resource hub page", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/resource-hub/");
@@ -107,6 +114,7 @@ test.describe("resource hub page", () => {
 
   test("topic checkbox filters cards", async ({ page }) => {
     await openFilters(page);
+    await expandGroup(page, "Topic");
 
     const firstTopics = (
       (await page
@@ -136,6 +144,7 @@ test.describe("resource hub page", () => {
 
   test("multiple topic checkboxes combine with OR logic", async ({ page }) => {
     await openFilters(page);
+    await expandGroup(page, "Topic");
 
     const allTopics = new Set<string>();
     for (const card of await page.locator("[data-rh-card]").all()) {
@@ -160,6 +169,7 @@ test.describe("resource hub page", () => {
 
   test("resource type checkbox filters cards", async ({ page }) => {
     await openFilters(page);
+    await expandGroup(page, "Resource type");
 
     const resourceType = await page
       .locator("[data-rh-card]")
@@ -182,6 +192,7 @@ test.describe("resource hub page", () => {
     page,
   }) => {
     await openFilters(page);
+    await expandGroup(page, "Resource type");
 
     const firstCard = page.locator("[data-rh-card]").first();
     const audienceRaw = await firstCard.getAttribute("data-audience");
@@ -232,6 +243,7 @@ test.describe("resource hub page", () => {
   test("clear all resets all filters", async ({ page }) => {
     await openFilters(page);
     await page.getByRole("checkbox", { name: "General Public" }).check();
+    await expandGroup(page, "Resource type");
 
     const firstResourceType = page
       .locator("[data-rh-filter='resourceType']")
@@ -298,7 +310,10 @@ test.describe("resource hub page", () => {
     const totalBefore = await page.locator("[data-rh-card]").count();
     test.skip(totalBefore === 0, "No resource cards in dataset");
 
-    await firstCard.getByRole("heading", { level: 2 }).click();
+    await firstCard
+      .getByRole("heading", { level: 2 })
+      .getByRole("link")
+      .click();
     await page.waitForURL(/\/resource-hub\/.+/);
     await page.getByRole("link", { name: /Back to Resource Hub/ }).click();
     await page.waitForURL(/\/resource-hub\/?$/);

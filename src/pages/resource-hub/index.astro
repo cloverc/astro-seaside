@@ -135,8 +135,8 @@ function ctaLabel(_format: string) {
   />
 
   <!-- Browse area -->
-  <section class="min-h-96" style="background-color: #F9F9F8">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+  <section id="rh-browse" class="min-h-96" style="background-color: #F9F9F8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 lg:pt-16 pb-16">
       {
         resources.length === 0 ? (
           <p class="text-center text-gray-600 py-16">
@@ -147,7 +147,7 @@ function ctaLabel(_format: string) {
             {/* Sidebar: search + filters */}
             <aside
               id="rh-sidebar-inner"
-              class="lg:col-span-1 bg-white rounded-lg border border-gray-400 p-5 space-y-5"
+              class="lg:col-span-1 rounded-lg border-gray-400 lg:p-5 space-y-5"
               aria-label="Search and filter resources"
             >
               {/* Search */}
@@ -169,6 +169,7 @@ function ctaLabel(_format: string) {
                 <input
                   id="rh-search"
                   type="text"
+                  autocomplete="off"
                   placeholder="Search resources"
                   class="w-full pl-8 pr-8 py-2 border border-gray-400 rounded bg-white text-dark text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
                   aria-label="Search resources"
@@ -176,7 +177,7 @@ function ctaLabel(_format: string) {
                 <button
                   id="rh-search-clear"
                   type="button"
-                  class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
+                  class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-[color]"
                   aria-label="Clear search"
                 >
                   <svg
@@ -223,39 +224,49 @@ function ctaLabel(_format: string) {
               </button>
 
               {/* Filter panel (collapsible on mobile, always open on desktop) */}
-              <div id="rh-filter-panel" class="hidden lg:block space-y-1">
+              <div
+                id="rh-filter-panel"
+                class="hidden lg:block mt-2! lg:mt-5! space-y-3"
+              >
                 {/* Filter header */}
-                <div class="pb-2">
+                {/* <div class="pb-2">
                   <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Filter by
                   </span>
-                </div>
+                </div> */}
+                <h2 class="sr-only">Filter</h2>
 
                 {/* Audience */}
                 <div class="border-b border-gray-200">
-                  <button
-                    type="button"
-                    data-rh-group="audience"
-                    class="rh-group-toggle w-full flex items-center justify-between py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider"
-                    aria-expanded="true"
-                  >
-                    Audience
-                    <svg
-                      class="rh-group-chevron w-3.5 h-3.5 text-gray-400 transition-transform duration-200 rotate-180"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
+                  <h3>
+                    <button
+                      type="button"
+                      data-rh-group="audience"
+                      class="rh-group-toggle w-full flex items-center justify-between py-3 text-sm font-semibold text-(--shn-color-primary) hover:text-(--shn-color-bg-page) hover:underline cursor-pointer"
+                      aria-expanded="true"
+                      aria-controls="rh-panel-audience"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  <ul class="rh-group-panel space-y-0.5 pb-3">
+                      Audience
+                      <svg
+                        class="rh-group-chevron w-3.5 h-3.5 text-gray-600 transition-transform duration-200 rotate-180"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                  </h3>
+                  <ul
+                    id="rh-panel-audience"
+                    class="rh-group-panel space-y-0.5 pb-3"
+                  >
                     {AUDIENCES.map((aud) => (
                       <li>
                         <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
@@ -274,29 +285,35 @@ function ctaLabel(_format: string) {
 
                 {/* Topic */}
                 <div class="border-b border-gray-200">
-                  <button
-                    type="button"
-                    data-rh-group="topic"
-                    class="rh-group-toggle w-full flex items-center justify-between py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider"
-                    aria-expanded="true"
-                  >
-                    Topic
-                    <svg
-                      class="rh-group-chevron w-3.5 h-3.5 text-gray-400 transition-transform duration-200 rotate-180"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
+                  <h3>
+                    <button
+                      type="button"
+                      data-rh-group="topic"
+                      class="rh-group-toggle w-full flex items-center justify-between py-3 text-sm font-semibold text-(--shn-color-primary) hover:text-(--shn-color-bg-page) hover:underline cursor-pointer"
+                      aria-expanded="false"
+                      aria-controls="rh-panel-topic"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  <ul class="rh-group-panel space-y-0.5 pb-3">
+                      Topic
+                      <svg
+                        class="rh-group-chevron w-3.5 h-3.5 text-gray-600 transition-transform duration-200"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                  </h3>
+                  <ul
+                    id="rh-panel-topic"
+                    class="rh-group-panel hidden space-y-0.5 pb-3"
+                  >
                     {TOPICS.map((topic) => (
                       <li>
                         <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
@@ -315,29 +332,35 @@ function ctaLabel(_format: string) {
 
                 {/* Resource type */}
                 <div>
-                  <button
-                    type="button"
-                    data-rh-group="resourceType"
-                    class="rh-group-toggle w-full flex items-center justify-between py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider"
-                    aria-expanded="true"
-                  >
-                    Resource type
-                    <svg
-                      class="rh-group-chevron w-3.5 h-3.5 text-gray-400 transition-transform duration-200 rotate-180"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      aria-hidden="true"
+                  <h3>
+                    <button
+                      type="button"
+                      data-rh-group="resourceType"
+                      class="rh-group-toggle w-full flex items-center justify-between py-3 text-sm font-semibold text-(--shn-color-primary) hover:text-(--shn-color-bg-page) hover:underline cursor-pointer"
+                      aria-expanded="false"
+                      aria-controls="rh-panel-resourceType"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
-                  <ul class="rh-group-panel space-y-0.5 pb-3">
+                      Resource type
+                      <svg
+                        class="rh-group-chevron w-3.5 h-3.5 text-gray-600 transition-transform duration-200"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                  </h3>
+                  <ul
+                    id="rh-panel-resourceType"
+                    class="rh-group-panel hidden space-y-0.5 pb-3"
+                  >
                     {RESOURCE_TYPES.map((rt) => (
                       <li>
                         <label class="rh-option flex items-center gap-2.5 py-1.5 px-2 -mx-2 rounded cursor-pointer text-dark text-sm select-none hover:bg-stone-100 transition-colors">
@@ -408,11 +431,14 @@ function ctaLabel(_format: string) {
                             )}
                           </div>
                         )}
-                        <a href={`/resource-hub/${r.slug}`} class="group">
-                          <h2 class="text-xl font-heading font-medium text-dark mb-2 leading-snug group-hover:underline decoration-1">
+                        <h2 class="group text-xl font-heading font-medium text-dark mb-2 leading-snug">
+                          <a
+                            href={`/resource-hub/${r.slug}`}
+                            class="group-hover:underline decoration-1"
+                          >
                             {r.title}
-                          </h2>
-                        </a>
+                          </a>
+                        </h2>
                         <p class="text-gray-600 leading-relaxed mb-4">
                           {r.description}
                         </p>
@@ -425,18 +451,15 @@ function ctaLabel(_format: string) {
                       </div>
 
                       {r.thumbnail && (
-                        <a
-                          href={`/resource-hub/${r.slug}`}
-                          class="hidden sm:block shrink-0 sm:w-44 rounded overflow-hidden"
-                        >
+                        <div class="hidden sm:block shrink-0 sm:w-44 rounded overflow-hidden">
                           <img
                             src={r.thumbnail}
-                            alt={r.title}
+                            alt=""
                             class="w-full aspect-3/4 object-cover"
                             loading="lazy"
                             decoding="async"
                           />
-                        </a>
+                        </div>
                       )}
                     </article>
                   </li>
@@ -505,12 +528,17 @@ function ctaLabel(_format: string) {
     // Filter group toggles
     document.querySelectorAll(".rh-group-toggle").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        var panel = btn.nextElementSibling;
+        // Panel is a sibling of the <h3> wrapping this button, not of the
+        // button itself.
+        var panel = btn.closest("h3").nextElementSibling;
         var chevron = btn.querySelector(".rh-group-chevron");
         var isOpen = btn.getAttribute("aria-expanded") === "true";
         btn.setAttribute("aria-expanded", isOpen ? "false" : "true");
         panel.classList.toggle("hidden", isOpen);
-        if (chevron) chevron.style.transform = isOpen ? "" : "rotate(180deg)";
+        // Toggle the class rather than an inline transform: the class stays
+        // on the element permanently, so setting style.transform = "" just
+        // reveals the class's own rotation again instead of clearing it.
+        if (chevron) chevron.classList.toggle("rotate-180", !isOpen);
       });
     });
 
@@ -639,7 +667,7 @@ function ctaLabel(_format: string) {
       nav.classList.remove("hidden");
 
       var btnBase =
-        "inline-flex items-center justify-center h-9 px-4 rounded border text-sm font-medium transition-colors ";
+        "inline-flex items-center justify-center h-9 px-4 rounded border text-sm font-medium transition-[color] ";
       var btnActive = btnBase + "bg-accent text-white border-accent";
       var btnNormal = btnBase + "border-gray-300 text-dark hover:bg-gray-100";
       var btnDisabled =
@@ -693,6 +721,19 @@ function ctaLabel(_format: string) {
 
     function renderChips() {
       if (!chipsEl) return;
+
+      // Rebuilding via innerHTML below destroys whichever chip button the
+      // user just activated, dropping keyboard focus to <body>. Capture its
+      // position so we can restore focus to the chip that's now in its
+      // place (or the search box, if none are left) after the rebuild.
+      var hadFocusInChips = chipsEl.contains(document.activeElement);
+      var focusedIndex = hadFocusInChips
+        ? Array.prototype.indexOf.call(
+            chipsEl.querySelectorAll("button"),
+            document.activeElement,
+          )
+        : -1;
+
       var chips = [];
       if (state.q) chips.push({ key: "search", value: state.q });
       state.audience.forEach(function (v) {
@@ -709,6 +750,7 @@ function ctaLabel(_format: string) {
         chipsEl.classList.add("hidden");
         chipsEl.classList.remove("flex");
         chipsEl.innerHTML = "";
+        if (hadFocusInChips && searchInput) searchInput.focus();
         return;
       }
 
@@ -725,7 +767,7 @@ function ctaLabel(_format: string) {
               chip.key +
               '" data-chip-value="' +
               chip.value +
-              '" class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-sm font-medium px-2.5 py-1 rounded hover:bg-blue-100 transition-colors">' +
+              '" class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-sm font-medium px-2.5 py-1 rounded hover:bg-blue-100 transition-[color]">' +
               label +
               '<svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>' +
               '<span class="sr-only">Remove ' +
@@ -763,6 +805,17 @@ function ctaLabel(_format: string) {
           updateMobileToggleLabel();
         });
       });
+
+      if (hadFocusInChips) {
+        var chipButtons = chipsEl.querySelectorAll("[data-chip-key]");
+        if (chipButtons.length > 0) {
+          var target =
+            chipButtons[Math.min(focusedIndex, chipButtons.length - 1)];
+          if (target) target.focus();
+        } else if (clearBtn) {
+          clearBtn.focus();
+        }
+      }
     }
 
     // Pre-apply filters passed via URL query params (e.g. from the homepage

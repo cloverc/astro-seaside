@@ -13,7 +13,10 @@
     outline: none;
   }
   :focus-visible {
-    outline-color: var(--focus-ring-color);
+    /* !important: some utility classes (e.g. transition-colors) set their
+       own static outline-color that otherwise wins the cascade, silently
+       suppressing the focus ring on just those elements. */
+    outline-color: var(--focus-ring-color) !important;
     outline-offset: var(--focus-ring-offset);
     outline-style: var(--focus-ring-style);
     outline-width: var(--focus-ring-width);
@@ -36,7 +39,12 @@ footer,
 [href="#main-content"],
 [class~="bg-stone-100"],
 [class~="bg-stone-200"],
-[class~="bg-muted"] {
+[class~="bg-muted"],
+[class~="bg-white"],
+/* Backgrounds set via inline style (e.g. #F9F9F8) can't be matched by
+   class selector above, so light sections using one are opted in by id. */
+#rh-browse,
+#rh-body {
   --focus-ring-color: var(--shn-color-bg-page);
 }
 
@@ -144,7 +152,11 @@ footer,
 }
 
 @utility btn {
-  @apply inline-flex items-center justify-center rounded bg-transparent font-medium text-center text-base text-page leading-snug transition-colors duration-150 ease-out py-3.5 px-6 md:px-8 hover:bg-gray-100 hover:border-gray-600 active:scale-[0.96] cursor-pointer;
+  /* transition-[...] instead of transition-colors: the latter includes
+     outline-color, which pins the focus ring to this element's own text
+     color instead of the site's focus-ring custom property (see the
+     transition-colors comment further down). */
+  @apply inline-flex items-center justify-center rounded bg-transparent font-medium text-center text-base text-page leading-snug transition-[color,background-color,border-color] duration-150 ease-out py-3.5 px-6 md:px-8 hover:bg-gray-100 hover:border-gray-600 active:scale-[0.96] cursor-pointer;
 }
 
 @layer components {
