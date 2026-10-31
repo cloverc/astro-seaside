@@ -28,7 +28,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "@vitest/ui": "^3.2.4",
     "astro": "^7.2.0",
-    "happy-dom": "^20.9.0",
+    "happy-dom": "^21.0.4",
     "lefthook": "^2.1.6",
     "prettier": "^3.0.3",
     "prettier-plugin-astro": "^0.14.0",
