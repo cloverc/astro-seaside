@@ -16,7 +16,11 @@ export default defineConfig({
     domains: ["astro.build"],
   },
   output: "server",
-  adapter: netlify({ imageCDN: false }),
+  adapter: netlify({
+    imageCDN: false,
+    // No edge functions on this site
+    devFeatures: { edgeFunctions: false },
+  }),
   vite: {
     plugins: [tailwindcss()],
   },
