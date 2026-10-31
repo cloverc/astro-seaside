@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      timezone: "Europe/London"
+    open-pull-requests-limit: 2
+    # Don't rebuild open PRs (and their Netlify Deploy Previews) every time
+    # main changes. Comment "@dependabot rebase" on a PR to refresh it.
+    rebase-strategy: "disabled"
+    groups:
+      # Minor and patch updates land together in one monthly PR
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      # Major updates can break things, so they're done deliberately by hand.
+      # Security updates are unaffected by this.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
