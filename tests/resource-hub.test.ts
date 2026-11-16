@@ -87,8 +87,14 @@ test.describe("resource hub page", () => {
       await expect(card).toHaveAttribute("data-audience", /General Public/);
     }
 
+    // Count all matching cards, not just the current page (6 per page)
+    const matching = await page
+      .locator('[data-rh-card][data-audience*="General Public"]')
+      .count();
+    expect(count).toBe(Math.min(matching, 6));
+
     await expect(page.locator("#rh-count")).toContainText(
-      `Showing ${count} of`,
+      `Showing ${matching} of`,
     );
   });
 
