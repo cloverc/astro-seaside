@@ -20,6 +20,7 @@ export interface Props {
   isSticky?: boolean;
   isFullWidth?: boolean;
   position?: string;
+  donateHref?: string;
 }
 
 const {
@@ -28,9 +29,12 @@ const {
   isSticky = false,
   isFullWidth = false,
   position = "center",
+  donateHref,
 } = Astro.props;
 
 const currentPath = Astro.url.pathname;
+
+const donateClasses = "btn-primary";
 ---
 
 <header
@@ -62,7 +66,14 @@ const currentPath = Astro.url.pathname;
       >
         <Logo />
       </a>
-      <div class="flex items-center lg:hidden">
+      <div class="flex items-center gap-3 lg:hidden">
+        {
+          donateHref && (
+            <a href={donateHref} class={`${donateClasses} py-2 px-4 md:px-5`}>
+              Donate
+            </a>
+          )
+        }
         <ToggleMenu />
       </div>
     </div>
@@ -137,6 +148,16 @@ const currentPath = Astro.url.pathname;
           ))
         }
       </ul>
+      {
+        donateHref && (
+          <a
+            href={donateHref}
+            class={`${donateClasses} hidden lg:inline-flex ml-4 py-2.5 px-5 text-sm`}
+          >
+            Donate
+          </a>
+        )
+      }
     </nav>
   </div>
 </header>

@@ -115,6 +115,11 @@ const bucketHeaderLinks = bucketPageLinks.map(
   }),
 );
 
+// Text field or Storyblok link field; button is hidden when unset
+const donateUrl: string | undefined =
+  (typeof gc.donate_url === "string" ? gc.donate_url : gc.donate_url?.url) ||
+  undefined;
+
 /** Main menu items */
 const headerData = {
   links: [
@@ -197,7 +202,7 @@ const footerData = {
     )
   }
   <slot name="header">
-    <Header {...headerData} isSticky />
+    <Header {...headerData} donateHref={donateUrl} isSticky />
   </slot>
   <main id="main-content" tabindex="-1" class="flex-1">
     <slot />
