@@ -172,6 +172,7 @@ const footerData = {
             : "/bucket-spade-list/top-ten-winners-2025/",
         },
         { text: "Contact", href: "/contact/" },
+        ...(donateUrl ? [{ text: "Donate", href: donateUrl }] : []),
       ],
     },
   ],
