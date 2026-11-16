@@ -9,8 +9,8 @@ const metadata = {
     "How the Seaside Heritage Network collects, uses and looks after your personal information.",
 };
 
-const lastUpdated = "2026-09-28";
-const lastUpdatedLabel = "28 September 2026";
+const lastUpdated = "2026-11-16";
+const lastUpdatedLabel = "16 November 2026";
 
 const proseClass =
   "prose prose-headings:font-heading prose-headings:font-medium prose-h2:text-3xl prose-h2:text-[var(--shn-color-bg-page)] prose-h2:scroll-mt-24 prose-p:text-gray-700 prose-li:text-gray-700 prose-ul:list-disc prose-ul:list-outside prose-ul:pl-5 [&_li::marker]:text-gray-700 prose-a:text-[var(--shn-color-primary)] prose-a:underline-offset-2 hover:prose-a:text-accent max-w-3xl";
@@ -75,6 +75,13 @@ const proseClass =
             your name as shown on screen and anything you say.
           </li>
           <li>
+            <strong>Donations:</strong> online donations are handled by Zeffy, which
+            collects your name, email address and donation details. If you choose
+            to add Gift Aid, we also collect your home address and your Gift Aid declaration.
+            Your card details are processed by Zeffy's payment provider, Stripe, and
+            are never shared with us.
+          </li>
+          <li>
             <strong>Getting in touch:</strong> if you email us, we'll see your email
             address and whatever you choose to tell us in your message.
           </li>
@@ -104,10 +111,14 @@ const proseClass =
             <strong>Contract</strong> – for processing your event booking.
           </li>
           <li>
-            <strong>Legitimate interests</strong> – for replying to enquiries, keeping
-            the website running securely, running the Bucket &amp; Spade List vote
-            fairly, and recording and sharing our events to promote our work and share
-            seaside heritage.
+            <strong>Legal obligation</strong> – for keeping financial records of donations
+            and claiming Gift Aid from HMRC.
+          </li>
+          <li>
+            <strong>Legitimate interests</strong> – for processing donations and thanking
+            donors, replying to enquiries, keeping the website running securely, running
+            the Bucket &amp; Spade List vote fairly, and recording and sharing our
+            events to promote our work and share seaside heritage.
           </li>
         </ul>
 
@@ -180,6 +191,12 @@ const proseClass =
           <div
             class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
           >
+            <dt class="font-semibold text-(--shn-color-bg-page)">Zeffy</dt>
+            <dd>Processes online donations.</dd>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-x-5 py-3.5 border-b border-stone-300"
+          >
             <dt class="font-semibold text-(--shn-color-bg-page)">Microsoft</dt>
             <dd>Hosts our Bucket &amp; Spade List voting forms.</dd>
           </div>
@@ -211,7 +228,10 @@ const proseClass =
           </div>
         </dl>
         <p>
-          We may also need to share information if required to do so by law.
+          If you make a Gift Aid declaration, we share your name, home address
+          and donation details with HMRC so we can claim Gift Aid on your
+          donation. We may also need to share information if required to do so
+          by law.
         </p>
 
         <h2 id="international-transfers">International transfers</h2>
@@ -242,6 +262,12 @@ const proseClass =
           <li>
             <strong>Bucket &amp; Spade List voting:</strong> we delete voting responses
             once the winners have been announced.
+          </li>
+          <li>
+            <strong>Donations:</strong> we keep donation records for 6 years after
+            the end of the financial year in which you donated, as required for charity
+            accounts and HMRC. If you've made a Gift Aid declaration that covers future
+            donations, we keep it for 6 years after your last donation.
           </li>
           <li>
             <strong>Photos and recordings:</strong> published photos and videos form
